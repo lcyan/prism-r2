@@ -16,7 +16,7 @@ export const Layout: React.FC<LayoutProps> = ({
     onTabChange,
     onRefresh,
     onLogout,
-    connectionStatus
+    connectionStatus: _connectionStatus
 }) => {
     return (
         <div className="min-h-screen bg-[#F0F2F5] dark:bg-black font-sans flex flex-col">

@@ -17,6 +17,7 @@ function App() {
     saveConfig,
     deleteConfig,
     switchConfig,
+    importConfigs,
   } = useR2();
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -35,11 +36,31 @@ function App() {
       setIsAuthenticated(false);
     }
 
-    const skipGuide = localStorage.getItem('r2_skip_guide');
-    if (!skipGuide && configs.length === 0) {
-      setShowWelcome(true);
-    }
-  }, [configs.length]);
+    const initConfigs = async () => {
+      // Try to load from KV first
+      try {
+        const kvConfigs = await r2Manager.syncFromKV();
+        if (Array.isArray(kvConfigs) && kvConfigs.length > 0) {
+          importConfigs(kvConfigs);
+          return;
+        }
+      } catch (e) {
+        console.warn("Failed to sync from KV on init", e);
+      }
+
+      // If KV failed or empty, check if we need to show guide based on local state
+      // Note: configs from useR2 are already loaded from localStorage inside the hook
+      // But we can't easily check 'configs.length' here immediately if it updates async
+      // For now, let's just rely on the existing logic or the KV sync.
+
+      const skipGuide = localStorage.getItem('r2_skip_guide');
+      if (!skipGuide && configs.length === 0) {
+        setShowWelcome(true);
+      }
+    };
+
+    initConfigs();
+  }, []);
 
   useEffect(() => {
     if (activeConfigId && isAuthenticated) {
@@ -169,6 +190,7 @@ function App() {
               onSave={saveConfig}
               onDelete={deleteConfig}
               onSwitch={switchConfig}
+              onImport={importConfigs}
             />
           </div>
         ) : (

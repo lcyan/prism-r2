@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Grid, List, Copy, Download, Trash2, Folder, File as FileIcon, Check, Eye, RotateCw, ImageIcon, Link, Code, FileText, ArrowDownToLine } from 'lucide-react';
+import { Search, Grid, List, Copy, Download, Trash2, Folder, File as FileIcon, Check, Eye, RotateCw, ImageIcon } from 'lucide-react';
 import type { R2File } from '../../types';
 import { formatSize } from '../../types';
 import { format } from 'date-fns';
@@ -28,7 +28,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     onRefresh,
     onDelete,
     onDownload,
-    onCopyLink,
+    onCopyLink: _onCopyLink,
     publicUrlGetter,
     onBulkDelete
 }) => {

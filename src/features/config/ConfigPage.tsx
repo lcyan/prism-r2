@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { R2Config } from '../../lib/r2Client';
-import { Save, Trash2, Plus, Server, Key, Database, Globe, Settings, ChevronRight } from 'lucide-react';
+import { Save, Trash2, Plus, Server, Key, Database, Globe, Settings, ChevronRight, Cloud, CloudRain } from 'lucide-react';
+import { r2Manager } from '../../lib/r2Client';
 
 interface ConfigPageProps {
     configs: R2Config[];
@@ -8,10 +9,77 @@ interface ConfigPageProps {
     onSave: (config: R2Config) => void;
     onDelete: (id: string) => void;
     onSwitch: (id: string) => void;
+    onImport: (configs: R2Config[]) => void;
 }
 
-export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId, onSave, onDelete, onSwitch }) => {
+export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId, onSave, onDelete, onSwitch, onImport }) => {
     const [formData, setFormData] = useState<Partial<R2Config>>({});
+
+    const handleExport = () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(configs));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "r2_configs_backup.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    };
+
+    const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const imported = JSON.parse(e.target?.result as string);
+                if (Array.isArray(imported)) {
+                    if (window.confirm(`确定要导入 ${imported.length} 个配置吗？现有配置将被覆盖。`)) {
+                        onImport(imported);
+                    }
+                } else {
+                    alert('无效的配置文件格式');
+                }
+            } catch (err) {
+                alert('解析文件失败');
+            }
+        };
+        reader.readAsText(file);
+        // Reset input
+        event.target.value = '';
+        event.target.value = '';
+    };
+
+    const handleKVSync = async () => {
+        if (!window.confirm('这将会把当前所有配置保存到 Cloudflare KV 中。如果设置了 Auth Token，后续会提示输入。确定吗？')) return;
+
+        const token = prompt("请输入鉴权 Token (如未设置请留空):") || "";
+
+        try {
+            await r2Manager.syncToKV(configs, token);
+            alert('配置已成功同步到 KV！');
+        } catch (e: any) {
+            alert('同步失败: ' + e.message);
+        }
+    };
+
+    const handleKVRestore = async () => {
+        const token = prompt("请输入鉴权 Token (如未设置请留空):") || "";
+
+        try {
+            const imported = await r2Manager.syncFromKV(token);
+            if (Array.isArray(imported)) {
+                if (window.confirm(`发现 KV 备份，包含 ${imported.length} 个配置。确定要恢复并覆盖当前本地配置吗？`)) {
+                    onImport(imported);
+                    alert('配置恢复成功！');
+                }
+            } else {
+                alert('KV 中没有有效的配置列表。');
+            }
+        } catch (e: any) {
+            alert('恢复失败: ' + e.message);
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -41,7 +109,35 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                         </div>
                         已连接的存储源
                     </h3>
-                    <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest">共 {configs.length} 个项目</span>
+                    <div className="flex items-center gap-3">
+                        <div className="flex bg-gray-100 dark:bg-zinc-800 rounded-lg p-0.5 mr-2">
+                            <button
+                                onClick={handleKVSync}
+                                title="同步配置到 Cloudflare KV"
+                                className="p-1.5 hover:bg-white dark:hover:bg-zinc-700 rounded-md text-gray-400 hover:text-blue-500 transition-all shadow-sm"
+                            >
+                                <Cloud size={16} />
+                            </button>
+                            <button
+                                onClick={handleKVRestore}
+                                title="从 Cloudflare KV 恢复配置"
+                                className="p-1.5 hover:bg-white dark:hover:bg-zinc-700 rounded-md text-gray-400 hover:text-blue-500 transition-all shadow-sm"
+                            >
+                                <CloudRain size={16} />
+                            </button>
+                        </div>
+                        <label className="cursor-pointer px-3 py-1.5 bg-gray-100 dark:bg-zinc-800 hover:bg-primary/10 rounded-lg text-xs font-bold text-gray-500 hover:text-primary transition-colors flex items-center gap-2">
+                            <input type="file" accept=".json" className="hidden" onChange={handleImport} />
+                            导入
+                        </label>
+                        <button
+                            onClick={handleExport}
+                            className="px-3 py-1.5 bg-gray-100 dark:bg-zinc-800 hover:bg-primary/10 rounded-lg text-xs font-bold text-gray-500 hover:text-primary transition-colors"
+                        >
+                            导出备份
+                        </button>
+                        <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest border-l pl-3 border-gray-200 dark:border-white/10">共 {configs.length} 个项目</span>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

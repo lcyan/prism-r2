@@ -104,6 +104,30 @@ export class R2Manager {
     // Fallback or Dev URL logic can be added here
     return `https://${this.config.bucketName}.${this.config.accountId}.r2.cloudflarestorage.com/${key}`;
   }
+  // KV Sync methods (Serverless)
+  async syncFromKV(authToken: string = "") {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+
+    // Use relative path which works both in dev (with proxy) and prod
+    const response = await fetch('/api/configs', { headers });
+    if (!response.ok) throw new Error('Failed to fetch from KV');
+    return await response.json();
+  }
+
+  async syncToKV(configs: R2Config[], authToken: string = "") {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+
+    const response = await fetch('/api/configs', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(configs)
+    });
+
+    if (!response.ok) throw new Error('Failed to save to KV');
+    return await response.json();
+  }
 }
 
 export const r2Manager = new R2Manager();

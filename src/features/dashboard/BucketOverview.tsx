@@ -1,5 +1,5 @@
 import React from 'react';
-import { Database, HardDrive, Layout, RefreshCw } from 'lucide-react';
+import { Database, HardDrive } from 'lucide-react';
 
 interface BucketOverviewProps {
     bucketName: string;

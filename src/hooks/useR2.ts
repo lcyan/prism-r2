@@ -71,6 +71,18 @@ export const useR2 = () => {
         loading,
         setLoading,
         error,
-        setError
+        setError,
+        importConfigs: (newConfigs: R2Config[]) => {
+            setConfigs(newConfigs);
+            localStorage.setItem('r2_configs', JSON.stringify(newConfigs));
+            if (newConfigs.length > 0) {
+                // Optionally switch to the first one or keep current if valid
+                if (!activeConfigId || !newConfigs.find(c => c.id === activeConfigId)) {
+                    // If no active config or active config no longer exists in imported list
+                    // Switch to first one optionally? Or just let user choose.
+                    // Let's not auto-switch to be safe, unless user was empty.
+                }
+            }
+        }
     };
 };

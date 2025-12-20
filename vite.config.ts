@@ -24,5 +24,8 @@ export default defineConfig({
   define: {
     // Some libraries check for this
     'process.env': {},
-  }
+  },
+  server: {
+    port: 5174,
+  },
 })

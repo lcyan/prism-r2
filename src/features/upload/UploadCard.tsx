@@ -19,7 +19,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ onUpload, onUploadComple
     const [isDragging, setIsDragging] = useState(false);
     const [subPath, setSubPath] = useState('');
     const [useWebP, setUseWebP] = useState(true);
-    const [webpQuality, setWebpQuality] = useState(0.8);
+    const [webpQuality, _setWebpQuality] = useState(0.8);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const compressImage = async (file: File): Promise<File> => {
@@ -27,7 +27,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ onUpload, onUploadComple
             return file;
         }
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = (event) => {
