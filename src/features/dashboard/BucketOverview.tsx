@@ -29,7 +29,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
     const Log = Math.log;
 
     return (
-        <div className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-ios rounded-[2.5rem] p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] border border-white/20 dark:border-white/5 space-y-8">
+        <div className="bg-white/90 dark:bg-zinc-900/90 rounded-[2.5rem] p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] border border-white/20 dark:border-white/5 space-y-8">
             <div className="flex items-center justify-between">
                 <div className="space-y-1">
                     <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
@@ -47,12 +47,12 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                 <div className="space-y-3">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">当前存储桶</label>
                     <div className="flex items-center gap-3">
-                        <div className="flex-1 bg-gray-100/50 dark:bg-white/5 backdrop-blur-sm border border-gray-200/50 dark:border-white/5 rounded-2xl px-5 py-3.5 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-inner">
+                        <div className="flex-1 bg-gray-100 dark:bg-white/5 border border-gray-200/50 dark:border-white/5 rounded-2xl px-5 py-3.5 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-inner">
                             {bucketName}
                         </div>
                         <button 
                             onClick={onRefresh} 
-                            className="group relative flex items-center justify-center w-12 h-12 bg-white/80 dark:bg-white/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl text-primary hover:text-white transition-all duration-500 overflow-hidden shadow-sm active:scale-90"
+                            className="group relative flex items-center justify-center w-12 h-12 bg-white dark:bg-white/10 border border-white/20 dark:border-white/10 rounded-2xl text-primary hover:text-white transition-all duration-500 overflow-hidden shadow-sm active:scale-90"
                         >
                             <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
                             <RotateCw size={18} className="relative z-10 group-hover:rotate-180 transition-transform duration-700" />
@@ -71,7 +71,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
 
                 {/* Stats Section */}
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-orange-500/10 dark:bg-orange-500/20 backdrop-blur-md rounded-[2rem] p-6 border border-orange-200/30 dark:border-orange-500/20 space-y-2">
+                    <div className="bg-orange-500/10 dark:bg-orange-500/20 rounded-[2rem] p-6 border border-orange-200/30 dark:border-orange-500/20 space-y-2">
                         <div className="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-lg shadow-orange-500/20">
                             <Database size={16} />
                         </div>
@@ -80,7 +80,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                             <p className="text-[10px] font-black text-orange-500/60 uppercase">文件总数</p>
                         </div>
                     </div>
-                    <div className="bg-primary/10 dark:bg-primary/20 backdrop-blur-md rounded-[2rem] p-6 border border-blue-200/30 dark:border-primary/20 space-y-2">
+                    <div className="bg-primary/10 dark:bg-primary/20 rounded-[2rem] p-6 border border-blue-200/30 dark:border-primary/20 space-y-2">
                         <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
                             <HardDrive size={16} />
                         </div>
@@ -92,7 +92,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                 </div>
 
                 {/* Connection Status Style */}
-                <div className="bg-white/50 dark:bg-white/5 backdrop-blur-md rounded-[2rem] p-6 border border-white/20 dark:border-white/5 flex items-center justify-between shadow-sm">
+                <div className="bg-white dark:bg-white/5 rounded-[2rem] p-6 border border-white/20 dark:border-white/5 flex items-center justify-between shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${status === 'online' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
                             <Activity size={20} className={status === 'online' ? 'animate-pulse' : ''} />

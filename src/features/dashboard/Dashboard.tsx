@@ -57,18 +57,11 @@ const FileCard = React.memo(({
     getFormattedLink
 }: FileCardProps) => {
     return (
-        <motion.div
-            layout
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.2 }}
-            className="group flex flex-col"
-        >
+        <div className="group flex flex-col animate-slide-up">
             {/* Card Body */}
-            <div className="w-full bg-white/90 dark:bg-white/[0.03] rounded-[2rem] p-5 shadow-[0_4px_20px_0_rgba(0,0,0,0.03)] border border-white/20 dark:border-white/5 flex flex-col gap-5 group-hover:shadow-2xl group-hover:-translate-y-2 transition-all duration-500 relative">
+            <div className="w-full bg-white dark:bg-zinc-900 rounded-[2rem] p-5 shadow-[0_4px_20px_0_rgba(0,0,0,0.03)] border border-white/20 dark:border-white/5 flex flex-col gap-5 group-hover:shadow-2xl group-hover:-translate-y-2 transition-all duration-500 relative">
                 {/* Thumbnail Container */}
-                <div className="w-full aspect-video rounded-2xl bg-white/50 dark:bg-zinc-800/50 flex items-center justify-center relative overflow-hidden ring-1 ring-black/5 shadow-inner">
+                <div className="w-full aspect-video rounded-2xl bg-gray-100 dark:bg-zinc-800 flex items-center justify-center relative overflow-hidden ring-1 ring-black/5 shadow-inner">
                     {isImage(file.name) ? (
                         <img src={currentUrl} alt={file.name} className="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-700" onClick={() => onPreview(file)} loading="lazy" decoding="async" />
                     ) : (
@@ -78,7 +71,7 @@ const FileCard = React.memo(({
                     {/* Overlays */}
                     <button
                         onClick={(e) => { e.stopPropagation(); onToggleSelect(file.key); }}
-                        className={`absolute top-4 left-4 w-8 h-8 rounded-xl flex items-center justify-center transition-all z-10 ${isSelected ? 'bg-primary text-white shadow-lg scale-110' : 'bg-black/20 backdrop-blur-md text-transparent opacity-0 group-hover:opacity-100 border border-white/20'}`}
+                        className={`absolute top-4 left-4 w-8 h-8 rounded-xl flex items-center justify-center transition-all z-10 ${isSelected ? 'bg-primary text-white shadow-lg scale-110' : 'bg-black/40 text-transparent opacity-0 group-hover:opacity-100 border border-white/20'}`}
                     >
                         <Check size={16} />
                     </button>
@@ -150,7 +143,7 @@ const FileCard = React.memo(({
                     })}
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 });
 
@@ -177,21 +170,14 @@ const FileRow = React.memo(({
 }: FileRowProps) => {
     const dirPath = file.key.split('/').slice(0, -1).join('/');
     return (
-        <motion.div
-            layout
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.2 }}
-            className="group relative bg-white/90 dark:bg-white/[0.03] border border-white/20 dark:border-white/5 rounded-[2rem] p-5 hover:bg-white dark:hover:bg-white/[0.05] hover:shadow-xl hover:-translate-y-1 transition-all duration-500"
-        >
+        <div className="group relative bg-white dark:bg-zinc-900 border border-white/20 dark:border-white/5 rounded-[2rem] p-5 hover:bg-white dark:hover:bg-zinc-800 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 animate-slide-up">
             <div className="flex items-start justify-between">
                 <div className="flex items-start gap-4 flex-1">
                     <div className="mt-1 flex-shrink-0">
-                        <button onClick={() => onToggleSelect(file.key)} className={`w-6 h-6 rounded-xl flex items-center justify-center transition-all duration-300 ${isSelected ? 'bg-primary text-white border-none shadow-md' : 'bg-white/50 dark:bg-white/5 border-2 border-gray-100 dark:border-white/10 text-transparent group-hover:border-primary/50'}`}><Check size={14} /></button>
+                        <button onClick={() => onToggleSelect(file.key)} className={`w-6 h-6 rounded-xl flex items-center justify-center transition-all duration-300 ${isSelected ? 'bg-primary text-white border-none shadow-md' : 'bg-gray-100 dark:bg-white/5 border-2 border-gray-100 dark:border-white/10 text-transparent group-hover:border-primary/50'}`}><Check size={14} /></button>
                     </div>
                     <div className="flex items-center gap-5 flex-1">
-                        <div className="w-20 h-20 rounded-2xl bg-white/50 dark:bg-white/5 flex items-center justify-center overflow-hidden cursor-pointer hover:ring-4 hover:ring-primary/20 transition-all shadow-inner border border-white/20" onClick={() => onPreview(file)}>{isImage(file.name) ? (<img src={publicUrl} alt={file.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />) : (<FileIcon size={32} className="text-amber-500" />)}</div>
+                        <div className="w-20 h-20 rounded-2xl bg-gray-100 dark:bg-white/5 flex items-center justify-center overflow-hidden cursor-pointer hover:ring-4 hover:ring-primary/20 transition-all shadow-inner border border-white/20" onClick={() => onPreview(file)}>{isImage(file.name) ? (<img src={publicUrl} alt={file.name} className="w-full h-full object-cover" loading="lazy" decoding="async" />) : (<FileIcon size={32} className="text-amber-500" />)}</div>
                         <div className="flex flex-col gap-1.5 flex-1">
                             <h4 className="text-[15px] font-black text-gray-900 dark:text-white truncate max-w-[400px]" title={file.key}>{file.key}</h4>
                             <div className="flex items-center gap-4">
@@ -211,7 +197,7 @@ const FileRow = React.memo(({
                     <button onClick={() => onDelete(file.key)} className="w-10 h-10 flex items-center justify-center rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all"><Trash2 size={18} /></button>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 });
 
@@ -320,7 +306,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 )}
             </AnimatePresence>
 
-            <div className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-ios rounded-[2.5rem] p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] border border-white/20 dark:border-white/5">
+            <div className="bg-white/90 dark:bg-zinc-900/90 rounded-[2.5rem] p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] border border-white/20 dark:border-white/5">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                     <div className="flex items-center gap-5">
                         <div className="w-14 h-14 rounded-[1.5rem] bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-lg shadow-primary/20">
@@ -412,57 +398,41 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
 
                 <div className="space-y-6">
-                    <AnimatePresence mode="popLayout">
-                        {viewMode === 'list' ? (
-                            <motion.div 
-                                key="list-view"
-                                layout
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                className="space-y-4"
-                            >
-                                {sortedFiles.map(file => (
-                                    <FileRow
-                                        key={file.key}
-                                        file={file}
-                                        isSelected={selectedKeys.includes(file.key)}
-                                        onToggleSelect={toggleSelect}
-                                        onDelete={onDelete}
-                                        onPreview={setPreviewFile}
-                                        onDownload={onDownload}
-                                        onCopy={handleCopy}
-                                        publicUrl={publicUrlGetter(file.key)}
-                                    />
-                                ))}
-                            </motion.div>
-                        ) : (
-                            <motion.div 
-                                key="grid-view"
-                                layout
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10"
-                            >
-                                {sortedFiles.map(file => (
-                                    <FileCard
-                                        key={file.key}
-                                        file={file}
-                                        activeFormat={globalFormat}
-                                        currentUrl={publicUrlGetter(file.key)}
-                                        isSelected={selectedKeys.includes(file.key)}
-                                        onToggleSelect={toggleSelect}
-                                        onDelete={onDelete}
-                                        onPreview={setPreviewFile}
-                                        onCopy={handleCopy}
-                                        onFormatChange={setGlobalFormat}
-                                        getFormattedLink={getFormattedLink}
-                                    />
-                                ))}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    {viewMode === 'list' ? (
+                        <div className="space-y-4">
+                            {sortedFiles.map(file => (
+                                <FileRow
+                                    key={file.key}
+                                    file={file}
+                                    isSelected={selectedKeys.includes(file.key)}
+                                    onToggleSelect={toggleSelect}
+                                    onDelete={onDelete}
+                                    onPreview={setPreviewFile}
+                                    onDownload={onDownload}
+                                    onCopy={handleCopy}
+                                    publicUrl={publicUrlGetter(file.key)}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
+                            {sortedFiles.map(file => (
+                                <FileCard
+                                    key={file.key}
+                                    file={file}
+                                    activeFormat={globalFormat}
+                                    currentUrl={publicUrlGetter(file.key)}
+                                    isSelected={selectedKeys.includes(file.key)}
+                                    onToggleSelect={toggleSelect}
+                                    onDelete={onDelete}
+                                    onPreview={setPreviewFile}
+                                    onCopy={handleCopy}
+                                    onFormatChange={setGlobalFormat}
+                                    getFormattedLink={getFormattedLink}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
 
