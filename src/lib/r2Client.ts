@@ -105,23 +105,19 @@ export class R2Manager {
     return `https://${this.config.bucketName}.${this.config.accountId}.r2.cloudflarestorage.com/${key}`;
   }
   // KV Sync methods (Serverless)
-  async syncFromKV(authToken: string = "") {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
-
-    // Use relative path which works both in dev (with proxy) and prod
-    const response = await fetch('/api/configs', { headers });
+  async syncFromKV() {
+    const response = await fetch('/api/configs', {
+      credentials: 'include',
+    });
     if (!response.ok) throw new Error('Failed to fetch from KV');
     return await response.json();
   }
 
-  async syncToKV(configs: R2Config[], authToken: string = "") {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
-
+  async syncToKV(configs: R2Config[]) {
     const response = await fetch('/api/configs', {
       method: 'POST',
-      headers,
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(configs)
     });
 

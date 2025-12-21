@@ -10,17 +10,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
     const handleGithubLogin = () => {
         setIsLoading(true);
-        // Simulate GitHub OAuth Flow
-        setTimeout(() => {
-            const mockUser = {
-                name: 'yanleichang',
-                avatar: 'https://github.com/identicons/yanleichang.png',
-                email: 'yanleichang@example.com'
-            };
-            localStorage.setItem('r2_user', JSON.stringify(mockUser));
-            onLogin(mockUser);
-            setIsLoading(false);
-        }, 1500);
+        // 重定向到后端 OAuth 登录端点
+        window.location.href = '/api/auth/login';
     };
 
     return (

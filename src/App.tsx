@@ -28,13 +28,35 @@ function App() {
   const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
-    // Check local auth session
-    const savedUser = localStorage.getItem('r2_user');
-    if (savedUser) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
+    // Check auth session via API
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/session', {
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.authenticated) {
+            setIsAuthenticated(true);
+            // 保存用户信息到 localStorage 用于显示
+            localStorage.setItem('r2_user', JSON.stringify(data.user));
+          } else {
+            setIsAuthenticated(false);
+            localStorage.removeItem('r2_user');
+          }
+        } else {
+          setIsAuthenticated(false);
+          localStorage.removeItem('r2_user');
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        setIsAuthenticated(false);
+        localStorage.removeItem('r2_user');
+      }
+    };
+
+    checkAuth();
 
     const initConfigs = async () => {
       // Try to load from KV first
@@ -133,9 +155,17 @@ function App() {
     navigator.clipboard.writeText(url);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('r2_user');
-    setIsAuthenticated(false);
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      localStorage.removeItem('r2_user');
+      setIsAuthenticated(false);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   const handleStartConfig = () => {
