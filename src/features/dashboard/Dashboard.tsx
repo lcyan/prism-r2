@@ -112,23 +112,26 @@ const FileCard = React.memo(({
                 </div>
 
                 {/* Actions Row - Multi-Color Jelly Style */}
-                <div className="relative flex items-center justify-between w-full p-1 bg-gray-100/50 dark:bg-white/5 rounded-2xl border border-gray-200/30 dark:border-white/5">
+                <div className="relative flex items-center justify-between w-full p-1 bg-gray-100/50 dark:bg-white/5 rounded-2xl border border-gray-200/30 dark:border-white/5 overflow-hidden">
+                    {/* Animated Background Pill */}
+                    <motion.div
+                        className={`absolute top-1 bottom-1 left-1 w-[calc(25%-2px)] bg-gradient-to-br ${ACTIVE_COLORS[activeFormat]} rounded-xl border -z-0`}
+                        initial={false}
+                        animate={{
+                            x: (['url', 'html', 'markdown', 'bbcode'].indexOf(activeFormat)) * 100 + '%',
+                        }}
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+
                     {(['url', 'html', 'markdown', 'bbcode'] as const).map((fmt) => {
                         return (
                             <button
                                 key={fmt}
                                 onClick={() => onFormatChange(fmt)}
-                                className={`relative flex-1 flex items-center justify-center py-2.5 text-[10px] font-black transition-all duration-300 z-10 ${activeFormat === fmt ? 'text-white scale-105' : 'text-gray-400 hover:text-gray-600'
+                                className={`relative flex-1 flex items-center justify-center py-2.5 text-[10px] font-black transition-colors duration-300 z-10 ${activeFormat === fmt ? 'text-white' : 'text-gray-400 hover:text-gray-600'
                                     }`}
                                 title={fmt.toUpperCase()}
                             >
-                                {activeFormat === fmt && (
-                                    <motion.div
-                                        layoutId={`pill-${file.key}`}
-                                        className={`absolute inset-0 bg-gradient-to-br ${ACTIVE_COLORS[fmt]} rounded-xl border -z-10`}
-                                        transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                                    />
-                                )}
                                 <span className="relative z-10 flex items-center justify-center filter drop-shadow-[0_1px_2px_rgba(0,0,0,0.1)]">
                                     {fmt === 'url' && (
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="14" height="14" className="fill-current"><path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6c-31.5-31.5-31.5-82.5 0-114L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z" /></svg>
