@@ -27,14 +27,6 @@ export const Layout: React.FC<LayoutProps> = ({
                         className="flex items-center gap-4 cursor-pointer group/logo"
                         onClick={() => onTabChange('files')}
                     >
-                        <div className="relative group">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                            <img 
-                                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Prism&backgroundColor=b6e3f4" 
-                                className="relative w-10 h-10 rounded-full border-2 border-white dark:border-zinc-800 shadow-sm" 
-                                alt="avatar" 
-                            />
-                        </div>
                         <div className="flex items-center gap-3">
                             <div className="bg-primary rounded-xl p-2 shadow-sm group-hover/logo:scale-110 transition-transform">
                                 <Box size={20} color="white" />

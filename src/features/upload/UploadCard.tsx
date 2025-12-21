@@ -91,7 +91,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                 setTasks(prev => prev.map(t => t.file === task.file ? { ...t, processedName: fileToUpload.name } : t));
             }
 
-            await onUpload(fileToUpload, subPath, (progress, speed) => {
+            await onUpload(fileToUpload, subPath || 'drafts', (progress, speed) => {
                 setTasks(prev => prev.map(t => t.file === task.file ? { ...t, progress, speed } : t));
             });
 
@@ -123,7 +123,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                 <div className="relative group">
                     <input
                         className="w-full bg-white dark:bg-zinc-800 border-2 border-gray-100 dark:border-white/5 rounded-2xl py-3 px-4 text-xs font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-gray-300"
-                        placeholder="留空则直接上传到根目录"
+                        placeholder="留空则默认上传到 drafts 目录"
                         value={subPath}
                         onChange={e => setSubPath(e.target.value)}
                     />

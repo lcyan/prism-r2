@@ -1,5 +1,5 @@
 import React from 'react';
-import { Database, HardDrive } from 'lucide-react';
+import { Database, HardDrive, RotateCw, Activity } from 'lucide-react';
 
 interface BucketOverviewProps {
     bucketName: string;
@@ -22,9 +22,11 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
         if (bytes === 0) return '0 B';
         const k = 1024;
         const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        const i = Math.floor(Log(bytes) / Log(k));
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
+
+    const Log = Math.log;
 
     return (
         <div className="bg-white dark:bg-zinc-900 rounded-[2rem] p-8 shadow-sm border border-black/5 dark:border-white/5 space-y-6">
@@ -32,7 +34,9 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                 <h3 className="text-xl font-black text-gray-800 dark:text-gray-100 flex items-center gap-3">
                     当前 R2对象存储配置
                 </h3>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/9/94/Cloudflare_Logo.png" alt="Cloudflare" className="h-6 object-contain opacity-80" />
+                <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/94/Cloudflare_Logo.png" alt="Cloudflare" className="h-4 object-contain opacity-80" />
+                </div>
             </div>
 
             <div className="space-y-4">
@@ -40,10 +44,14 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                 <div className="space-y-2">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">存储桶名称:</label>
                     <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-gray-50 border border-gray-100 rounded-xl px-4 py-2.5 text-xs font-bold text-gray-600">
+                        <div className="flex-1 bg-gray-50 dark:bg-zinc-800 border border-gray-100 dark:border-white/5 rounded-xl px-4 py-2.5 text-xs font-bold text-gray-600 dark:text-gray-300">
                             {bucketName}
                         </div>
-                        <button onClick={onRefresh} className="p-2.5 rounded-xl border border-blue-200 bg-white text-blue-500 hover:bg-blue-50 transition-all font-black text-[11px] px-4">
+                        <button 
+                            onClick={onRefresh} 
+                            className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 rounded-xl text-[11px] font-black text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 hover:border-primary/30 hover:text-primary transition-all shadow-sm"
+                        >
+                            <RotateCw size={14} />
                             刷新
                         </button>
                     </div>
@@ -60,7 +68,13 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                     <div className="relative z-10 flex flex-col gap-4">
                         <div className="flex items-center justify-between">
                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">存储容量:</label>
-                            <button onClick={onRefresh} className="text-[10px] font-black text-blue-500 border-b border-blue-500/30 hover:border-blue-500">刷新统计</button>
+                            <button 
+                                onClick={onRefresh} 
+                                className="flex items-center gap-1.5 px-3 py-1.5 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm border border-blue-200/50 dark:border-blue-500/20 rounded-lg text-[10px] font-black text-blue-600 dark:text-blue-400 hover:bg-white dark:hover:bg-zinc-800 transition-all shadow-sm"
+                            >
+                                <RotateCw size={12} />
+                                刷新统计
+                            </button>
                         </div>
                         <div className="flex items-center gap-6">
                             <div className="flex items-center gap-2 text-orange-500">
@@ -86,7 +100,13 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                             </span>
                         </div>
                     </div>
-                    <button className="text-[11px] font-black text-gray-400 hover:text-primary transition-all uppercase tracking-widest">重新检测</button>
+                    <button 
+                        onClick={onRefresh}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 rounded-xl text-[10px] font-black text-gray-500 hover:text-primary hover:border-primary/30 transition-all uppercase tracking-widest shadow-sm"
+                    >
+                        <Activity size={12} />
+                        重新检测
+                    </button>
                 </div>
             </div>
         </div>
