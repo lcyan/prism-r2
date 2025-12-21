@@ -58,7 +58,21 @@ export class R2Manager {
   async uploadFile(file: File, path: string, onProgress?: (progress: number, speed: number) => void) {
     if (!this.client || !this.config) throw new Error("R2 not initialized");
 
-    const fullPath = path ? `${path}/${file.name}` : file.name;
+    // 生成年月日时分秒毫秒格式的文件名
+    const now = new Date();
+    const timestamp = now.getFullYear().toString() +
+      (now.getMonth() + 1).toString().padStart(2, '0') +
+      now.getDate().toString().padStart(2, '0') +
+      now.getHours().toString().padStart(2, '0') +
+      now.getMinutes().toString().padStart(2, '0') +
+      now.getSeconds().toString().padStart(2, '0') +
+      now.getMilliseconds().toString().padStart(3, '0');
+    
+    const extension = file.name.includes('.') ? `.${file.name.split('.').pop()}` : '';
+    const newFileName = `${timestamp}${extension}`;
+
+    const normalizedPath = path.replace(/\/$/, "");
+    const fullPath = normalizedPath ? `${normalizedPath}/${newFileName}` : newFileName;
     const startTime = Date.now();
 
     const parallelUploads3 = new Upload({
