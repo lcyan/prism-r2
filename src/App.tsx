@@ -37,8 +37,10 @@ function App() {
   const [activeTab, setActiveTab] = useState<'files' | 'config'>(activeConfigId ? 'files' : 'config');
   const [files, setFiles] = useState<R2File[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [continuationToken, setContinuationToken] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (isAuthenticated && configs.length === 0) {
@@ -142,26 +144,35 @@ function App() {
     }
   }, [activeConfigId, configs.length, isAuthenticated]);
 
-  const loadFiles = async () => {
+  const loadFiles = async (isLoadMore: boolean = false) => {
     if (!activeConfigId || !isAuthenticated) return;
-    setLoading(true);
+    
+    if (isLoadMore) {
+      setIsLoadingMore(true);
+    } else {
+      setLoading(true);
+      setContinuationToken(undefined);
+    }
+    
     setError(null);
     try {
-      const response = await r2Manager.listFiles("", true);
-      const mappedFiles: R2File[] = [
-        ...(response.Contents || [])
-          .map(c => ({
-            name: c.Key?.split('/').pop() || '',
-            key: c.Key || '',
-            size: c.Size || 0,
-            lastModified: c.LastModified,
-            type: 'file' as const
-          }))
-      ];
-      setFiles(mappedFiles);
+      const response = await r2Manager.listFiles("", true, 1000, isLoadMore ? continuationToken : undefined);
+      const mappedFiles: R2File[] = (response.Contents || [])
+        .map(c => ({
+          name: c.Key?.split('/').pop() || '',
+          key: c.Key || '',
+          size: c.Size || 0,
+          lastModified: c.LastModified,
+          type: 'file' as const
+        }));
+      
+      const newFiles = isLoadMore ? [...files, ...mappedFiles] : mappedFiles;
+      setFiles(newFiles);
+      setContinuationToken(response.NextContinuationToken);
+
       // Update cache
       try {
-        localStorage.setItem(`r2_files_${activeConfigId}`, JSON.stringify(mappedFiles));
+        localStorage.setItem(`r2_files_${activeConfigId}`, JSON.stringify(newFiles));
       } catch (e) {
         console.warn("Failed to save files to cache", e);
       }
@@ -170,6 +181,7 @@ function App() {
       setError(e.message || '获取文件列表失败，请检查 R2 配置或 CORS 设置');
     } finally {
       setLoading(false);
+      setIsLoadingMore(false);
     }
   };
 
@@ -310,12 +322,15 @@ function App() {
                 <Dashboard
                   files={files}
                   directories={directories}
-                  onRefresh={loadFiles}
+                  onRefresh={() => loadFiles(false)}
                   onDelete={handleDelete}
                   onDownload={handleDownload}
                   onCopyLink={handleCopyLink}
                   publicUrlGetter={publicUrlGetter}
                   onBulkDelete={handleBulkDelete}
+                  hasMore={!!continuationToken}
+                  onLoadMore={() => loadFiles(true)}
+                  isLoadingMore={isLoadingMore}
                 />
               ) : (
                 <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-ios rounded-[3rem] p-16 shadow-4xl border border-white/20 dark:border-white/5 flex flex-col items-center text-center gap-8 animate-slide-up">

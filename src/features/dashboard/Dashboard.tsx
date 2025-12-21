@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Search, Grid, List, Copy, Download, Trash2, Folder, File as FileIcon, Check, Eye, RotateCw, ImageIcon } from 'lucide-react';
+import { Search, Grid, List, Copy, Download, Trash2, Folder, File as FileIcon, Check, Eye, RotateCw, ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { R2File } from '../../types';
 import { formatSize } from '../../types';
 import { format } from 'date-fns';
@@ -15,6 +15,9 @@ interface DashboardProps {
     onCopyLink: (file: R2File) => void;
     publicUrlGetter: (key: string) => string;
     onBulkDelete: (keys: string[]) => void;
+    hasMore?: boolean;
+    onLoadMore?: () => void;
+    isLoadingMore?: boolean;
 }
 
 type CopyFormat = 'url' | 'html' | 'markdown' | 'bbcode';
@@ -209,7 +212,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
     onDownload,
     onCopyLink: _onCopyLink,
     publicUrlGetter,
-    onBulkDelete
+    onBulkDelete,
+    hasMore,
+    onLoadMore,
+    isLoadingMore
 }) => {
     const [activeDirectory, setActiveDirectory] = useState('ROOT');
     const [searchQuery, setSearchQuery] = useState('');
@@ -220,6 +226,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
     const [previewFile, setPreviewFile] = useState<R2File | null>(null);
     const [globalFormat, setGlobalFormat] = useState<CopyFormat>('url');
     const [showToast, setShowToast] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+
+    // 当目录或搜索变化时重置页码
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeDirectory, searchQuery]);
 
     // 当文件列表变化时，自动清除已不存在的选中项
     useEffect(() => {
@@ -273,6 +286,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
         });
     }, [filteredFiles, sortBy, sortOrder]);
 
+    const totalPages = Math.ceil(sortedFiles.length / itemsPerPage);
+    const paginatedFiles = useMemo(() => {
+        const start = (currentPage - 1) * itemsPerPage;
+        return sortedFiles.slice(start, start + itemsPerPage);
+    }, [sortedFiles, currentPage, itemsPerPage]);
+
     const toggleSelect = useCallback((key: string) => {
         setSelectedKeys(prev =>
             prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
@@ -280,10 +299,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
     }, []);
 
     const selectAll = () => {
-        if (selectedKeys.length === filteredFiles.length && filteredFiles.length > 0) {
+        if (selectedKeys.length === paginatedFiles.length && paginatedFiles.length > 0) {
             setSelectedKeys([]);
         } else {
-            setSelectedKeys(filteredFiles.map(f => f.key));
+            setSelectedKeys(paginatedFiles.map(f => f.key));
         }
     };
 
@@ -392,7 +411,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </button>
                         <div className="flex flex-col">
                             <span className="text-[11px] font-black text-gray-800 dark:text-white uppercase tracking-widest">选中全部项目</span>
-                            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">Total {filteredFiles.length} items in current view</span>
+                            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">Total {paginatedFiles.length} items in current page</span>
                         </div>
                     </div>
                 </div>
@@ -400,7 +419,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="space-y-6">
                     {viewMode === 'list' ? (
                         <div className="space-y-4">
-                            {sortedFiles.map(file => (
+                            {paginatedFiles.map(file => (
                                 <FileRow
                                     key={file.key}
                                     file={file}
@@ -416,7 +435,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10">
-                            {sortedFiles.map(file => (
+                            {paginatedFiles.map(file => (
                                 <FileCard
                                     key={file.key}
                                     file={file}
@@ -433,6 +452,65 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             ))}
                         </div>
                     )}
+                </div>
+
+                {/* Pagination UI */}
+                <div className="mt-12 flex flex-col items-center gap-6">
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                            disabled={currentPage === 1}
+                            className="w-12 h-12 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-90"
+                        >
+                            <ChevronLeft size={20} />
+                        </button>
+                        
+                        <div className="flex items-center gap-1.5 px-4">
+                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                let pageNum = currentPage;
+                                if (totalPages <= 5) {
+                                    pageNum = i + 1;
+                                } else {
+                                    if (currentPage <= 3) pageNum = i + 1;
+                                    else if (currentPage >= totalPages - 2) pageNum = totalPages - 4 + i;
+                                    else pageNum = currentPage - 2 + i;
+                                }
+                                
+                                return (
+                                    <button
+                                        key={pageNum}
+                                        onClick={() => setCurrentPage(pageNum)}
+                                        className={`w-12 h-12 rounded-2xl text-sm font-black transition-all ${currentPage === pageNum ? 'bg-primary text-white shadow-lg shadow-primary/25 scale-110' : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10'}`}
+                                    >
+                                        {pageNum}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                            disabled={currentPage === totalPages || totalPages === 0}
+                            className="w-12 h-12 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-90"
+                        >
+                            <ChevronRight size={20} />
+                        </button>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                            Page {currentPage} of {totalPages || 1} — Total {sortedFiles.length} Files
+                        </p>
+                        {hasMore && (
+                            <button
+                                onClick={onLoadMore}
+                                disabled={isLoadingMore}
+                                className="mt-2 px-6 py-2 bg-primary/10 text-primary rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all disabled:opacity-50"
+                            >
+                                {isLoadingMore ? '正在加载更多...' : '从 R2 加载更多数据'}
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
 

@@ -42,13 +42,15 @@ export class R2Manager {
     });
   }
 
-  async listFiles(prefix: string = "", recursive: boolean = true) {
+  async listFiles(prefix: string = "", recursive: boolean = true, maxKeys: number = 1000, continuationToken?: string) {
     if (!this.client || !this.config) throw new Error("R2 not initialized");
 
     const command = new ListObjectsV2Command({
       Bucket: this.config.bucketName,
       Prefix: prefix,
       Delimiter: recursive ? undefined : "/",
+      MaxKeys: maxKeys,
+      ContinuationToken: continuationToken,
     });
 
     const response = await this.client.send(command);
