@@ -10,7 +10,7 @@ Prism R2 是一个现代、美观且安全的 Cloudflare R2 对象存储管理�
 - **🚀 智能上传**: 支持拖拽上传，并提供 **WebP 自动转换** 选项，优化图片体积。
 - **📂 文件管理**: 支持网格/列表视图切换、搜索过滤、目录导航以及批量操作（删除）。
 - **🔗 快捷操作**: 一键复制 URL、Markdown、HTML 和 BBCode 格式链接。
-- **☁️ 云端配置同步**: 支持通过 Cloudflare KV 自动加载存储桶配置，实现免配置登录。
+- **☁️ 云端配置同步**: 支持通过环境变量自动加载多个存储桶配置，实现免配置登录。
 - **🔒 安全隐私**: 核心逻辑完全在浏览器端运行（客户端），不经由第三方服务器中转密钥。
 
 ## 🛠️ 本地开发
@@ -58,25 +58,15 @@ Prism R2 是一个现代、美观且安全的 Cloudflare R2 对象存储管理�
 ]
 ```
 
-### 第三步：(可选) 通过 KV 预加载配置
-您可以使用 Cloudflare KV 来存储您的存储桶凭证，这样当您打开仪表盘时，系统会自动加载这些配置（实现“无密钥”访问体验）。
+### 第三步：(可选) 通过环境变量预加载配置
+您可以使用 Cloudflare Pages 的环境变量来存储您的存储桶凭证，这样当您打开仪表盘时，系统会自动加载这些配置（实现“免配置”访问体验）。
 
-1. **创建 KV 命名空间**:
-   - 在 Cloudflare Dashboard 中，进入 **Workers & Pages** > **KV**。
-   - 创建一个名为 `PRISM_KV` 的命名空间。
-
-2. **绑定 TV 到 Pages**:
-   - 进入您的 Pages 项目 > **Settings** > **Functions**。
-   - 滚动到 **KV Namespace Bindings** > **Add Binding**。
-   - **Variable name (变量名)**: `PRISM_KV` (注意大小写)。
-   - **KV namespace**: 选择刚才创建的 `PRISM_KV`。
+1. **配置环境变量**:
+   - 进入您的 Pages 项目 > **Settings** > **Environment variables**。
+   - 点击 **Add variables**。
+   - **Variable name (变量名)**: `R2_CONFIGS`。
+   - **Value (值)**: 一个包含您存储桶配置的 JSON 数组字符串（参见下方格式）。
    - **重新部署** 您的项目以使设置生效。
-
-3. **添加配置数据**:
-   - 进入您刚才创建的 KV 命名空间。
-   - 添加一个新的键值对 (Key-Value pair):
-     - **Key**: `R2_CONFIGS`
-     - **Value**: 一个包含您存储桶配置的 JSON 数组（参见下方格式）。
 
 #### `R2_CONFIGS` JSON 格式示例
 ```json
@@ -94,7 +84,7 @@ Prism R2 是一个现代、美观且安全的 Cloudflare R2 对象存储管理�
 ]
 ```
 
-> ⚠️ **安全警告**: 如果您使用 KV 功能存储了 accessKeyId 和 secretAccessKey，任何拥有您网站访问权限的人都可以加载这些凭证。强烈建议使用 **Cloudflare Access (Zero Trust)** 来保护您的 Prism R2 仪表盘，确保只有授权用户（及团队成员）可以访问该站点。
+> ⚠️ **安全警告**: 如果您使用环境变量存储了 accessKeyId 和 secretAccessKey，任何拥有您网站访问权限的人都可以加载这些凭证。强烈建议使用 **GitHub OAuth 认证** (已内置) 或 **Cloudflare Access (Zero Trust)** 来保护您的 Prism R2 仪表盘，确保只有授权用户可以访问该站点。
 
 ## 📄 开源协议
 MIT

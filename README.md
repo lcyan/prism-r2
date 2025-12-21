@@ -8,7 +8,7 @@ Prism R2 is a modern, beautiful, and secure dashboard for managing your Cloudfla
 - **🚀 Smart Upload**: Drag & Drop support with **Automatic WebP Conversion** options.
 - **📂 File Management**: Grid/List views, search filtering, directory navigation, and bulk operations.
 - **🔗 Quick Actions**: One-click copy for URL, Markdown, HTML, and BBCode formats.
-- **☁️ Cloud Config**: Auto-load storage configurations using Cloudflare KV.
+- **☁️ Cloud Config**: Auto-load multiple storage configurations using environment variables.
 - **🔒 Secure**: Core logic runs entirely in your browser (Client-Side).
 
 ## 🛠️ Local Development
@@ -56,27 +56,17 @@ Go to **R2** > **Your Bucket** > **Settings** > **CORS Policy** and add:
 ]
 ```
 
-### Step 3: (Optional) Pre-load Configurations via KV
-You can use Cloudflare KV to store your bucket credentials, so the dashboard automatically loads them when opened (Keyless entry for users).
+### Step 3: (Optional) Pre-load Configurations via Environment Variables
+You can use Cloudflare Pages environment variables to store your bucket credentials, so the dashboard automatically loads them when opened (Keyless entry for users).
 
-1. **Create KV Namespace**:
-   - In Cloudflare Dashboard, go to **Workers & Pages** > **KV**.
-   - Create a namespace named `PRISM_KV`.
+1. **Configure Environment Variables**:
+   - Go to your Pages project > **Settings** > **Environment variables**.
+   - Click **Add variables**.
+   - **Variable name**: `R2_CONFIGS`.
+   - **Value**: A JSON array string containing your bucket configurations (see format below).
+   - **Redeploy** your project for the settings to take effect.
 
-2. **Bind KV to Pages**:
-   - Go to your Pages Project > **Settings** > **Functions**.
-   - Scroll to **KV Namespace Bindings** > **Add Binding**.
-   - **Variable name**: `PRISM_KV` (Case sensitive).
-   - **KV namespace**: Select `PRISM_KV`.
-   - **Re-deploy** your project for settings to take effect.
-
-3. **Add Configuration Data**:
-   - Go to the KV Namespace you created.
-   - Add a new Key-Value pair:
-     - **Key**: `R2_CONFIGS`
-     - **Value**: A JSON Array of your bucket configs (see format below).
-
-#### `R2_CONFIGS` JSON Format
+#### `R2_CONFIGS` JSON Format Example
 ```json
 [
   {
@@ -92,7 +82,7 @@ You can use Cloudflare KV to store your bucket credentials, so the dashboard aut
 ]
 ```
 
-> ⚠️ **Security Warning**: If you use the KV feature, anyone accessing your site can load these credentials. It is highly recommended to protect your Prism R2 Dashboard using **Cloudflare Access (Zero Trust)** to ensure only authorized users can visit the site.
+> ⚠️ **Security Warning**: If you use environment variables to store credentials, anyone with access to your site can load them. It is highly recommended to use **GitHub OAuth** (built-in) or **Cloudflare Access (Zero Trust)** to protect your Prism R2 dashboard.
 
 ## 📄 License
 MIT

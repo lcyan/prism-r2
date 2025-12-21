@@ -50,27 +50,27 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
         event.target.value = '';
     };
 
-    const handleKVSync = async () => {
-        if (!window.confirm('这将会把当前所有配置保存到 Cloudflare KV 中。确定吗？')) return;
+    const handleCloudSync = async () => {
+        if (!window.confirm('这将会尝试将当前配置同步到云端。注意：如果已配置环境变量，云端同步可能是只读的。确定吗？')) return;
 
         try {
-            await r2Manager.syncToKV(configs);
-            alert('配置已成功同步到 KV！');
+            await r2Manager.syncToCloud(configs);
+            alert('配置已成功同步！');
         } catch (e: any) {
             alert('同步失败: ' + e.message);
         }
     };
 
-    const handleKVRestore = async () => {
+    const handleCloudRestore = async () => {
         try {
-            const imported = await r2Manager.syncFromKV();
+            const imported = await r2Manager.syncFromCloud();
             if (Array.isArray(imported)) {
-                if (window.confirm(`发现 KV 备份，包含 ${imported.length} 个配置。确定要恢复并覆盖当前本地配置吗？`)) {
+                if (window.confirm(`发现云端配置，包含 ${imported.length} 个项目。确定要恢复并覆盖当前本地配置吗？`)) {
                     onImport(imported);
                     alert('配置恢复成功！');
                 }
             } else {
-                alert('KV 中没有有效的配置列表。');
+                alert('云端没有有效的配置列表。');
             }
         } catch (e: any) {
             alert('恢复失败: ' + e.message);
@@ -108,15 +108,15 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                     <div className="flex items-center gap-3">
                         <div className="flex bg-gray-100 dark:bg-zinc-800 rounded-lg p-0.5 mr-2">
                             <button
-                                onClick={handleKVSync}
-                                title="同步配置到 Cloudflare KV"
+                                onClick={handleCloudSync}
+                                title="同步配置到云端"
                                 className="p-1.5 hover:bg-white dark:hover:bg-zinc-700 rounded-md text-gray-400 hover:text-blue-500 transition-all shadow-sm"
                             >
                                 <Cloud size={16} />
                             </button>
                             <button
-                                onClick={handleKVRestore}
-                                title="从 Cloudflare KV 恢复配置"
+                                onClick={handleCloudRestore}
+                                title="从云端恢复配置"
                                 className="p-1.5 hover:bg-white dark:hover:bg-zinc-700 rounded-md text-gray-400 hover:text-blue-500 transition-all shadow-sm"
                             >
                                 <CloudRain size={16} />

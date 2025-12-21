@@ -104,16 +104,16 @@ export class R2Manager {
     // Fallback or Dev URL logic can be added here
     return `https://${this.config.bucketName}.${this.config.accountId}.r2.cloudflarestorage.com/${key}`;
   }
-  // KV Sync methods (Serverless)
-  async syncFromKV() {
+  // Cloud Sync methods (Environment Variables)
+  async syncFromCloud() {
     const response = await fetch('/api/configs', {
       credentials: 'include',
     });
-    if (!response.ok) throw new Error('Failed to fetch from KV');
+    if (!response.ok) throw new Error('Failed to fetch from Cloud');
     return await response.json();
   }
 
-  async syncToKV(configs: R2Config[]) {
+  async syncToCloud(configs: R2Config[]) {
     const response = await fetch('/api/configs', {
       method: 'POST',
       credentials: 'include',
@@ -121,7 +121,10 @@ export class R2Manager {
       body: JSON.stringify(configs)
     });
 
-    if (!response.ok) throw new Error('Failed to save to KV');
+    if (!response.ok) {
+      const error = await response.json() as any;
+      throw new Error(error.error || 'Failed to save to Cloud');
+    }
     return await response.json();
   }
 }

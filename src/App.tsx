@@ -75,15 +75,15 @@ function App() {
     checkAuth();
 
     const initConfigs = async () => {
-      // Try to load from KV first
+      // Try to load from Cloud (Environment Variables) first
       try {
-        const kvConfigs = await r2Manager.syncFromKV();
-        if (Array.isArray(kvConfigs) && kvConfigs.length > 0) {
-          importConfigs(kvConfigs);
+        const cloudConfigs = await r2Manager.syncFromCloud();
+        if (Array.isArray(cloudConfigs) && cloudConfigs.length > 0) {
+          importConfigs(cloudConfigs);
           return;
         }
       } catch (e) {
-        console.warn("Failed to sync from KV on init", e);
+        console.warn("Failed to sync from Cloud on init", e);
       }
 
       // If KV failed or empty, check if we need to show guide based on local state
