@@ -39,6 +39,19 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(false);
 
+  useEffect(() => {
+    if (isAuthenticated && configs.length === 0) {
+      try {
+        const skipGuide = localStorage.getItem('r2_skip_guide');
+        if (!skipGuide) {
+          setShowWelcome(true);
+        }
+      } catch (e) {
+        console.warn('Failed to check skip guide status:', e);
+      }
+    }
+  }, [isAuthenticated, configs.length]);
+
   const directories = useMemo(() => {
     const dirs = new Set<string>();
     files.forEach(file => {
@@ -292,16 +305,37 @@ function App() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start animate-slide-up">
             <div className="lg:col-span-3">
-              <Dashboard
-                files={files}
-                directories={directories}
-                onRefresh={loadFiles}
-                onDelete={handleDelete}
-                onDownload={handleDownload}
-                onCopyLink={handleCopyLink}
-                publicUrlGetter={publicUrlGetter}
-                onBulkDelete={handleBulkDelete}
-              />
+              {activeConfigId ? (
+                <Dashboard
+                  files={files}
+                  directories={directories}
+                  onRefresh={loadFiles}
+                  onDelete={handleDelete}
+                  onDownload={handleDownload}
+                  onCopyLink={handleCopyLink}
+                  publicUrlGetter={publicUrlGetter}
+                  onBulkDelete={handleBulkDelete}
+                />
+              ) : (
+                <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-ios rounded-[3rem] p-16 shadow-4xl border border-white/20 dark:border-white/5 flex flex-col items-center text-center gap-8 animate-slide-up">
+                  <div className="w-24 h-24 bg-primary/10 rounded-[2.5rem] flex items-center justify-center text-primary relative">
+                    <div className="absolute inset-0 bg-primary/20 rounded-[2.5rem] animate-ping" />
+                    <Box size={48} className="relative z-10" />
+                  </div>
+                  <div className="space-y-4">
+                    <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">欢迎使用 R2 对象存储增强管理</h2>
+                    <p className="text-lg text-gray-500 dark:text-gray-400 font-bold max-w-md mx-auto leading-relaxed">
+                      您尚未配置 R2 存储桶信息，请点击上方的存储图标完成配置，开始使用强大的对象存储功能！
+                    </p>
+                  </div>
+                  <button 
+                    onClick={() => setActiveTab('config')}
+                    className="bg-primary text-white px-12 py-5 rounded-2xl font-black text-xl shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+                  >
+                    立即配置
+                  </button>
+                </div>
+              )}
             </div>
             <div className="space-y-8 h-full sticky top-24">
               <UploadCard

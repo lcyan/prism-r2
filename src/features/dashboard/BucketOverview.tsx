@@ -92,24 +92,34 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                 </div>
 
                 {/* Connection Status Style */}
-                <div className="bg-white dark:bg-white/5 rounded-[2rem] p-6 border border-white/20 dark:border-white/5 flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${status === 'online' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
-                            <Activity size={20} className={status === 'online' ? 'animate-pulse' : ''} />
+                <div className="bg-white dark:bg-white/5 rounded-[2rem] p-6 border border-white/20 dark:border-white/5 flex flex-col gap-4 shadow-sm">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${status === 'online' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+                                <Activity size={20} className={status === 'online' ? 'animate-pulse' : ''} />
+                            </div>
+                            <div className="space-y-0.5">
+                                <p className="text-sm font-black text-gray-800 dark:text-white">
+                                    {status === 'online' ? '连接正常' : status === 'offline' ? '连接断开' : '正在检测...'}
+                                </p>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">System Status</p>
+                            </div>
                         </div>
-                        <div className="space-y-0.5">
-                            <p className="text-sm font-black text-gray-800 dark:text-white">
-                                {status === 'online' ? '连接正常' : status === 'offline' ? '连接断开' : '正在检测...'}
-                            </p>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">System Status</p>
-                        </div>
+                        <button 
+                            onClick={onRefresh}
+                            className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-white dark:hover:bg-white/20 transition-all active:scale-90 shadow-sm"
+                        >
+                            <RotateCw size={16} />
+                        </button>
                     </div>
-                    <button 
-                        onClick={onRefresh}
-                        className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-white dark:hover:bg-white/20 transition-all active:scale-90 shadow-sm"
-                    >
-                        <RotateCw size={16} />
-                    </button>
+
+                    {bucketName === '未选择' && (
+                        <div className="p-4 bg-red-50 dark:bg-red-500/10 rounded-2xl border border-red-100 dark:border-red-500/20">
+                            <p className="text-[11px] font-black text-red-500 leading-relaxed">
+                                尚未配置 R2 信息，请点击上方 “R2 存储桶配置” 按钮完成配置
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
