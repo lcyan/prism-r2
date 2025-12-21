@@ -40,19 +40,35 @@ function App() {
           if (data.authenticated) {
             setIsAuthenticated(true);
             // 保存用户信息到 localStorage 用于显示
-            localStorage.setItem('r2_user', JSON.stringify(data.user));
+            try {
+              localStorage.setItem('r2_user', JSON.stringify(data.user));
+            } catch (storageError) {
+              console.warn('Failed to save user to localStorage:', storageError);
+            }
           } else {
             setIsAuthenticated(false);
-            localStorage.removeItem('r2_user');
+            try {
+              localStorage.removeItem('r2_user');
+            } catch (storageError) {
+              console.warn('Failed to remove user from localStorage:', storageError);
+            }
           }
         } else {
           setIsAuthenticated(false);
-          localStorage.removeItem('r2_user');
+          try {
+            localStorage.removeItem('r2_user');
+          } catch (storageError) {
+            console.warn('Failed to remove user from localStorage:', storageError);
+          }
         }
       } catch (error) {
         console.error('Auth check failed:', error);
         setIsAuthenticated(false);
-        localStorage.removeItem('r2_user');
+        try {
+          localStorage.removeItem('r2_user');
+        } catch (storageError) {
+          console.warn('Failed to remove user from localStorage:', storageError);
+        }
       }
     };
 
@@ -75,9 +91,13 @@ function App() {
       // But we can't easily check 'configs.length' here immediately if it updates async
       // For now, let's just rely on the existing logic or the KV sync.
 
-      const skipGuide = localStorage.getItem('r2_skip_guide');
-      if (!skipGuide && configs.length === 0) {
-        setShowWelcome(true);
+      try {
+        const skipGuide = localStorage.getItem('r2_skip_guide');
+        if (!skipGuide && configs.length === 0) {
+          setShowWelcome(true);
+        }
+      } catch (storageError) {
+        console.warn('Failed to check skip guide from localStorage:', storageError);
       }
     };
 
@@ -161,7 +181,11 @@ function App() {
         method: 'POST',
         credentials: 'include',
       });
-      localStorage.removeItem('r2_user');
+      try {
+        localStorage.removeItem('r2_user');
+      } catch (storageError) {
+        console.warn('Failed to remove user from localStorage:', storageError);
+      }
       setIsAuthenticated(false);
     } catch (error) {
       console.error('Logout failed:', error);
@@ -170,7 +194,11 @@ function App() {
 
   const handleStartConfig = () => {
     setShowWelcome(false);
-    localStorage.setItem('r2_skip_guide', 'true');
+    try {
+      localStorage.setItem('r2_skip_guide', 'true');
+    } catch (storageError) {
+      console.warn('Failed to save skip guide to localStorage:', storageError);
+    }
     setActiveTab('config');
   };
 

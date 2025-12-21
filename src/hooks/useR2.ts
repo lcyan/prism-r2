@@ -10,30 +10,42 @@ export const useR2 = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const saved = localStorage.getItem('r2_configs');
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                setConfigs(parsed);
-                const lastActive = localStorage.getItem('r2_active_id');
-                if (lastActive && parsed.some((c: R2Config) => c.id === lastActive)) {
-                    setActiveConfigId(lastActive);
-                    const active = parsed.find((c: R2Config) => c.id === lastActive);
-                    r2Manager.init(active);
+        try {
+            const saved = localStorage.getItem('r2_configs');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    setConfigs(parsed);
+                    const lastActive = localStorage.getItem('r2_active_id');
+                    if (lastActive && parsed.some((c: R2Config) => c.id === lastActive)) {
+                        setActiveConfigId(lastActive);
+                        const active = parsed.find((c: R2Config) => c.id === lastActive);
+                        r2Manager.init(active);
+                    }
+                } catch (e) {
+                    console.error("Failed to parse saved configs", e);
                 }
-            } catch (e) {
-                console.error("Failed to parse saved configs", e);
             }
+        } catch (storageError) {
+            console.warn("Failed to access localStorage:", storageError);
         }
     }, []);
 
     const saveConfig = (config: R2Config) => {
         const newConfigs = [...configs.filter(c => c.id !== config.id), config];
         setConfigs(newConfigs);
-        localStorage.setItem('r2_configs', JSON.stringify(newConfigs));
+        try {
+            localStorage.setItem('r2_configs', JSON.stringify(newConfigs));
+        } catch (storageError) {
+            console.warn("Failed to save configs to localStorage:", storageError);
+        }
         if (!activeConfigId || activeConfigId === config.id) {
             setActiveConfigId(config.id);
-            localStorage.setItem('r2_active_id', config.id);
+            try {
+                localStorage.setItem('r2_active_id', config.id);
+            } catch (storageError) {
+                console.warn("Failed to save active config ID to localStorage:", storageError);
+            }
             r2Manager.init(config);
         }
     };
@@ -41,10 +53,18 @@ export const useR2 = () => {
     const deleteConfig = (id: string) => {
         const newConfigs = configs.filter(c => c.id !== id);
         setConfigs(newConfigs);
-        localStorage.setItem('r2_configs', JSON.stringify(newConfigs));
+        try {
+            localStorage.setItem('r2_configs', JSON.stringify(newConfigs));
+        } catch (storageError) {
+            console.warn("Failed to save configs to localStorage:", storageError);
+        }
         if (activeConfigId === id) {
             setActiveConfigId(null);
-            localStorage.removeItem('r2_active_id');
+            try {
+                localStorage.removeItem('r2_active_id');
+            } catch (storageError) {
+                console.warn("Failed to remove active config ID from localStorage:", storageError);
+            }
         }
     };
 
@@ -52,7 +72,11 @@ export const useR2 = () => {
         const config = configs.find(c => c.id === id);
         if (config) {
             setActiveConfigId(id);
-            localStorage.setItem('r2_active_id', id);
+            try {
+                localStorage.setItem('r2_active_id', id);
+            } catch (storageError) {
+                console.warn("Failed to save active config ID to localStorage:", storageError);
+            }
             r2Manager.init(config);
         }
     };
@@ -74,7 +98,11 @@ export const useR2 = () => {
         setError,
         importConfigs: (newConfigs: R2Config[]) => {
             setConfigs(newConfigs);
-            localStorage.setItem('r2_configs', JSON.stringify(newConfigs));
+            try {
+                localStorage.setItem('r2_configs', JSON.stringify(newConfigs));
+            } catch (storageError) {
+                console.warn("Failed to save imported configs to localStorage:", storageError);
+            }
             if (newConfigs.length > 0) {
                 // Optionally switch to the first one or keep current if valid
                 if (!activeConfigId || !newConfigs.find(c => c.id === activeConfigId)) {
