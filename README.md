@@ -77,7 +77,8 @@ You can use Cloudflare Pages environment variables to store your bucket credenti
     "secretAccessKey": "YOUR_SECRET_ACCESS_KEY",
     "bucketName": "my-bucket-name",
     "customDomain": "https://cdn.example.com",
-    "endpoint": "https://<accountid>.r2.cloudflarestorage.com"
+    "endpoint": "https://<accountid>.r2.cloudflarestorage.com",
+    "isDefault": true
   }
 ]
 ```

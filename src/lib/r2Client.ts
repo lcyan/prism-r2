@@ -10,6 +10,7 @@ export interface R2Config {
   bucketName: string;
   customDomain?: string;
   endpoint?: string;
+  isDefault?: boolean;
 }
 
 export class R2Manager {

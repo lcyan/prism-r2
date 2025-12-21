@@ -79,7 +79,8 @@ Prism R2 是一个现代、美观且安全的 Cloudflare R2 对象存储管理�
     "secretAccessKey": "YOUR_SECRET_ACCESS_KEY",
     "bucketName": "my-bucket-name",
     "customDomain": "https://cdn.example.com",
-    "endpoint": "https://<accountid>.r2.cloudflarestorage.com"
+    "endpoint": "https://<accountid>.r2.cloudflarestorage.com",
+    "isDefault": true
   }
 ]
 ```

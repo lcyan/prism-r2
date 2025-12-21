@@ -103,12 +103,23 @@ export const useR2 = () => {
             } catch (storageError) {
                 console.warn("Failed to save imported configs to localStorage:", storageError);
             }
+            
             if (newConfigs.length > 0) {
-                // Optionally switch to the first one or keep current if valid
-                if (!activeConfigId || !newConfigs.find(c => c.id === activeConfigId)) {
-                    // If no active config or active config no longer exists in imported list
-                    // Switch to first one optionally? Or just let user choose.
-                    // Let's not auto-switch to be safe, unless user was empty.
+                // 查找标记为默认的配置
+                const defaultConfig = newConfigs.find(c => c.isDefault) || newConfigs[0];
+                
+                // 如果当前没有激活的配置，或者当前的配置不在新列表中，则切换到默认配置
+                const currentExists = activeConfigId && newConfigs.some(c => c.id === activeConfigId);
+                
+                if (!currentExists || (newConfigs.find(c => c.id === activeConfigId)?.isDefault === false && newConfigs.some(c => c.isDefault))) {
+                    // 如果当前配置不存在，或者当前配置不是默认配置但新列表中有明确指定的默认配置
+                    // 我们优先尊重环境变量中指定的 isDefault
+                    const targetConfig = newConfigs.find(c => c.isDefault) || defaultConfig;
+                    setActiveConfigId(targetConfig.id);
+                    try {
+                        localStorage.setItem('r2_active_id', targetConfig.id);
+                    } catch (e) {}
+                    r2Manager.init(targetConfig);
                 }
             }
         }
