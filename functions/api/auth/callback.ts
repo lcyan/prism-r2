@@ -8,13 +8,16 @@ interface Env {
   GITHUB_CLIENT_SECRET: string;
   JWT_SECRET: string;
   GITHUB_WHITELIST_IDS: string;
-  APP_URL: string;
+  APP_URL?: string;
 }
 
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const url = new URL(request.url);
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
+
+  // 自动获取当前请求的 origin
+  const appUrl = env.APP_URL || `${url.protocol}//${url.host}`;
 
   // 1. 验证 CSRF state
   const cookies = parseCookies(request.headers.get('Cookie') || '');
@@ -75,7 +78,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     return new Response(null, {
       status: 302,
       headers: {
-        'Location': env.APP_URL,
+        'Location': appUrl,
         'Set-Cookie': [
           `auth_token=${token}; HttpOnly; Secure; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}; Path=/`,
           `oauth_state=; HttpOnly; Secure; SameSite=Lax; Max-Age=0; Path=/`,
