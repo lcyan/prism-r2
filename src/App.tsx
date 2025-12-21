@@ -39,6 +39,8 @@ function App() {
           const data = await response.json();
           if (data.authenticated) {
             setIsAuthenticated(true);
+            // 认证成功后加载配置
+            initConfigs();
             // 保存用户信息到 localStorage 用于显示
             try {
               localStorage.setItem('r2_user', JSON.stringify(data.user));
@@ -55,24 +57,12 @@ function App() {
           }
         } else {
           setIsAuthenticated(false);
-          try {
-            localStorage.removeItem('r2_user');
-          } catch (storageError) {
-            console.warn('Failed to remove user from localStorage:', storageError);
-          }
         }
       } catch (error) {
         console.error('Auth check failed:', error);
         setIsAuthenticated(false);
-        try {
-          localStorage.removeItem('r2_user');
-        } catch (storageError) {
-          console.warn('Failed to remove user from localStorage:', storageError);
-        }
       }
     };
-
-    checkAuth();
 
     const initConfigs = async () => {
       // Try to load from Cloud (Environment Variables) first
@@ -80,28 +70,13 @@ function App() {
         const cloudConfigs = await r2Manager.syncFromCloud();
         if (Array.isArray(cloudConfigs) && cloudConfigs.length > 0) {
           importConfigs(cloudConfigs);
-          return;
         }
       } catch (e) {
         console.warn("Failed to sync from Cloud on init", e);
       }
-
-      // If KV failed or empty, check if we need to show guide based on local state
-      // Note: configs from useR2 are already loaded from localStorage inside the hook
-      // But we can't easily check 'configs.length' here immediately if it updates async
-      // For now, let's just rely on the existing logic or the KV sync.
-
-      try {
-        const skipGuide = localStorage.getItem('r2_skip_guide');
-        if (!skipGuide && configs.length === 0) {
-          setShowWelcome(true);
-        }
-      } catch (storageError) {
-        console.warn('Failed to check skip guide from localStorage:', storageError);
-      }
     };
 
-    initConfigs();
+    checkAuth();
   }, []);
 
   useEffect(() => {

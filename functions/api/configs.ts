@@ -10,6 +10,11 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
     const { request, env } = context;
 
     // 验证认证
+    if (!env.JWT_SECRET) {
+        console.error("JWT_SECRET is not configured in environment variables");
+        return errorResponse('Server configuration error: JWT_SECRET missing', 500);
+    }
+
     const user = await authenticate(request, env.JWT_SECRET);
     if (!user) {
         return errorResponse('Unauthorized', 401);
@@ -17,7 +22,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
     try {
         // 从环境变量获取配置 (JSON 字符串)
-        const configsStr = env.R2_CONFIGS;
+        let configsStr = env.R2_CONFIGS;
 
         const headers = {
             "Content-Type": "application/json",
@@ -25,7 +30,18 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
         };
 
         if (!configsStr) {
+            console.warn("R2_CONFIGS environment variable is empty or not set");
             return new Response(JSON.stringify([]), { headers });
+        }
+
+        // 处理可能的引号转义或前后空格
+        configsStr = configsStr.trim();
+        if (configsStr.startsWith('"') && configsStr.endsWith('"')) {
+            try {
+                configsStr = JSON.parse(configsStr);
+            } catch (e) {
+                // 如果解析失败，保持原样
+            }
         }
 
         // 验证是否为有效的 JSON
@@ -33,8 +49,8 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
             JSON.parse(configsStr);
             return new Response(configsStr, { headers });
         } catch (e) {
-            console.error("Invalid R2_CONFIGS environment variable:", e);
-            return errorResponse('Invalid R2_CONFIGS configuration', 500);
+            console.error("Invalid R2_CONFIGS environment variable format:", e);
+            return errorResponse('Invalid R2_CONFIGS configuration format', 500);
         }
     } catch (e: any) {
         return errorResponse(e.message, 500);
