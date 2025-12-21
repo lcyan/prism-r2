@@ -25,6 +25,22 @@ export default defineConfig({
     // Some libraries check for this
     'process.env': {},
   },
+  build: {
+    target: 'esnext',
+    minify: 'esbuild',
+    cssMinify: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-aws': ['@aws-sdk/client-s3', '@aws-sdk/lib-storage'],
+          'vendor-utils': ['framer-motion', 'lucide-react', 'date-fns'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+    reportCompressedSize: false, // Speed up build
+  },
   server: {
     port: 5174,
   },

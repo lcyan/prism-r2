@@ -1,14 +1,26 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { Layout } from './components/Layout';
 import { useR2 } from './hooks/useR2';
-import { ConfigPage } from './features/config/ConfigPage';
-import { Dashboard } from './features/dashboard/Dashboard';
-import { UploadCard } from './features/upload/UploadCard';
-import { BucketOverview } from './features/dashboard/BucketOverview';
-import { LoginPage } from './features/auth/LoginPage';
-import { WelcomeGuide } from './components/WelcomeGuide';
 import { r2Manager } from './lib/r2Client';
 import type { R2File } from './types';
+
+// Lazy load features for better initial load speed
+const ConfigPage = lazy(() => import('./features/config/ConfigPage').then(m => ({ default: m.ConfigPage })));
+const Dashboard = lazy(() => import('./features/dashboard/Dashboard').then(m => ({ default: m.Dashboard })));
+const UploadCard = lazy(() => import('./features/upload/UploadCard').then(m => ({ default: m.UploadCard })));
+const BucketOverview = lazy(() => import('./features/dashboard/BucketOverview').then(m => ({ default: m.BucketOverview })));
+const LoginPage = lazy(() => import('./features/auth/LoginPage').then(m => ({ default: m.LoginPage })));
+const WelcomeGuide = lazy(() => import('./components/WelcomeGuide').then(m => ({ default: m.WelcomeGuide })));
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-[60vh]">
+    <div className="relative w-16 h-16">
+      <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+      <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  </div>
+);
 
 function App() {
   const {
@@ -96,6 +108,15 @@ function App() {
 
   useEffect(() => {
     if (activeConfigId && isAuthenticated) {
+      // Try to load from cache first for instant UI
+      try {
+        const cached = localStorage.getItem(`r2_files_${activeConfigId}`);
+        if (cached) {
+          setFiles(JSON.parse(cached));
+        }
+      } catch (e) {
+        console.warn("Failed to load files from cache", e);
+      }
       loadFiles();
       setActiveTab('files');
     } else if (configs.length > 0) {
@@ -120,6 +141,12 @@ function App() {
           }))
       ];
       setFiles(mappedFiles);
+      // Update cache
+      try {
+        localStorage.setItem(`r2_files_${activeConfigId}`, JSON.stringify(mappedFiles));
+      } catch (e) {
+        console.warn("Failed to save files to cache", e);
+      }
     } catch (e: any) {
       console.error(e);
       setError(e.message || '获取文件列表失败，请检查 R2 配置或 CORS 设置');
@@ -167,6 +194,14 @@ function App() {
     navigator.clipboard.writeText(url);
   };
 
+  const publicUrlGetter = useCallback((key: string) => {
+    return r2Manager.getPublicUrl(key);
+  }, []);
+
+  const handleDownload = useCallback((file: R2File) => {
+    window.open(r2Manager.getPublicUrl(file.key), '_blank');
+  }, []);
+
   const handleLogout = async () => {
     try {
       await fetch('/api/auth/logout', {
@@ -196,7 +231,11 @@ function App() {
 
   if (isAuthenticated === null) return null; // Avoid flicker
   if (!isAuthenticated) {
-    return <LoginPage onLogin={() => setIsAuthenticated(true)} />;
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <LoginPage onLogin={() => setIsAuthenticated(true)} />
+      </Suspense>
+    );
   }
 
   const activeConfig = configs.find(c => c.id === activeConfigId);
@@ -205,7 +244,9 @@ function App() {
 
   return (
     <>
-      <WelcomeGuide isVisible={showWelcome} onStart={handleStartConfig} />
+      <Suspense fallback={null}>
+        <WelcomeGuide isVisible={showWelcome} onStart={handleStartConfig} />
+      </Suspense>
 
       <Layout
         activeTab={activeTab}
@@ -214,7 +255,8 @@ function App() {
         onLogout={handleLogout}
         connectionStatus={connectionStatus}
       >
-        {loading && (
+        <Suspense fallback={<PageLoader />}>
+          {loading && (
           <div className="fixed inset-0 bg-gray-200/20 backdrop-blur-md z-[70] flex items-center justify-center">
             <div className="bg-white/80 dark:bg-zinc-900 shadow-3xl p-10 rounded-[2.5rem] flex flex-col items-center gap-6 border border-black/5 animate-slide-up">
               <div className="w-16 h-16 border-[5px] border-primary/10 border-t-primary rounded-full animate-spin" />
@@ -249,11 +291,11 @@ function App() {
               <Dashboard
                 files={files}
                 directories={directories}
-                onRefresh={() => loadFiles()}
+                onRefresh={loadFiles}
                 onDelete={handleDelete}
-                onDownload={(f) => window.open(r2Manager.getPublicUrl(f.key), '_blank')}
+                onDownload={handleDownload}
                 onCopyLink={handleCopyLink}
-                publicUrlGetter={(key) => r2Manager.getPublicUrl(key)}
+                publicUrlGetter={publicUrlGetter}
                 onBulkDelete={handleBulkDelete}
               />
             </div>
@@ -274,9 +316,6 @@ function App() {
             </div>
           </div>
         )}
-      </Layout>
-    </>
-  );
-}
+        </Suspense>
 
 export default App;
