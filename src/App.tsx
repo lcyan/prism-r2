@@ -27,6 +27,21 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(false);
 
+  const directories = useMemo(() => {
+    const dirs = new Set<string>();
+    files.forEach(file => {
+      const parts = file.key.split('/');
+      if (parts.length > 1) {
+        let current = '';
+        for (let i = 0; i < parts.length - 1; i++) {
+          current = current ? `${current}/${parts[i]}` : parts[i];
+          dirs.add(current);
+        }
+      }
+    });
+    return Array.from(dirs).sort();
+  }, [files]);
+
   useEffect(() => {
     // Check auth session via API
     const checkAuth = async () => {
@@ -120,6 +135,7 @@ function App() {
   const handleDelete = async (key: string) => {
     if (window.confirm('确定要删除这个文件吗？')) {
       setLoading(true);
+      setError(null);
       try {
         await r2Manager.deleteFile(key);
         await loadFiles();
@@ -134,6 +150,7 @@ function App() {
   const handleBulkDelete = async (keys: string[]) => {
     if (window.confirm(`确定要批量删除选中的 ${keys.length} 个文件吗？`)) {
       setLoading(true);
+      setError(null);
       try {
         await Promise.all(keys.map(key => r2Manager.deleteFile(key)));
         await loadFiles();
@@ -231,6 +248,7 @@ function App() {
             <div className="lg:col-span-3">
               <Dashboard
                 files={files}
+                directories={directories}
                 onRefresh={() => loadFiles()}
                 onDelete={handleDelete}
                 onDownload={(f) => window.open(r2Manager.getPublicUrl(f.key), '_blank')}
@@ -241,6 +259,7 @@ function App() {
             </div>
             <div className="space-y-8 h-full sticky top-24">
               <UploadCard
+                directories={directories}
                 onUpload={handleUpload}
                 onUploadComplete={() => loadFiles()}
               />

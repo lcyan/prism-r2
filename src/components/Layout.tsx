@@ -23,29 +23,25 @@ export const Layout: React.FC<LayoutProps> = ({
             {/* Top Header */}
             <header className="h-16 bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-white/5 flex items-center justify-between px-8 sticky top-0 z-50">
                 <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-3">
-                        <div className="bg-primary rounded-xl p-2 shadow-sm">
-                            <Box size={20} color="white" />
+                    <div 
+                        className="flex items-center gap-4 cursor-pointer group/logo"
+                        onClick={() => onTabChange('files')}
+                    >
+                        <div className="relative group">
+                            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                            <img 
+                                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Prism&backgroundColor=b6e3f4" 
+                                className="relative w-10 h-10 rounded-full border-2 border-white dark:border-zinc-800 shadow-sm" 
+                                alt="avatar" 
+                            />
                         </div>
-                        <h1 className="text-lg font-black tracking-tight text-gray-800 dark:text-white">Cloudflare R2 对象存储增强管理</h1>
+                        <div className="flex items-center gap-3">
+                            <div className="bg-primary rounded-xl p-2 shadow-sm group-hover/logo:scale-110 transition-transform">
+                                <Box size={20} color="white" />
+                            </div>
+                            <h1 className="text-lg font-black tracking-tight text-gray-800 dark:text-white group-hover/logo:text-primary transition-colors">Cloudflare R2 对象存储增强管理</h1>
+                        </div>
                     </div>
-
-                    <nav className="flex items-center gap-1 ml-4 py-1.5 px-1.5 bg-gray-100 dark:bg-white/5 rounded-xl">
-                        <button
-                            onClick={() => onTabChange('files')}
-                            className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-black transition-all ${activeTab === 'files' ? 'bg-white dark:bg-zinc-800 text-primary shadow-sm' : 'text-gray-500 hover:text-gray-800 dark:hover:text-white'}`}
-                        >
-                            <LayoutDashboard size={14} />
-                            数据中心
-                        </button>
-                        <button
-                            onClick={() => onTabChange('config')}
-                            className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-black transition-all ${activeTab === 'config' ? 'bg-white dark:bg-zinc-800 text-primary shadow-sm' : 'text-gray-500 hover:text-gray-800 dark:hover:text-white'}`}
-                        >
-                            <Settings size={14} />
-                            存储配置
-                        </button>
-                    </nav>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -72,8 +68,12 @@ export const Layout: React.FC<LayoutProps> = ({
                         </div>
                     </div>
 
-                    <button className="w-9 h-9 flex items-center justify-center rounded-xl bg-purple-100 text-purple-600 hover:bg-purple-200 transition-all">
-                        <Bell size={18} />
+                    <button 
+                        onClick={() => onTabChange('config')}
+                        className={`w-9 h-9 flex items-center justify-center rounded-xl transition-all ${activeTab === 'config' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' : 'bg-purple-100 text-purple-600 hover:bg-purple-200'}`}
+                        title="存储桶配置"
+                    >
+                        <Box size={18} />
                     </button>
 
                     <button

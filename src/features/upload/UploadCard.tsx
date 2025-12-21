@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Upload as UploadIcon, Globe, Check, Cloud, RotateCw, Zap } from 'lucide-react';
+import { Upload as UploadIcon, Globe, Check, Cloud, RotateCw, Zap, Folder, Plus, X, LayoutGrid, Edit3 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface UploadTask {
     file: File;
@@ -10,16 +11,19 @@ interface UploadTask {
 }
 
 interface UploadCardProps {
+    directories: string[];
     onUpload: (file: File, subPath: string, onProgress: (p: number, s: number) => void) => Promise<any>;
     onUploadComplete?: () => void;
 }
 
-export const UploadCard: React.FC<UploadCardProps> = ({ onUpload, onUploadComplete }) => {
+export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, onUploadComplete }) => {
     const [tasks, setTasks] = useState<UploadTask[]>([]);
     const [isDragging, setIsDragging] = useState(false);
     const [subPath, setSubPath] = useState('');
     const [useWebP, setUseWebP] = useState(true);
     const [webpQuality, _setWebpQuality] = useState(0.8);
+    const [showDirSelector, setShowDirSelector] = useState(false);
+    const [newDirName, setNewDirName] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const compressImage = async (file: File): Promise<File> => {
@@ -123,9 +127,69 @@ export const UploadCard: React.FC<UploadCardProps> = ({ onUpload, onUploadComple
                         value={subPath}
                         onChange={e => setSubPath(e.target.value)}
                     />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500">
-                        <Globe size={18} />
+                    <div 
+                        onClick={() => setShowDirSelector(!showDirSelector)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-500 cursor-pointer hover:bg-blue-100 transition-colors"
+                    >
+                        <LayoutGrid size={18} />
                     </div>
+
+                    <AnimatePresence>
+                        {showDirSelector && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-black/5 dark:border-white/5 z-[60] overflow-hidden"
+                            >
+                                <div className="p-4 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
+                                    <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest">选择目录</span>
+                                    <button onClick={() => setShowDirSelector(false)} className="text-gray-400 hover:text-gray-600"><X size={14} /></button>
+                                </div>
+                                
+                                <div className="p-4 space-y-4">
+                                    <div className="flex gap-2">
+                                        <input 
+                                            className="flex-1 bg-gray-50 dark:bg-zinc-800 border border-gray-100 dark:border-white/5 rounded-xl px-3 py-2 text-[11px] font-bold outline-none focus:ring-2 focus:ring-primary/20"
+                                            placeholder="输入新目录名称"
+                                            value={newDirName}
+                                            onChange={e => setNewDirName(e.target.value)}
+                                        />
+                                        <button 
+                                            onClick={() => {
+                                                if (newDirName) {
+                                                    setSubPath(newDirName);
+                                                    setNewDirName('');
+                                                    setShowDirSelector(false);
+                                                }
+                                            }}
+                                            className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-lg shadow-orange-500/20 hover:bg-orange-600 transition-all"
+                                        >
+                                            <Edit3 size={16} />
+                                        </button>
+                                    </div>
+
+                                    <div className="max-h-48 overflow-y-auto no-scrollbar space-y-1">
+                                        <button 
+                                            onClick={() => { setSubPath(''); setShowDirSelector(false); }}
+                                            className="w-full text-left px-3 py-2 rounded-lg text-[11px] font-bold text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors flex items-center gap-2"
+                                        >
+                                            <Folder size={12} /> 根目录 (/)
+                                        </button>
+                                        {directories.map(dir => (
+                                            <button 
+                                                key={dir}
+                                                onClick={() => { setSubPath(dir); setShowDirSelector(false); }}
+                                                className="w-full text-left px-3 py-2 rounded-lg text-[11px] font-bold text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors flex items-center gap-2"
+                                            >
+                                                <Folder size={12} /> {dir}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             </div>
 

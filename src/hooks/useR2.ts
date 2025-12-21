@@ -105,16 +105,12 @@ export const useR2 = () => {
             }
             
             if (newConfigs.length > 0) {
-                // 查找标记为默认的配置
-                const defaultConfig = newConfigs.find(c => c.isDefault) || newConfigs[0];
-                
-                // 如果当前没有激活的配置，或者当前的配置不在新列表中，则切换到默认配置
+                // 检查当前激活的配置是否仍然有效
                 const currentExists = activeConfigId && newConfigs.some(c => c.id === activeConfigId);
                 
-                if (!currentExists || (newConfigs.find(c => c.id === activeConfigId)?.isDefault === false && newConfigs.some(c => c.isDefault))) {
-                    // 如果当前配置不存在，或者当前配置不是默认配置但新列表中有明确指定的默认配置
-                    // 我们优先尊重环境变量中指定的 isDefault
-                    const targetConfig = newConfigs.find(c => c.isDefault) || defaultConfig;
+                // 如果当前没有激活配置，或者当前配置已失效，则选择默认配置
+                if (!currentExists) {
+                    const targetConfig = newConfigs.find(c => c.isDefault) || newConfigs[0];
                     setActiveConfigId(targetConfig.id);
                     try {
                         localStorage.setItem('r2_active_id', targetConfig.id);

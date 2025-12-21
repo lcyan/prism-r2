@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Grid, List, Copy, Download, Trash2, Folder, File as FileIcon, Check, Eye, RotateCw, ImageIcon } from 'lucide-react';
 import type { R2File } from '../../types';
 import { formatSize } from '../../types';
@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface DashboardProps {
     files: R2File[];
+    directories: string[];
     onRefresh: () => void;
     onDelete: (key: string) => void;
     onDownload: (file: R2File) => void;
@@ -25,6 +26,7 @@ const isImage = (fileName: string) => {
 
 export const Dashboard: React.FC<DashboardProps> = ({
     files,
+    directories,
     onRefresh,
     onDelete,
     onDownload,
@@ -42,6 +44,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
     const [globalFormat, setGlobalFormat] = useState<CopyFormat>('url');
     const [showToast, setShowToast] = useState(false);
 
+    // 当文件列表变化时，自动清除已不存在的选中项
+    useEffect(() => {
+        if (selectedKeys.length > 0) {
+            setSelectedKeys(prev => prev.filter(key => files.some(f => f.key === key)));
+        }
+    }, [files]);
+
+    // 当目录结构变化时，如果当前目录已不存在，则返回根目录
+    useEffect(() => {
+        if (activeDirectory !== 'ROOT' && !directories.includes(activeDirectory)) {
+            setActiveDirectory('ROOT');
+        }
+    }, [directories, activeDirectory]);
+
     const getFormattedLink = (url: string, format: CopyFormat) => {
         switch (format) {
             case 'html': return `<img src="${url}" alt="image">`;
@@ -57,21 +73,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
         setShowToast(true);
         setTimeout(() => setShowToast(false), 2000);
     };
-
-    const directories = useMemo(() => {
-        const dirs = new Set<string>();
-        files.forEach(file => {
-            const parts = file.key.split('/');
-            if (parts.length > 1) {
-                let current = '';
-                for (let i = 0; i < parts.length - 1; i++) {
-                    current = current ? `${current}/${parts[i]}` : parts[i];
-                    dirs.add(current);
-                }
-            }
-        });
-        return Array.from(dirs).sort();
-    }, [files]);
 
     const filteredFiles = files.filter(file => {
         const isRoot = activeDirectory === 'ROOT';
@@ -147,7 +148,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             <button onClick={() => setViewMode('list')} className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-zinc-800 text-primary shadow-sm' : 'text-gray-400'}`}><List size={18} /></button>
                             <button onClick={() => setViewMode('grid')} className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-zinc-800 text-primary shadow-sm' : 'text-gray-400'}`}><Grid size={18} /></button>
                         </div>
-                        <button onClick={onRefresh} className="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-primary transition-all active:rotate-180 duration-500"><RotateCw size={18} /></button>
+                        <button 
+                            onClick={() => {
+                                onRefresh();
+                                setSelectedKeys([]);
+                            }} 
+                            className="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-primary transition-all active:rotate-180 duration-500"
+                        >
+                            <RotateCw size={18} />
+                        </button>
                     </div>
                 </div>
 
@@ -329,7 +338,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         <div className="flex items-center gap-4"><div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-black">{selectedKeys.length}</div><p className="text-sm font-black text-gray-700 dark:text-gray-200">项已选中</p></div>
                         <div className="h-8 w-px bg-gray-200 dark:bg-white/10" />
                         <div className="flex items-center gap-3">
-                            <button onClick={() => onBulkDelete(selectedKeys)} className="px-6 py-2.5 bg-red-500 text-white rounded-2xl flex items-center gap-2 font-black shadow-lg shadow-red-500/30 hover:bg-red-600 transition-all"><Trash2 size={18} /> 批量删除</button>
+                            <button 
+                                onClick={async () => {
+                                    await onBulkDelete(selectedKeys);
+                                    setSelectedKeys([]);
+                                }} 
+                                className="px-6 py-2.5 bg-red-500 text-white rounded-2xl flex items-center gap-2 font-black shadow-lg shadow-red-500/30 hover:bg-red-600 transition-all"
+                            >
+                                <Trash2 size={18} /> 批量删除
+                            </button>
                             <button onClick={() => setSelectedKeys([])} className="px-6 py-2.5 bg-gray-100 text-gray-600 rounded-2xl font-black hover:bg-gray-200 transition-all">取消选项</button>
                         </div>
                     </motion.div>
