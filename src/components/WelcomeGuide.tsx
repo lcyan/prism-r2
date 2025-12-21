@@ -93,9 +93,9 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }
                         ) : (
                             <button
                                 onClick={onStart}
-                                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-5 rounded-[1.5rem] flex items-center justify-center gap-3 text-lg font-black shadow-xl shadow-blue-500/30 hover:shadow-2xl transition-all active:scale-95"
+                                className="flex-1 bg-gradient-to-br from-primary to-blue-600 text-white py-5 rounded-[1.5rem] flex items-center justify-center gap-3 text-lg font-black shadow-2xl shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all border border-white/10"
                             >
-                                <Rocket size={20} />
+                                <Rocket size={22} />
                                 立即开始配置
                             </button>
                         )}

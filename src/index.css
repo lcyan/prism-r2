@@ -17,10 +17,18 @@
 @layer utilities {
   .ios-glass {
     background-color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  }
+
+  .ios-glass-dark {
+    background-color: rgba(24, 24, 27, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
   }
 
   .no-scrollbar::-webkit-scrollbar {
@@ -51,19 +59,20 @@
 
 /* iOS Button Styles - Manual Expansion to avoid @apply issues */
 .btn-ios {
-  padding: 0.5rem 1rem;
-  border-radius: 0.75rem;
-  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1.25rem;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  transition-duration: 300ms;
+  letter-spacing: -0.01em;
 }
 
 .btn-ios:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
 }
 
 .btn-ios:disabled {
@@ -72,32 +81,50 @@
 }
 
 .btn-ios-primary {
-  padding: 0.5rem 1rem;
-  border-radius: 0.75rem;
-  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1.25rem;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  transition-duration: 300ms;
   background-color: var(--color-primary);
   color: white;
-  box-shadow: 0 10px 15px -3px rgba(0, 122, 255, 0.3);
+  box-shadow: 0 8px 20px -4px rgba(0, 122, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-ios-primary:hover {
   background-color: var(--color-primary-hover);
+  box-shadow: 0 12px 25px -4px rgba(0, 122, 255, 0.5);
+  transform: translateY(-1px);
 }
 
 .btn-ios-glass {
-  padding: 0.5rem 1rem;
-  border-radius: 0.75rem;
-  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1.25rem;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #1d1d1f;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.btn-ios-glass:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
   background-color: rgba(255, 255, 255, 0.7);
