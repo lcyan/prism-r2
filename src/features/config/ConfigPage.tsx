@@ -51,12 +51,10 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
     };
 
     const handleKVSync = async () => {
-        if (!window.confirm('这将会把当前所有配置保存到 Cloudflare KV 中。如果设置了 Auth Token，后续会提示输入。确定吗？')) return;
-
-        const token = prompt("请输入鉴权 Token (如未设置请留空):") || "";
+        if (!window.confirm('这将会把当前所有配置保存到 Cloudflare KV 中。确定吗？')) return;
 
         try {
-            await r2Manager.syncToKV(configs, token);
+            await r2Manager.syncToKV(configs);
             alert('配置已成功同步到 KV！');
         } catch (e: any) {
             alert('同步失败: ' + e.message);
@@ -64,10 +62,8 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
     };
 
     const handleKVRestore = async () => {
-        const token = prompt("请输入鉴权 Token (如未设置请留空):") || "";
-
         try {
-            const imported = await r2Manager.syncFromKV(token);
+            const imported = await r2Manager.syncFromKV();
             if (Array.isArray(imported)) {
                 if (window.confirm(`发现 KV 备份，包含 ${imported.length} 个配置。确定要恢复并覆盖当前本地配置吗？`)) {
                     onImport(imported);

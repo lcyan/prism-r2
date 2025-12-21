@@ -5,7 +5,7 @@ interface LoginPageProps {
     onLogin: (userData: any) => void;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
+export const LoginPage: React.FC<LoginPageProps> = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleGithubLogin = () => {
