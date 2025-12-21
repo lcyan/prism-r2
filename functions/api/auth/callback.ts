@@ -44,9 +44,24 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       }),
     });
 
+    // 检查响应状态
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      console.error('[OAuth Error] GitHub token response:', tokenResponse.status, errorText);
+      return errorResponse(`GitHub OAuth failed: ${tokenResponse.status} ${errorText.substring(0, 200)}`, 400);
+    }
+
     const tokenData = await tokenResponse.json() as any;
+
+    // 检查是否有错误信息
+    if (tokenData.error) {
+      console.error('[OAuth Error] GitHub returned error:', tokenData);
+      return errorResponse(`GitHub OAuth error: ${tokenData.error} - ${tokenData.error_description || ''}`, 400);
+    }
+
     if (!tokenData.access_token) {
-      return errorResponse('Failed to get access token', 400);
+      console.error('[OAuth Error] No access token in response:', tokenData);
+      return errorResponse('Failed to get access token from GitHub', 400);
     }
 
     // 3. 获取用户信息
