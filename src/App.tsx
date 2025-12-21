@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
+import { Box } from 'lucide-react';
 import { Layout } from './components/Layout';
 import { useR2 } from './hooks/useR2';
 import { r2Manager } from './lib/r2Client';
