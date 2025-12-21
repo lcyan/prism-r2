@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload as UploadIcon, Globe, Check, Cloud, RotateCw, Zap, Folder, Plus, X, LayoutGrid, Edit3 } from 'lucide-react';
+import { Upload as UploadIcon, Check, Cloud, RotateCw, Zap, Folder, X, LayoutGrid, Edit3 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface UploadTask {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Settings, LogOut, Box, RefreshCw, User, Bell } from 'lucide-react';
+import { LogOut, Box, RefreshCw, User } from 'lucide-react';
 
 interface LayoutProps {
     children: React.ReactNode;

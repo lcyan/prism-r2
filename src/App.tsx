@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Layout } from './components/Layout';
 import { useR2 } from './hooks/useR2';
 import { ConfigPage } from './features/config/ConfigPage';
