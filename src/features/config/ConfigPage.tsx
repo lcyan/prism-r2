@@ -206,28 +206,28 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
             </section>
 
             {/* Configuration Form Card */}
-            <section className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-ios rounded-[2.5rem] p-12 border border-white/20 dark:border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] animate-slide-up">
-                <div className="flex items-center gap-6 mb-12">
-                    <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                        <Settings size={32} className="text-white" />
+            <section className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-ios rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-12 border border-white/20 dark:border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] animate-slide-up">
+                <div className="flex items-center gap-4 md:gap-6 mb-8 md:mb-12">
+                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-[1.5rem] bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20 flex-shrink-0">
+                        <Settings className="w-6 h-6 md:w-8 md:h-8 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+                        <h3 className="text-xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                             {formData.id ? '编辑现有配置' : '初始化新存储桶'}
                         </h3>
-                        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">R2 Connection Credentials</p>
+                        <p className="text-[9px] md:text-[11px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">R2 Connection Credentials</p>
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-10">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <div className="space-y-3">
-                            <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">存储桶昵称 / Nickname</label>
+                <form onSubmit={handleSubmit} className="space-y-6 md:space-y-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+                        <div className="space-y-2 md:space-y-3">
+                            <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">存储桶昵称 / Nickname</label>
                             <div className="relative group">
-                                <Database className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={20} />
+                                <Database className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
                                 <input
                                     required
-                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-2xl py-4.5 pl-14 pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
+                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
                                     placeholder="例如: 工作备份"
                                     value={formData.name || ''}
                                     onChange={e => setFormData({ ...formData, name: e.target.value })}
@@ -235,13 +235,13 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </div>
                         </div>
 
-                        <div className="space-y-3">
-                            <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">存储桶名称 / Bucket Name</label>
+                        <div className="space-y-2 md:space-y-3">
+                            <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">存储桶名称 / Bucket Name</label>
                             <div className="relative group">
-                                <Database className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={20} />
+                                <Database className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
                                 <input
                                     required
-                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-2xl py-4.5 pl-14 pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
+                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
                                     placeholder="r2-bucket-main"
                                     value={formData.bucketName || ''}
                                     onChange={e => setFormData({ ...formData, bucketName: e.target.value })}
@@ -249,13 +249,13 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </div>
                         </div>
 
-                        <div className="space-y-3">
-                            <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Cloudflare Account ID</label>
+                        <div className="space-y-2 md:space-y-3">
+                            <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Cloudflare Account ID</label>
                             <div className="relative group">
-                                <Server className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={20} />
+                                <Server className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
                                 <input
                                     required
-                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-2xl py-4.5 pl-14 pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
+                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
                                     placeholder="f12e..."
                                     value={formData.accountId || ''}
                                     onChange={e => setFormData({ ...formData, accountId: e.target.value })}
@@ -263,12 +263,12 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </div>
                         </div>
 
-                        <div className="space-y-3">
-                            <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Endpoint (可选)</label>
+                        <div className="space-y-2 md:space-y-3">
+                            <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Endpoint (可选)</label>
                             <div className="relative group">
-                                <Globe className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={20} />
+                                <Globe className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
                                 <input
-                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-2xl py-4.5 pl-14 pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
+                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
                                     placeholder="https://...r2.cloudflarestorage.com"
                                     value={formData.endpoint || ''}
                                     onChange={e => setFormData({ ...formData, endpoint: e.target.value })}
@@ -276,13 +276,13 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </div>
                         </div>
 
-                        <div className="space-y-3">
-                            <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Access Key ID</label>
+                        <div className="space-y-2 md:space-y-3">
+                            <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Access Key ID</label>
                             <div className="relative group">
-                                <Key className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={20} />
+                                <Key className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
                                 <input
                                     required
-                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-2xl py-4.5 pl-14 pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
+                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
                                     placeholder="P2z..."
                                     value={formData.accessKeyId || ''}
                                     onChange={e => setFormData({ ...formData, accessKeyId: e.target.value })}
@@ -290,14 +290,14 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </div>
                         </div>
 
-                        <div className="space-y-3">
-                            <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Secret Access Key</label>
+                        <div className="space-y-2 md:space-y-3">
+                            <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Secret Access Key</label>
                             <div className="relative group">
-                                <Key className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={20} />
+                                <Key className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
                                 <input
                                     required
                                     type="password"
-                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-2xl py-4.5 pl-14 pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
+                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
                                     placeholder="••••••••••••••••"
                                     value={formData.secretAccessKey || ''}
                                     onChange={e => setFormData({ ...formData, secretAccessKey: e.target.value })}
@@ -306,12 +306,12 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                         </div>
                     </div>
 
-                    <div className="space-y-3">
-                        <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">自定义分发域名 / Custom Domain</label>
+                    <div className="space-y-2 md:space-y-3">
+                        <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">自定义分发域名 / Custom Domain</label>
                         <div className="relative group">
-                            <Globe className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors" size={20} />
+                            <Globe className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
                             <input
-                                className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-2xl py-4.5 pl-14 pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
+                                className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
                                 placeholder="https://cdn.example.com"
                                 value={formData.customDomain || ''}
                                 onChange={e => setFormData({ ...formData, customDomain: e.target.value })}
@@ -319,14 +319,14 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                         </div>
                     </div>
 
-                    <div className="pt-8">
+                    <div className="pt-4 md:pt-8">
                         <button
                             type="submit"
-                            className="w-full bg-primary text-white py-5 rounded-[2rem] flex items-center justify-center gap-4 text-lg font-black shadow-2xl shadow-primary/30 hover:bg-primary-hover hover:scale-[1.01] active:scale-[0.98] transition-all"
+                            className="w-full bg-primary text-white py-4 md:py-5 rounded-xl md:rounded-[2rem] flex items-center justify-center gap-3 md:gap-4 text-base md:text-lg font-black shadow-2xl shadow-primary/30 hover:bg-primary-hover hover:scale-[1.01] active:scale-[0.98] transition-all"
                         >
-                            <Save size={24} />
+                            <Save className="w-5 h-5 md:w-6 md:h-6" />
                             保存连接配置
-                            <ChevronRight size={22} className="ml-2 opacity-50" />
+                            <ChevronRight className="w-5 h-5 md:w-5.5 md:h-5.5 ml-1 md:ml-2 opacity-50" />
                         </button>
                     </div>
                 </form>

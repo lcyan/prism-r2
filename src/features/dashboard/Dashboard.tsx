@@ -328,66 +328,66 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 )}
             </AnimatePresence>
 
-            <div className="bg-white/90 dark:bg-zinc-900/90 rounded-[2.5rem] p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] border border-white/20 dark:border-white/5">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-                    <div className="flex items-center gap-5">
-                        <div className="w-14 h-14 rounded-[1.5rem] bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-lg shadow-primary/20">
-                            <ImageIcon className="text-white" size={28} />
+            <div className="bg-white/90 dark:bg-zinc-900/90 rounded-[2rem] md:rounded-[2.5rem] p-4 md:p-8 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] border border-white/20 dark:border-white/5">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 md:mb-10">
+                    <div className="flex items-center gap-4 md:gap-5">
+                        <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl md:rounded-[1.5rem] bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-lg shadow-primary/20 flex-shrink-0">
+                            <ImageIcon className="text-white" size={24} />
                         </div>
-                        <div className="space-y-1">
-                            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">全部文件</h2>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">All Assets Library</p>
+                        <div className="space-y-0.5 md:space-y-1">
+                            <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">全部文件</h2>
+                            <p className="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">All Assets Library</p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <div className="relative group">
+                    <div className="flex flex-wrap items-center gap-3 md:gap-4">
+                        <div className="relative group flex-1 min-w-[200px] md:flex-none">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" size={16} />
                             <input
-                                className="w-64 bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-2xl py-3 pl-12 pr-4 text-xs font-bold focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-gray-400 shadow-inner"
+                                className="w-full md:w-64 bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-2xl py-2.5 md:py-3 pl-12 pr-4 text-xs font-bold focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all placeholder:text-gray-400 shadow-inner"
                                 placeholder="搜索文件..."
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
                             />
                         </div>
                         <div className="flex items-center gap-1.5 p-1.5 bg-gray-100/50 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-gray-200/50 dark:border-white/5">
-                            <button onClick={() => setViewMode('list')} className={`p-2.5 rounded-xl transition-all duration-300 ${viewMode === 'list' ? 'bg-white dark:bg-zinc-800 text-primary shadow-md scale-105' : 'text-gray-400 hover:text-gray-600'}`}><List size={18} /></button>
-                            <button onClick={() => setViewMode('grid')} className={`p-2.5 rounded-xl transition-all duration-300 ${viewMode === 'grid' ? 'bg-white dark:bg-zinc-800 text-primary shadow-md scale-105' : 'text-gray-400 hover:text-gray-600'}`}><Grid size={18} /></button>
+                            <button onClick={() => setViewMode('list')} className={`p-2 rounded-xl transition-all duration-300 ${viewMode === 'list' ? 'bg-white dark:bg-zinc-800 text-primary shadow-md scale-105' : 'text-gray-400 hover:text-gray-600'}`}><List size={18} /></button>
+                            <button onClick={() => setViewMode('grid')} className={`p-2 rounded-xl transition-all duration-300 ${viewMode === 'grid' ? 'bg-white dark:bg-zinc-800 text-primary shadow-md scale-105' : 'text-gray-400 hover:text-gray-600'}`}><Grid size={18} /></button>
                         </div>
                         <button 
                             onClick={() => {
                                 onRefresh();
                                 setSelectedKeys([]);
                             }} 
-                            className="w-11 h-11 flex items-center justify-center rounded-2xl bg-white/80 dark:bg-white/10 backdrop-blur-md border border-white/20 dark:border-white/10 text-gray-400 hover:text-primary hover:border-primary/30 transition-all active:scale-90 shadow-sm"
+                            className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-2xl bg-white/80 dark:bg-white/10 backdrop-blur-md border border-white/20 dark:border-white/10 text-gray-400 hover:text-primary hover:border-primary/30 transition-all active:scale-90 shadow-sm"
                         >
                             <RotateCw size={18} />
                         </button>
                     </div>
                 </div>
 
-                <div className="space-y-8 mb-10">
-                    <div className="flex items-center justify-between px-1">
+                <div className="space-y-6 md:space-y-8 mb-8 md:mb-10">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
                         <div className="flex items-center gap-4">
-                            <h3 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">目录节点 / Directories</h3>
-                            <div className="h-px w-12 bg-gray-200 dark:bg-white/10" />
-                            <div className="flex items-center gap-3">
-                                <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'name' | 'date')} className="bg-gray-100/50 dark:bg-white/5 text-[10px] font-black text-gray-500 dark:text-gray-400 focus:outline-none cursor-pointer hover:text-primary border border-transparent hover:border-primary/20 rounded-xl px-3 py-1.5 transition-all">
-                                    <option value="date">按创建时间</option>
-                                    <option value="name">按文件名</option>
-                                </select>
-                                <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')} className="bg-gray-100/50 dark:bg-white/5 text-[10px] font-black text-gray-500 dark:text-gray-400 focus:outline-none cursor-pointer hover:text-primary border border-transparent hover:border-primary/20 rounded-xl px-3 py-1.5 transition-all">
-                                    <option value="desc">降序排列</option>
-                                    <option value="asc">升序排列</option>
-                                </select>
-                            </div>
+                            <h3 className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-[0.2em]">目录节点 / Directories</h3>
+                            <div className="hidden xs:block h-px w-8 md:w-12 bg-gray-200 dark:bg-white/10" />
+                        </div>
+                        <div className="flex items-center gap-2 md:gap-3">
+                            <select value={sortBy} onChange={(e) => setSortBy(e.target.value as 'name' | 'date')} className="flex-1 sm:flex-none bg-gray-100/50 dark:bg-white/5 text-[10px] font-black text-gray-500 dark:text-gray-400 focus:outline-none cursor-pointer hover:text-primary border border-transparent hover:border-primary/20 rounded-xl px-2.5 md:px-3 py-1.5 transition-all">
+                                <option value="date">按创建时间</option>
+                                <option value="name">按文件名</option>
+                            </select>
+                            <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')} className="flex-1 sm:flex-none bg-gray-100/50 dark:bg-white/5 text-[10px] font-black text-gray-500 dark:text-gray-400 focus:outline-none cursor-pointer hover:text-primary border border-transparent hover:border-primary/20 rounded-xl px-2.5 md:px-3 py-1.5 transition-all">
+                                <option value="desc">降序排列</option>
+                                <option value="asc">升序排列</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-2">
+                    <div className="flex items-center gap-2 md:gap-3 overflow-x-auto no-scrollbar pb-2 -mx-1 px-1">
                         <button 
                             onClick={() => setActiveDirectory('ROOT')} 
-                            className={`px-6 py-3 rounded-2xl border transition-all duration-300 text-[11px] font-black flex items-center gap-2.5 ${activeDirectory === 'ROOT' ? 'bg-primary text-white border-transparent shadow-lg shadow-primary/25 scale-105' : 'bg-white/50 dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-500 hover:border-primary/30 hover:text-primary'}`}
+                            className={`px-4 md:px-6 py-2.5 md:py-3 rounded-xl md:rounded-2xl border transition-all duration-300 text-[10px] md:text-[11px] font-black flex items-center gap-2 flex-shrink-0 ${activeDirectory === 'ROOT' ? 'bg-primary text-white border-transparent shadow-lg shadow-primary/25 scale-105' : 'bg-white/50 dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-500 hover:border-primary/30 hover:text-primary'}`}
                         >
                             <Folder size={14} /> 全部显示
                         </button>
@@ -395,7 +395,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             <button 
                                 key={dir} 
                                 onClick={() => setActiveDirectory(dir)} 
-                                className={`px-6 py-3 rounded-2xl whitespace-nowrap text-[11px] font-black transition-all duration-300 flex items-center gap-2.5 group flex-shrink-0 border ${activeDirectory === dir ? 'bg-primary text-white border-transparent shadow-lg shadow-primary/25 scale-105' : 'bg-white/50 dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-500 hover:border-primary/30 hover:text-primary'}`}
+                                className={`px-4 md:px-6 py-2.5 md:py-3 rounded-xl md:rounded-2xl whitespace-nowrap text-[10px] md:text-[11px] font-black transition-all duration-300 flex items-center gap-2 group flex-shrink-0 border ${activeDirectory === dir ? 'bg-primary text-white border-transparent shadow-lg shadow-primary/25 scale-105' : 'bg-white/50 dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-500 hover:border-primary/30 hover:text-primary'}`}
                             >
                                 <Folder size={14} className={activeDirectory === dir ? 'text-white' : 'text-primary/40 group-hover:text-primary'} />
                                 {dir}
@@ -404,17 +404,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between mb-8 px-6 py-3 bg-gray-50/50 dark:bg-white/[0.02] rounded-[1.5rem] border border-gray-100 dark:border-white/5 backdrop-blur-sm">
-                    <div className="flex items-center gap-5">
+                <div className="flex items-center justify-between mb-6 md:mb-8 px-4 md:px-6 py-3 bg-gray-50/50 dark:bg-white/[0.02] rounded-2xl md:rounded-[1.5rem] border border-gray-100 dark:border-white/5 backdrop-blur-sm">
+                    <div className="flex items-center gap-4 md:gap-5">
                         <button 
                             onClick={selectAll} 
-                            className={`w-6 h-6 rounded-xl flex items-center justify-center transition-all duration-300 ${selectedKeys.length === filteredFiles.length && filteredFiles.length > 0 ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white dark:bg-zinc-800 border-2 border-gray-200 dark:border-white/10 text-transparent'}`}
+                            className={`w-5 h-5 md:w-6 md:h-6 rounded-lg md:rounded-xl flex items-center justify-center transition-all duration-300 ${selectedKeys.length === filteredFiles.length && filteredFiles.length > 0 ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-white dark:bg-zinc-800 border-2 border-gray-200 dark:border-white/10 text-transparent'}`}
                         >
-                            <Check size={14} />
+                            <Check className="w-3 h-3 md:w-3.5 md:h-3.5" />
                         </button>
                         <div className="flex flex-col">
-                            <span className="text-[11px] font-black text-gray-800 dark:text-white uppercase tracking-widest">选中全部项目</span>
-                            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">Total {paginatedFiles.length} items in current page</span>
+                            <span className="text-[10px] md:text-[11px] font-black text-gray-800 dark:text-white uppercase tracking-widest">选中全部项目</span>
+                            <span className="text-[8px] md:text-[9px] font-bold text-gray-400 uppercase tracking-tighter">Total {paginatedFiles.length} items in current page</span>
                         </div>
                     </div>
                 </div>
@@ -458,17 +458,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
 
                 {/* Pagination UI */}
-                <div className="mt-12 flex flex-col items-center gap-6">
-                    <div className="flex items-center gap-2">
+                <div className="mt-8 md:mt-12 flex flex-col items-center gap-4 md:gap-6">
+                    <div className="flex items-center gap-1.5 md:gap-2">
                         <button
                             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                             disabled={currentPage === 1}
-                            className="w-12 h-12 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-90"
+                            className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-90"
                         >
-                            <ChevronLeft size={20} />
+                            <ChevronLeft className="w-4.5 h-4.5 md:w-5 md:h-5" />
                         </button>
                         
-                        <div className="flex items-center gap-1.5 px-4">
+                        <div className="flex items-center gap-1 md:gap-1.5 px-2 md:px-4">
                             {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                                 let pageNum = currentPage;
                                 if (totalPages <= 5) {
@@ -483,7 +483,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                     <button
                                         key={pageNum}
                                         onClick={() => setCurrentPage(pageNum)}
-                                        className={`w-12 h-12 rounded-2xl text-sm font-black transition-all ${currentPage === pageNum ? 'bg-primary text-white shadow-lg shadow-primary/25 scale-110' : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10'}`}
+                                        className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl text-xs md:text-sm font-black transition-all ${currentPage === pageNum ? 'bg-primary text-white shadow-lg shadow-primary/25 scale-110' : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10'}`}
                                     >
                                         {pageNum}
                                     </button>
@@ -494,9 +494,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         <button
                             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                             disabled={currentPage === totalPages || totalPages === 0}
-                            className="w-12 h-12 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-90"
+                            className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-90"
                         >
-                            <ChevronRight size={20} />
+                            <ChevronRight className="w-4.5 h-4.5 md:w-5 md:h-5" />
                         </button>
                     </div>
 

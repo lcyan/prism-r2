@@ -21,7 +21,7 @@ export const Layout: React.FC<LayoutProps> = ({
     return (
         <div className="min-h-screen bg-[#F0F2F5] dark:bg-black font-sans flex flex-col">
             {/* Top Header */}
-            <header className="h-16 bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-white/5 flex items-center justify-between px-8 sticky top-0 z-50">
+            <header className="h-16 bg-white dark:bg-zinc-900 border-b border-gray-200 dark:border-white/5 flex items-center justify-between px-4 md:px-8 sticky top-0 z-50">
                 <div className="flex items-center gap-6">
                     <div 
                         className="flex items-center gap-4 cursor-pointer group/logo"
@@ -31,12 +31,15 @@ export const Layout: React.FC<LayoutProps> = ({
                             <div className="bg-primary rounded-xl p-2 shadow-sm group-hover/logo:scale-110 transition-transform">
                                 <Box size={20} color="white" />
                             </div>
-                            <h1 className="text-lg font-black tracking-tight text-gray-800 dark:text-white group-hover/logo:text-primary transition-colors">Cloudflare R2 对象存储增强管理</h1>
+                            <h1 className="text-base md:text-lg font-black tracking-tight text-gray-800 dark:text-white group-hover/logo:text-primary transition-colors truncate max-w-[120px] xs:max-w-[200px] md:max-w-none">
+                                <span className="hidden xs:inline">Cloudflare R2 对象存储增强管理</span>
+                                <span className="xs:hidden">Prism R2</span>
+                            </h1>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 md:gap-4">
                     {onRefresh && activeTab === 'files' && (
                         <button
                             onClick={onRefresh}
@@ -46,9 +49,9 @@ export const Layout: React.FC<LayoutProps> = ({
                         </button>
                     )}
 
-                    <div className="h-8 w-px bg-gray-200 dark:bg-white/10 mx-1" />
+                    <div className="h-8 w-px bg-gray-200 dark:bg-white/10 mx-0.5 md:mx-1" />
 
-                    <div className="flex items-center gap-3 py-1 pl-1 pr-3 rounded-full bg-gray-50/80 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                    <div className="hidden sm:flex items-center gap-3 py-1 pl-1 pr-3 rounded-full bg-gray-50/80 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center text-white text-xs font-black shadow-sm">
                             <User size={14} />
                         </div>
@@ -79,7 +82,7 @@ export const Layout: React.FC<LayoutProps> = ({
             </header>
 
             {/* Content Area */}
-            <main className="flex-1 w-full max-w-[1700px] mx-auto p-6 md:p-8">
+            <main className="flex-1 w-full max-w-[1700px] mx-auto p-4 md:p-8">
                 {children}
             </main>
         </div>

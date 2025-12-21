@@ -203,33 +203,33 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={(e) => { e.preventDefault(); setIsDragging(false); handleFiles(e.dataTransfer.files); }}
                 onClick={() => fileInputRef.current?.click()}
-                className={`relative border-2 border-dashed rounded-[2.5rem] p-12 flex flex-col items-center justify-center gap-6 transition-all duration-500 cursor-pointer group overflow-hidden ${isDragging
+                className={`relative border-2 border-dashed rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-12 flex flex-col items-center justify-center gap-4 md:gap-6 transition-all duration-500 cursor-pointer group overflow-hidden ${isDragging
                     ? 'border-primary bg-primary/5'
                     : 'border-gray-200 dark:border-white/10 hover:border-primary/50 bg-gray-50/30 dark:bg-white/[0.02]'
                     }`}
             >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <input type="file" ref={fileInputRef} className="hidden" multiple accept="image/*" onChange={(e) => handleFiles(e.target.files)} />
-                <div className="w-24 h-24 rounded-[2.5rem] bg-white dark:bg-zinc-800 shadow-2xl flex flex-col items-center justify-center gap-1 text-primary group-hover:scale-110 transition-transform duration-500 relative z-10">
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl md:rounded-[2.5rem] bg-white dark:bg-zinc-800 shadow-2xl flex flex-col items-center justify-center gap-1 text-primary group-hover:scale-110 transition-transform duration-500 relative z-10">
                     {isUploading ? (
-                        <RotateCw className="animate-spin" size={32} />
+                        <RotateCw className="animate-spin w-7 h-7 md:w-8 md:h-8" />
                     ) : (
                         <>
-                            <Cloud size={32} className="fill-current opacity-20" />
-                            <span className="text-[10px] font-black uppercase tracking-tighter">Drop</span>
+                            <Cloud className="w-7 h-7 md:w-8 md:h-8 fill-current opacity-20" />
+                            <span className="text-[9px] md:text-[10px] font-black uppercase tracking-tighter">Drop</span>
                         </>
                     )}
                 </div>
-                <div className="text-center space-y-2 relative z-10">
-                    <p className="text-base font-black text-gray-800 dark:text-white">拖拽图片到这里</p>
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Drag & Drop Assets</p>
+                <div className="text-center space-y-1 md:space-y-2 relative z-10">
+                    <p className="text-sm md:text-base font-black text-gray-800 dark:text-white">拖拽图片到这里</p>
+                    <p className="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Drag & Drop Assets</p>
                 </div>
             </div>
 
             <button
                 disabled={isUploading}
                 onClick={() => fileInputRef.current?.click()}
-                className={`group relative w-full py-5 rounded-[1.5rem] font-black text-sm flex items-center justify-center gap-3 transition-all duration-500 overflow-hidden shadow-xl active:scale-[0.98] ${isUploading
+                className={`group relative w-full py-4 md:py-5 rounded-xl md:rounded-[1.5rem] font-black text-sm flex items-center justify-center gap-3 transition-all duration-500 overflow-hidden shadow-xl active:scale-[0.98] ${isUploading
                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                     : 'bg-primary text-white shadow-primary/25 hover:shadow-primary/40'}`}
             >
