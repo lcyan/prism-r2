@@ -26,6 +26,7 @@ export default defineConfig({
     'process.env': {},
   },
   esbuild: {
+    // @ts-ignore - drop is supported by esbuild but might be missing in some Vite type definitions
     drop: ['console', 'debugger'],
   },
   build: {
