@@ -89,7 +89,7 @@ const FileCard = React.memo(({
                     <h4 className="text-[15px] font-black text-gray-900 dark:text-white truncate" title={file.key}>{file.name}</h4>
                     <div className="flex items-center justify-between">
                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                            {file.lastModified ? format(file.lastModified, 'yyyy.MM.dd') : '-'}
+                            {file.lastModified ? format(new Date(file.lastModified), 'yyyy.MM.dd') : '-'}
                         </p>
                         <span className="text-[10px] font-black text-primary/60">{formatSize(file.size)}</span>
                     </div>
@@ -266,8 +266,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 const res = a.name.localeCompare(b.name);
                 return sortOrder === 'asc' ? res : -res;
             } else {
-                const dateA = a.lastModified?.getTime() || 0;
-                const dateB = b.lastModified?.getTime() || 0;
+                const dateA = a.lastModified ? new Date(a.lastModified).getTime() : 0;
+                const dateB = b.lastModified ? new Date(b.lastModified).getTime() : 0;
                 return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
             }
         });

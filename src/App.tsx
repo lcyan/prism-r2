@@ -112,7 +112,11 @@ function App() {
       try {
         const cached = localStorage.getItem(`r2_files_${activeConfigId}`);
         if (cached) {
-          setFiles(JSON.parse(cached));
+          const parsedFiles = JSON.parse(cached).map((f: any) => ({
+            ...f,
+            lastModified: f.lastModified ? new Date(f.lastModified) : undefined
+          }));
+          setFiles(parsedFiles);
         }
       } catch (e) {
         console.warn("Failed to load files from cache", e);
