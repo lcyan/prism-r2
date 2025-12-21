@@ -27,14 +27,16 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    minify: 'esbuild',
     cssMinify: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-aws': ['@aws-sdk/client-s3', '@aws-sdk/lib-storage'],
-          'vendor-utils': ['framer-motion', 'lucide-react', 'date-fns'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) return 'vendor-react';
+            if (id.includes('@aws-sdk')) return 'vendor-aws';
+            if (id.includes('framer-motion') || id.includes('lucide-react') || id.includes('date-fns')) return 'vendor-utils';
+            return 'vendor';
+          }
         },
       },
     },

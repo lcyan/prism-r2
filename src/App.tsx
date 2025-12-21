@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, lazy, Suspense } from 'react';
+import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { Layout } from './components/Layout';
 import { useR2 } from './hooks/useR2';
 import { r2Manager } from './lib/r2Client';
@@ -317,5 +317,9 @@ function App() {
           </div>
         )}
         </Suspense>
+      </Layout>
+    </>
+  );
+}
 
 export default App;

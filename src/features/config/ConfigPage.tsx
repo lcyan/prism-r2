@@ -334,6 +334,3 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
         </div>
     );
 };
-        </div>
-    );
-};
