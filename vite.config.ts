@@ -25,6 +25,9 @@ export default defineConfig({
     // Some libraries check for this
     'process.env': {},
   },
+  esbuild: {
+    drop: ['console', 'debugger'],
+  },
   build: {
     target: 'esnext',
     cssMinify: true,
