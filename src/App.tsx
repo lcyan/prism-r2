@@ -145,7 +145,7 @@ function App() {
     }
   }, [activeConfigId, configs.length, isAuthenticated]);
 
-  const loadFiles = async (isLoadMore: boolean = false) => {
+  const loadFiles = useCallback(async (isLoadMore: boolean = false) => {
     if (!activeConfigId || !isAuthenticated) return;
     
     if (isLoadMore) {
@@ -184,13 +184,13 @@ function App() {
       setLoading(false);
       setIsLoadingMore(false);
     }
-  };
+  }, [activeConfigId, isAuthenticated, continuationToken, files]);
 
   const handleUpload = async (file: File, path: string, onProgress: (p: number, s: number) => void) => {
     return await r2Manager.uploadFile(file, path, onProgress);
   };
 
-  const handleDelete = async (key: string) => {
+  const handleDelete = useCallback(async (key: string) => {
     if (window.confirm('确定要删除这个文件吗？')) {
       setLoading(true);
       setError(null);
@@ -203,9 +203,9 @@ function App() {
         setLoading(false);
       }
     }
-  };
+  }, [loadFiles]);
 
-  const handleBulkDelete = async (keys: string[]) => {
+  const handleBulkDelete = useCallback(async (keys: string[]) => {
     if (window.confirm(`确定要批量删除选中的 ${keys.length} 个文件吗？`)) {
       setLoading(true);
       setError(null);
@@ -218,12 +218,12 @@ function App() {
         setLoading(false);
       }
     }
-  };
+  }, [loadFiles]);
 
-  const handleCopyLink = (file: R2File) => {
+  const handleCopyLink = useCallback((file: R2File) => {
     const url = r2Manager.getPublicUrl(file.key);
     navigator.clipboard.writeText(url);
-  };
+  }, []);
 
   const publicUrlGetter = useCallback((key: string) => {
     return r2Manager.getPublicUrl(key);

@@ -42,11 +42,11 @@ interface DashboardProps {
 
 type CopyFormat = 'url' | 'html' | 'markdown' | 'bbcode';
 
-const ACTIVE_COLORS = {
-    url: 'from-[#86EFAC] to-[#4ADE80] shadow-[0_4px_12px_rgba(74,222,128,0.3)] border-white/20',
-    html: 'from-[#FDE047] to-[#FACC15] shadow-[0_4px_12px_rgba(250,204,21,0.3)] border-white/20',
-    markdown: 'from-[#93C5FD] to-[#60A5FA] shadow-[0_4px_12px_rgba(96,165,250,0.3)] border-white/20',
-    bbcode: 'from-[#FDA4AF] to-[#FB7185] shadow-[0_4px_12px_rgba(251,113,133,0.3)] border-white/20'
+const ACTIVE_COLORS: Record<CopyFormat, string> = {
+    url: 'blue',
+    html: 'yellow',
+    markdown: 'green',
+    bbcode: 'pink'
 };
 
 const isImage = (fileName: string) => {
@@ -81,7 +81,6 @@ const FileCard = React.memo(({
 }: FileCardProps) => {
     return (
         <MotionBox
-            layout
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
@@ -252,7 +251,6 @@ const FileRow = React.memo(({
     const dirPath = file.key.split('/').slice(0, -1).join('/');
     return (
         <MotionBox
-            layout
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
@@ -321,7 +319,7 @@ const FileRow = React.memo(({
     );
 });
 
-export const Dashboard: React.FC<DashboardProps> = ({
+export const Dashboard = React.memo(({
     files,
     directories,
     onRefresh,
@@ -333,7 +331,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
     hasMore,
     onLoadMore,
     isLoadingMore
-}) => {
+}: DashboardProps) => {
     const [activeDirectory, setActiveDirectory] = useState('ROOT');
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -346,10 +344,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
     const itemsPerPage = 20;
 
     useEffect(() => {
-        setCurrentPage(1);
-    }, [activeDirectory, searchQuery]);
-
-    useEffect(() => {
         if (selectedKeys.length > 0) {
             setSelectedKeys(prev => prev.filter(key => files.some(f => f.key === key)));
         }
@@ -358,8 +352,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
     useEffect(() => {
         if (activeDirectory !== 'ROOT' && !directories.includes(activeDirectory)) {
             setActiveDirectory('ROOT');
+            setCurrentPage(1);
         }
     }, [directories, activeDirectory]);
+
+    const handleDirectoryChange = useCallback((dir: string) => {
+        setActiveDirectory(dir);
+        setCurrentPage(1);
+    }, []);
+
+    const handleSearchChange = useCallback((query: string) => {
+        setSearchQuery(query);
+        setCurrentPage(1);
+    }, []);
 
     const getFormattedLink = useCallback((url: string, format: CopyFormat) => {
         switch (format) {
@@ -463,7 +468,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                     borderRadius="2xl"
                                     placeholder="搜索文件..."
                                     value={searchQuery}
-                                    onChange={e => setSearchQuery(e.target.value)}
+                                    onChange={e => handleSearchChange(e.target.value)}
                                     _focus={{ bg: 'bg.panel', shadow: 'outline' }}
                                 />
                             </Box>
@@ -546,22 +551,22 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                 variant={activeDirectory === 'ROOT' ? 'solid' : 'outline'}
                                 colorPalette="blue"
                                 borderRadius="xl"
-                                onClick={() => setActiveDirectory('ROOT')}
+                                onClick={() => handleDirectoryChange('ROOT')}
                             >
                                 <Folder size={14} style={{ marginRight: '8px' }} /> 全部
                             </Button>
-                            {directories.map(dir => (
+                            {useMemo(() => directories.map(dir => (
                                 <Button
                                     key={dir}
                                     size="sm"
                                     variant={activeDirectory === dir ? 'solid' : 'outline'}
                                     colorPalette="blue"
                                     borderRadius="xl"
-                                    onClick={() => setActiveDirectory(dir)}
+                                    onClick={() => handleDirectoryChange(dir)}
                                 >
                                     <Folder size={14} style={{ marginRight: '8px' }} /> {dir}
                                 </Button>
-                            ))}
+                            )), [directories, activeDirectory, handleDirectoryChange])}
                         </Flex>
                     </VStack>
                 </Box>
@@ -679,7 +684,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             <ChevronLeft size={20} />
                         </IconButton>
                         <HStack gap={2}>
-                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            {useMemo(() => Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                                 <Button
                                     key={page}
                                     size="sm"
@@ -691,7 +696,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                 >
                                     {page}
                                 </Button>
-                            ))}
+                            )), [totalPages, currentPage])}
                         </HStack>
                         <IconButton
                             aria-label="Next page"
@@ -738,4 +743,4 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </Portal>
         </Container>
     );
-};
+});
