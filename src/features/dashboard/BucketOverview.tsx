@@ -10,9 +10,11 @@ import {
     SimpleGrid,
     Center,
     Image,
-    Badge,
     Flex,
 } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
+
+const MotionBox = motion(Box);
 
 interface BucketOverviewProps {
     bucketName: string;
@@ -134,7 +136,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                         <Text fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" mb={2} textTransform="uppercase">
                             访问域名
                         </Text>
-                        <Text fontSize="lg" fontWeight="black" letterSpacing="tight" breakAnywhere>
+                        <Text fontSize="lg" fontWeight="black" letterSpacing="tight">
                             {customDomain || '未设置'}
                         </Text>
                     </Box>

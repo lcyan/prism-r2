@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Search, Grid as GridIcon, List, Copy, Download, Trash2, Folder, File as FileIcon, Check, Eye, RotateCw, ImageIcon, ChevronLeft, ChevronRight, Database } from 'lucide-react';
+import { Search, Grid as GridIcon, List, Copy, Download, Trash2, Folder, File as FileIcon, Check, Eye, RotateCw, ChevronLeft, ChevronRight, Database } from 'lucide-react';
 import { 
     Box, 
     Flex, 
@@ -14,7 +14,6 @@ import {
     SimpleGrid, 
     Badge,
     Portal,
-    Spinner,
     Image,
     Separator,
     Container
@@ -510,7 +509,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                 <Text fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
                                     目录节点 / Directories
                                 </Text>
-                                <Box h="1px" w="12" bg="border.subtle" display={{ base: 'none', xs: 'block' }} />
+                                <Box h="1px" w="12" bg="border.subtle" display={{ base: 'none', sm: 'block' }} />
                             </HStack>
                             
                             <HStack gap={3}>
@@ -585,7 +584,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             >
                                 <HStack gap={4}>
                                     <Text fontWeight="black" fontSize="sm">已选择 {selectedKeys.length} 个文件</Text>
-                                    <Button size="xs" variant="whiteAlpha" onClick={selectAll}>
+                                    <Button size="xs" variant="subtle" onClick={selectAll}>
                                         {selectedKeys.length === paginatedFiles.length ? '取消全选' : '全选本页'}
                                     </Button>
                                 </HStack>
@@ -728,7 +727,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     {previewFile && (
                         <FilePreview
                             file={previewFile}
+                            isOpen={!!previewFile}
                             onClose={() => setPreviewFile(null)}
+                            onDownload={() => onDownload(previewFile)}
+                            onCopyLink={() => _onCopyLink(previewFile)}
                             publicUrl={publicUrlGetter(previewFile.key)}
                         />
                     )}

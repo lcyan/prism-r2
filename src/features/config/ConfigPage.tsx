@@ -18,7 +18,6 @@ import {
     Center,
     Separator,
     Badge,
-    Portal,
 } from '@chakra-ui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -393,7 +392,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                 >
                                     <Database size={20} color="gray" />
                                     <Input
-                                        variant="plain"
+                                        variant="subtle"
                                         py={4}
                                         fontWeight="bold"
                                         placeholder="例如: 工作备份"
@@ -418,7 +417,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                 >
                                     <Database size={20} color="gray" />
                                     <Input
-                                        variant="plain"
+                                        variant="subtle"
                                         py={4}
                                         fontWeight="bold"
                                         placeholder="r2-bucket-main"
@@ -443,7 +442,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                 >
                                     <Server size={20} color="gray" />
                                     <Input
-                                        variant="plain"
+                                        variant="subtle"
                                         py={4}
                                         fontWeight="bold"
                                         placeholder="f12e..."
@@ -468,7 +467,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                 >
                                     <Globe size={20} color="gray" />
                                     <Input
-                                        variant="plain"
+                                        variant="subtle"
                                         py={4}
                                         fontWeight="bold"
                                         placeholder="https://...r2.cloudflarestorage.com"
@@ -493,7 +492,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                 >
                                     <Key size={20} color="gray" />
                                     <Input
-                                        variant="plain"
+                                        variant="subtle"
                                         py={4}
                                         fontWeight="bold"
                                         placeholder="P2z..."
@@ -518,7 +517,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                 >
                                     <Key size={20} color="gray" />
                                     <Input
-                                        variant="plain"
+                                        variant="subtle"
                                         type="password"
                                         py={4}
                                         fontWeight="bold"
@@ -545,7 +544,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             >
                                 <Globe size={20} color="gray" />
                                 <Input
-                                    variant="plain"
+                                    variant="subtle"
                                     py={4}
                                     fontWeight="bold"
                                     placeholder="https://cdn.example.com"
@@ -575,6 +574,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                     </VStack>
                 </form>
             </Box>
+            </VStack>
         </Container>
     );
 };

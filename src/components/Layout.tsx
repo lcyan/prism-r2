@@ -39,7 +39,6 @@ export const Layout: React.FC<LayoutProps> = ({
                                 gap={4} 
                                 cursor="pointer" 
                                 onClick={() => onTabChange('files')}
-                                group
                             >
                                 <Center 
                                     bg="blue.500" 

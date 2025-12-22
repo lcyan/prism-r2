@@ -13,7 +13,7 @@ import {
     Flex,
     Center,
     Image,
-    Separator,
+    Badge,
     Button,
     Portal,
 } from '@chakra-ui/react';
@@ -120,17 +120,17 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                         _hover={{ transform: "scale(1.05)" }}
                                     />
                                 ) : isVideo ? (
-                                    <Box as="video" controls maxW="95%" maxH="95%" borderRadius="xl" shadow="2xl">
+                                    <video controls style={{ maxWidth: '95%', maxHeight: '95%', borderRadius: '12px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}>
                                         <source src={publicUrl} />
                                         Your browser does not support the video tag.
-                                    </Box>
+                                    </video>
                                 ) : isAudio ? (
-                                    <Box as="audio" controls w="80%">
+                                    <audio controls style={{ width: '80%' }}>
                                         <source src={publicUrl} />
                                         Your browser does not support the audio tag.
-                                    </Box>
+                                    </audio>
                                 ) : isPdf ? (
-                                    <Box as="iframe" src={publicUrl} w="full" h="full" border="none" title={file.name} />
+                                    <iframe src={publicUrl} style={{ width: '100%', height: '100%', border: 'none' }} title={file.name} />
                                 ) : (
                                     <VStack gap={6}>
                                         <Center
@@ -210,7 +210,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                             <Center w={16} h={16} borderRadius="2xl" bg="bg.muted">
                                                 {isImage ? <ImageIcon color="blue" /> : isVideo ? <Video color="purple" /> : isAudio ? <Music color="pink" /> : <FileText color="orange" />}
                                             </Center>
-                                            <Heading size="md" fontWeight="black" breakAnywhere lineHeight="tight">
+                                            <Heading size="md" fontWeight="black" lineHeight="tight">
                                                 {file.name}
                                             </Heading>
                                             <Badge colorPalette="blue" variant="subtle" px={3} py={1} borderRadius="lg" fontSize="2xs" fontWeight="black" letterSpacing="widest">

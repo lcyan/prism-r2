@@ -10,12 +10,8 @@ import {
     Text,
     Button,
     Input,
-    Badge,
     Center,
     IconButton,
-    Separator,
-    Portal,
-    createIcon,
 } from '@chakra-ui/react';
 
 const MotionBox = motion.create(Box);
