@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
-import { Box } from 'lucide-react';
+import { Box, Center, Spinner, Text, VStack, Portal, Container, Grid, GridItem, Button } from '@chakra-ui/react';
+import { Box as BoxIcon } from 'lucide-react';
 import { Layout } from './components/Layout';
 import { useR2 } from './hooks/useR2';
 import { r2Manager } from './lib/r2Client';
@@ -15,12 +16,12 @@ const WelcomeGuide = lazy(() => import('./components/WelcomeGuide').then(m => ({
 
 // Loading fallback component
 const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-[60vh]">
-    <div className="relative w-16 h-16">
-      <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
-      <div className="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-    </div>
-  </div>
+  <Center minH="60vh">
+    <VStack gap={4}>
+      <Spinner size="xl" color="blue.500" thickness="4px" />
+      <Text fontWeight="black" color="gray.400" textTransform="uppercase" letterSpacing="widest">加载中...</Text>
+    </VStack>
+  </Center>
 );
 
 function App() {
@@ -287,89 +288,134 @@ function App() {
       >
         <Suspense fallback={<PageLoader />}>
           {loading && (
-          <div className="fixed inset-0 bg-gray-200/20 backdrop-blur-md z-[70] flex items-center justify-center">
-            <div className="bg-white/80 dark:bg-zinc-900 shadow-3xl p-10 rounded-[2.5rem] flex flex-col items-center gap-6 border border-black/5 animate-slide-up">
-              <div className="w-16 h-16 border-[5px] border-primary/10 border-t-primary rounded-full animate-spin" />
-              <p className="font-black text-primary tracking-widest text-sm uppercase">正在同步 R2 数据...</p>
-            </div>
-          </div>
-        )}
+            <Portal>
+              <Center position="fixed" inset={0} bg="blackAlpha.200" backdropFilter="blur(10px)" zIndex={70}>
+                <VStack 
+                  bg={{ base: "white", _dark: "zinc.900" }} 
+                  p={10} 
+                  borderRadius="2.5rem" 
+                  boxShadow="2xl" 
+                  border="1px solid" 
+                  borderColor="blackAlpha.50" 
+                  gap={6}
+                >
+                  <Spinner size="xl" color="blue.500" thickness="5px" />
+                  <Text fontWeight="black" color="blue.500" letterSpacing="widest" fontSize="sm" textTransform="uppercase">
+                    正在同步 R2 数据...
+                  </Text>
+                </VStack>
+              </Center>
+            </Portal>
+          )}
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl animate-pull-down flex flex-col gap-2 relative z-10 mx-auto max-w-4xl">
-            <div className="flex items-center gap-2 text-red-500 font-bold">
-              <span>状态异常:</span>
-              <span className="text-sm font-black">{error}</span>
-            </div>
-          </div>
-        )}
+          {error && (
+            <Box 
+              mb={6} 
+              p={4} 
+              bg="red.500/10" 
+              border="1px solid" 
+              borderColor="red.500/20" 
+              borderRadius="2xl" 
+              mx="auto" 
+              maxW="4xl"
+            >
+              <HStack gap={2} color="red.500" fontWeight="bold">
+                <Text>状态异常:</Text>
+                <Text fontSize="sm" fontWeight="black">{error}</Text>
+              </HStack>
+            </Box>
+          )}
 
-        {activeTab === 'config' ? (
-          <div className="max-w-4xl mx-auto">
-            <ConfigPage
-              configs={configs}
-              activeConfigId={activeConfigId}
-              onSave={saveConfig}
-              onDelete={deleteConfig}
-              onSwitch={switchConfig}
-              onImport={importConfigs}
-            />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start animate-slide-up">
-            <div className="lg:col-span-3">
-              {activeConfigId ? (
-                <Dashboard
-                  files={files}
-                  directories={directories}
-                  onRefresh={() => loadFiles(false)}
-                  onDelete={handleDelete}
-                  onDownload={handleDownload}
-                  onCopyLink={handleCopyLink}
-                  publicUrlGetter={publicUrlGetter}
-                  onBulkDelete={handleBulkDelete}
-                  hasMore={!!continuationToken}
-                  onLoadMore={() => loadFiles(true)}
-                  isLoadingMore={isLoadingMore}
-                />
-              ) : (
-                <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-ios rounded-[3rem] p-16 shadow-4xl border border-white/20 dark:border-white/5 flex flex-col items-center text-center gap-8 animate-slide-up">
-                  <div className="w-24 h-24 bg-primary/10 rounded-[2.5rem] flex items-center justify-center text-primary relative">
-                    <div className="absolute inset-0 bg-primary/20 rounded-[2.5rem] animate-ping" />
-                    <Box size={48} className="relative z-10" />
-                  </div>
-                  <div className="space-y-4">
-                    <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">欢迎使用 R2 对象存储增强管理</h2>
-                    <p className="text-lg text-gray-500 dark:text-gray-400 font-bold max-w-md mx-auto leading-relaxed">
-                      您尚未配置 R2 存储桶信息，请点击上方的存储图标完成配置，开始使用强大的对象存储功能！
-                    </p>
-                  </div>
-                  <button 
-                    onClick={() => setActiveTab('config')}
-                    className="bg-primary text-white px-12 py-5 rounded-2xl font-black text-xl shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+          {activeTab === 'config' ? (
+            <Container maxW="4xl" p={0}>
+              <ConfigPage
+                configs={configs}
+                activeConfigId={activeConfigId}
+                onSave={saveConfig}
+                onDelete={deleteConfig}
+                onSwitch={switchConfig}
+                onImport={importConfigs}
+              />
+            </Container>
+          ) : (
+            <Grid templateColumns={{ base: "1fr", lg: "repeat(4, 1fr)" }} gap={8} alignItems="start">
+              <GridItem colSpan={{ base: 1, lg: 3 }}>
+                {activeConfigId ? (
+                  <Dashboard
+                    files={files}
+                    directories={directories}
+                    onRefresh={() => loadFiles(false)}
+                    onDelete={handleDelete}
+                    onDownload={handleDownload}
+                    onCopyLink={handleCopyLink}
+                    publicUrlGetter={publicUrlGetter}
+                    onBulkDelete={handleBulkDelete}
+                    hasMore={!!continuationToken}
+                    onLoadMore={() => loadFiles(true)}
+                    isLoadingMore={isLoadingMore}
+                  />
+                ) : (
+                  <VStack 
+                    bg={{ base: "whiteAlpha.800", _dark: "zinc.900/80" }} 
+                    backdropFilter="blur(20px)" 
+                    borderRadius="3rem" 
+                    p={16} 
+                    boxShadow="2xl" 
+                    border="1px solid" 
+                    borderColor={{ base: "whiteAlpha.200", _dark: "whiteAlpha.50" }} 
+                    gap={8} 
+                    textAlign="center"
                   >
-                    立即配置
-                  </button>
-                </div>
-              )}
-            </div>
-            <div className="space-y-8 h-full sticky top-24">
-              <UploadCard
-                directories={directories}
-                onUpload={handleUpload}
-                onUploadComplete={() => loadFiles()}
-              />
-              <BucketOverview
-                bucketName={activeConfig?.name || '未选择'}
-                customDomain={activeConfig?.customDomain}
-                fileCount={files.length}
-                totalSize={totalSize}
-                onRefresh={() => loadFiles()}
-                status={connectionStatus}
-              />
-            </div>
-          </div>
-        )}
+                    <Center w={24} h={24} bg="blue.500/10" borderRadius="2.5rem" position="relative">
+                      <Box position="absolute" inset={0} bg="blue.500/20" borderRadius="2.5rem" animation="ping 2s infinite" />
+                      <BoxIcon size={48} color="#007AFF" />
+                    </Center>
+                    <VStack gap={4}>
+                      <Heading size="2xl" fontWeight="black" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
+                        欢迎使用 R2 对象存储增强管理
+                      </Heading>
+                      <Text fontSize="lg" color={{ base: "gray.500", _dark: "gray.400" }} fontWeight="bold" maxW="md" lineHeight="relaxed">
+                        您尚未配置 R2 存储桶信息，请点击上方的存储图标完成配置，开始使用强大的对象存储功能！
+                      </Text>
+                    </VStack>
+                    <Button 
+                      onClick={() => setActiveTab('config')}
+                      bg="blue.500" 
+                      color="white" 
+                      px={12} 
+                      h="auto"
+                      py={5} 
+                      borderRadius="2xl" 
+                      fontWeight="black" 
+                      fontSize="xl" 
+                      boxShadow="0 20px 40px rgba(0,122,255,0.3)"
+                      _hover={{ transform: "scale(1.05)" }}
+                      _active={{ transform: "scale(0.95)" }}
+                    >
+                      立即配置
+                    </Button>
+                  </VStack>
+                )}
+              </GridItem>
+              <GridItem>
+                <VStack gap={8} position="sticky" top="24">
+                  <UploadCard
+                    directories={directories}
+                    onUpload={handleUpload}
+                    onUploadComplete={() => loadFiles()}
+                  />
+                  <BucketOverview
+                    bucketName={activeConfig?.name || '未选择'}
+                    customDomain={activeConfig?.customDomain}
+                    fileCount={files.length}
+                    totalSize={totalSize}
+                    onRefresh={() => loadFiles()}
+                    status={connectionStatus}
+                  />
+                </VStack>
+              </GridItem>
+            </Grid>
+          )}
         </Suspense>
       </Layout>
     </>
