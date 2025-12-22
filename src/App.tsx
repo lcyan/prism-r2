@@ -59,6 +59,12 @@ function App() {
   }, [isAuthenticated, configs.length]);
 
   useEffect(() => {
+    // Skip auth in development mode
+    if (import.meta.env.DEV) {
+      setIsAuthenticated(true);
+      return;
+    }
+
     // Check auth session via API
     const checkAuth = async () => {
       try {
