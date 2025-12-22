@@ -25,9 +25,9 @@ export const Layout: React.FC<LayoutProps> = ({
             <Box 
                 as="header" 
                 h="16" 
-                bg={{ base: "white", _dark: "zinc.900" }} 
+                bg={{ base: "white", _dark: "gray.900" }} 
                 borderBottom="1px solid" 
-                borderColor={{ base: "gray.200", _dark: "whiteAlpha.50" }} 
+                borderColor={{ base: "gray.200", _dark: "whiteAlpha.10" }} 
                 position="sticky" 
                 top={0} 
                 zIndex={50}
@@ -51,7 +51,7 @@ export const Layout: React.FC<LayoutProps> = ({
                                     letterSpacing="tight" 
                                     color={{ base: "gray.800", _dark: "white" }}
                                     transition="color 0.2s"
-                                    maxW={{ base: "120px", sm: "200px", md: "none" }}
+                                    maxW={{ base: "120px", sm: "300px", md: "none" }}
                                     truncate
                                 >
                                     <Box as="span" display={{ base: "none", sm: "inline" }}>Cloudflare R2 对象存储增强管理</Box>
@@ -67,30 +67,30 @@ export const Layout: React.FC<LayoutProps> = ({
                                     variant="ghost"
                                     onClick={onRefresh}
                                     color="gray.400"
-                                    _hover={{ color: "blue.500", bg: { base: "gray.100", _dark: "whiteAlpha.50" } }}
+                                    _hover={{ color: "blue.500", bg: { base: "gray.100", _dark: "whiteAlpha.10" } }}
                                     _active={{ transform: "scale(0.9)" }}
                                 >
                                     <RefreshCw size={18} />
                                 </IconButton>
                             )}
 
-                            <Box h={8} w="1px" bg={{ base: "gray.200", _dark: "whiteAlpha.10" }} mx={{ base: 0.5, md: 1 }} />
+                            <Box h={8} w="1px" bg={{ base: "gray.200", _dark: "whiteAlpha.20" }} mx={{ base: 0.5, md: 1 }} />
 
                             <HStack 
-                                display={{ base: "none", sm: "flex" }} 
+                                display={{ base: "none", md: "flex" }} 
                                 gap={3} 
                                 py={1} 
                                 pl={1} 
                                 pr={3} 
                                 borderRadius="full" 
-                                bg={{ base: "gray.50/80", _dark: "whiteAlpha.50" }} 
+                                bg={{ base: "gray.100", _dark: "whiteAlpha.10" }} 
                                 border="1px solid" 
-                                borderColor={{ base: "gray.100", _dark: "whiteAlpha.50" }}
+                                borderColor={{ base: "gray.200", _dark: "whiteAlpha.10" }}
                             >
                                 <Center w={8} h={8} borderRadius="full" bgGradient="to-tr" gradientFrom="amber.400" gradientTo="orange.500" color="white" fontSize="xs" fontWeight="black" shadow="sm">
                                     <User size={14} />
                                 </Center>
-                                <VStack align="start" gap={0}>
+                                <VStack align="start" gap={0} minW="80px">
                                     <HStack gap={1.5}>
                                         <Text fontSize="10px" fontWeight="black" color="gray.400">欢迎，</Text>
                                         <Text fontSize="11px" fontWeight="black" color="blue.500">yanleichang</Text>

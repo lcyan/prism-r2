@@ -291,7 +291,7 @@ function App() {
             <Portal>
               <Center position="fixed" inset={0} bg="blackAlpha.200" backdropFilter="blur(10px)" zIndex={70}>
                 <VStack 
-                  bg={{ base: "white", _dark: "zinc.900" }} 
+                  bg={{ base: "white", _dark: "gray.900" }} 
                   p={10} 
                   borderRadius="2.5rem" 
                   boxShadow="2xl" 
@@ -338,7 +338,7 @@ function App() {
               />
             </Container>
           ) : (
-            <Grid templateColumns={{ base: "1fr", lg: "repeat(4, 1fr)" }} gap={8} alignItems="start">
+            <Grid templateColumns={{ base: "1fr", lg: "repeat(4, 1fr)" }} gap={8} alignItems="start" w="full">
               <GridItem colSpan={{ base: 1, lg: 3 }}>
                 {activeConfigId ? (
                   <Dashboard
@@ -356,7 +356,7 @@ function App() {
                   />
                 ) : (
                   <VStack 
-                    bg={{ base: "whiteAlpha.800", _dark: "zinc.900/80" }} 
+                    bg={{ base: "whiteAlpha.800", _dark: "whiteAlpha.100" }} 
                     backdropFilter="blur(20px)" 
                     borderRadius="3rem" 
                     p={16} 
@@ -398,7 +398,7 @@ function App() {
                 )}
               </GridItem>
               <GridItem>
-                <VStack gap={8} position="sticky" top="24">
+                <VStack gap={8} position="sticky" top="24" align="stretch">
                   <UploadCard
                     directories={directories}
                     onUpload={handleUpload}

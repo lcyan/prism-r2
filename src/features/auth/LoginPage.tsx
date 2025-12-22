@@ -69,7 +69,7 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    bg={{ base: "white", _dark: "zinc.900" }}
+                    bg={{ base: "white", _dark: "gray.900" }}
                     borderRadius="3rem"
                     p={10}
                     boxShadow="2xl"
