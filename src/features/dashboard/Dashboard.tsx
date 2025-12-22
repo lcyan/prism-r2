@@ -19,6 +19,7 @@ import {
     Container,
     Skeleton,
     Table,
+    Spinner,
 } from '@chakra-ui/react';
 import { 
     useReactTable, 
@@ -92,6 +93,9 @@ const FileCard = React.memo(({
     onFormatChange,
     getFormattedLink
 }: FileCardProps) => {
+    const [imageLoaded, setImageLoaded] = React.useState(false);
+    const [imageError, setImageError] = React.useState(false);
+    
     return (
         <MotionBox
             initial={{ opacity: 0, y: 20 }}
@@ -126,18 +130,63 @@ const FileCard = React.memo(({
                     mb={4}
                 >
                     {isImage(file.name) ? (
-                        <Image
-                            src={currentUrl}
-                            alt={file.name}
-                            w="full"
-                            h="full"
-                            objectFit="cover"
-                            cursor="pointer"
-                            transition="transform 0.5s"
-                            _hover={{ transform: 'scale(1.1)' }}
-                            onClick={() => onPreview(file)}
-                            loading="lazy"
-                        />
+                        <>
+                            {/* 占位符/加载状态 */}
+                            {!imageLoaded && !imageError && (
+                                <Box
+                                    position="absolute"
+                                    inset={0}
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    bg="gray.100"
+                                    _dark={{ bg: "gray.800" }}
+                                >
+                                    <VStack gap={2}>
+                                        <Spinner size="lg" color="blue.500" />
+                                        <Text fontSize="xs" color="gray.500" fontWeight="medium">
+                                            加载中...
+                                        </Text>
+                                    </VStack>
+                                </Box>
+                            )}
+                            
+                            {/* 加载失败状态 */}
+                            {imageError && (
+                                <Box
+                                    position="absolute"
+                                    inset={0}
+                                    display="flex"
+                                    alignItems="center"
+                                    justifyContent="center"
+                                    bg="gray.100"
+                                    _dark={{ bg: "gray.800" }}
+                                >
+                                    <VStack gap={2}>
+                                        <FileIcon size={48} style={{ opacity: 0.3 }} />
+                                        <Text fontSize="xs" color="gray.500" fontWeight="medium">
+                                            加载失败
+                                        </Text>
+                                    </VStack>
+                                </Box>
+                            )}
+                            
+                            <Image
+                                src={currentUrl}
+                                alt={file.name}
+                                w="full"
+                                h="full"
+                                objectFit="cover"
+                                cursor="pointer"
+                                transition="transform 0.5s"
+                                _hover={{ transform: 'scale(1.1)' }}
+                                onClick={() => onPreview(file)}
+                                loading="lazy"
+                                onLoad={() => setImageLoaded(true)}
+                                onError={() => setImageError(true)}
+                                opacity={imageLoaded ? 1 : 0}
+                            />
+                        </>
                     ) : (
                         <FileIcon size={48} style={{ opacity: 0.6 }} />
                     )}
