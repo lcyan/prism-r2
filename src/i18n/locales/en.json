@@ -42,7 +42,8 @@
     "copyLink": "Copy Link",
     "selectedCount": "{{count}} files selected",
     "selectAll": "Select All",
-    "deselectAll": "Deselect All"
+    "deselectAll": "Deselect All",
+    "directories": "Directories"
   },
   "config": {
     "title": "R2 Configuration",

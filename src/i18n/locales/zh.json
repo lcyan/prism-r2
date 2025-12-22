@@ -42,7 +42,8 @@
     "copyLink": "复制外链",
     "selectedCount": "已选择 {{count}} 个文件",
     "selectAll": "全选本页",
-    "deselectAll": "取消全选"
+    "deselectAll": "取消全选",
+    "directories": "目录节点"
   },
   "config": {
     "title": "R2 配置",

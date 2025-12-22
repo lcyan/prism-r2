@@ -19,7 +19,23 @@ export const useFiles = (prefix: string = '') => {
         extension: item.Key?.split('.').pop()?.toLowerCase()
       }));
 
-      const directories = (result.CommonPrefixes || []).map(cp => cp.Prefix?.replace(/\/$/, '') || '').filter(Boolean);
+      // Extract unique top-level directories from all file keys
+      const dirSet = new Set<string>();
+      (result.Contents || []).forEach(item => {
+        if (item.Key && item.Key.includes('/')) {
+          const parts = item.Key.split('/');
+          dirSet.add(parts[0]);
+        }
+      });
+      
+      // Also include CommonPrefixes if any (for non-recursive calls)
+      (result.CommonPrefixes || []).forEach(cp => {
+        if (cp.Prefix) {
+          dirSet.add(cp.Prefix.replace(/\/$/, ''));
+        }
+      });
+
+      const directories = Array.from(dirSet).sort();
 
       return { files, directories };
     },

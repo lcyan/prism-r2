@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Search, Grid as GridIcon, List, Download, Trash2, Folder, File as FileIcon, Check, Eye, RotateCw, ChevronLeft, ChevronRight, Database, Link, Code, FileText, Type, ArrowUpDown } from 'lucide-react';
+import { Search, Grid as GridIcon, List, Download, Trash2, File as FileIcon, Check, Eye, RotateCw, ChevronLeft, ChevronRight, Database, Link, Code, FileText, Type, ArrowUpDown } from 'lucide-react';
 import { 
     Box, 
     Flex, 
@@ -451,64 +451,77 @@ export const Dashboard = React.memo(({
                         </HStack>
                     </Flex>
 
-                    <Separator my={8} />
+                    <Separator my={6} />
 
                     {/* Directory & Sort Controls */}
-                    <VStack align="stretch" gap={6}>
-                        <Flex direction={{ base: 'column', sm: 'row' }} justify="space-between" align={{ base: 'stretch', sm: 'center' }} gap={4}>
-                            <HStack gap={4}>
-                                <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
-                                    目录节点 / Directories
-                                </Text>
-                                <Box h="1px" w="12" bg="border.subtle" display={{ base: 'none', sm: 'block' }} />
+                    <VStack align="stretch" gap={3}>
+                        <Flex align="center" gap={2} px={1}>
+                            <Text fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" opacity={0.6}>
+                                {t('dashboard.directories') || 'Categories'}
+                            </Text>
+                            <Box h="1px" flex={1} bgGradient="to-r" gradientFrom="border.subtle" gradientTo="transparent" />
+                        </Flex>
+                        
+                        <Flex justify="space-between" align="center" gap={4}>
+                            <HStack gap={2} flex={1} overflowX="auto" py={1} css={{
+                                '&::-webkit-scrollbar': { display: 'none' },
+                                '-ms-overflow-style': 'none',
+                                'scrollbar-width': 'none',
+                            }}>
+                                <Button
+                                    size="xs"
+                                    variant={activeDirectory === 'ROOT' ? 'solid' : 'subtle'}
+                                    colorPalette="blue"
+                                    borderRadius="full"
+                                    px={4}
+                                    onClick={() => handleDirectoryChange('ROOT')}
+                                    flexShrink={0}
+                                    fontWeight="bold"
+                                    shadow={activeDirectory === 'ROOT' ? 'sm' : 'none'}
+                                >
+                                    全部
+                                </Button>
+                                {useMemo(() => directories.map(dir => (
+                                    <Button
+                                        key={dir}
+                                        size="xs"
+                                        variant={activeDirectory === dir ? 'solid' : 'subtle'}
+                                        colorPalette="blue"
+                                        borderRadius="full"
+                                        px={4}
+                                        onClick={() => handleDirectoryChange(dir)}
+                                        flexShrink={0}
+                                        shadow={activeDirectory === dir ? 'sm' : 'none'}
+                                    >
+                                        {dir}
+                                    </Button>
+                                )), [directories, activeDirectory, handleDirectoryChange])}
                             </HStack>
-                            
-                            <HStack gap={3}>
+
+                            <HStack gap={2} flexShrink={0}>
                                 <Button
                                     size="xs"
                                     variant="ghost"
                                     onClick={() => setSorting([{ id: 'lastModified', desc: sorting[0]?.id === 'lastModified' ? !sorting[0].desc : true }])}
-                                    borderRadius="xl"
-                                    fontWeight="bold"
+                                    borderRadius="full"
                                     fontSize="2xs"
+                                    fontWeight="bold"
+                                    color="fg.muted"
                                 >
-                                    {t('common.date')} <ArrowUpDown size={12} style={{ marginLeft: '4px' }} />
+                                    {t('common.date')} <ArrowUpDown size={10} style={{ marginLeft: '4px' }} />
                                 </Button>
                                 <Button
                                     size="xs"
                                     variant="ghost"
                                     onClick={() => setSorting([{ id: 'key', desc: sorting[0]?.id === 'key' ? !sorting[0].desc : false }])}
-                                    borderRadius="xl"
-                                    fontWeight="bold"
+                                    borderRadius="full"
                                     fontSize="2xs"
+                                    fontWeight="bold"
+                                    color="fg.muted"
                                 >
-                                    {t('common.name')} <ArrowUpDown size={12} style={{ marginLeft: '4px' }} />
+                                    {t('common.name')} <ArrowUpDown size={10} style={{ marginLeft: '4px' }} />
                                 </Button>
                             </HStack>
-                        </Flex>
-
-                        <Flex gap={3} flexWrap="wrap">
-                            <Button
-                                size="sm"
-                                variant={activeDirectory === 'ROOT' ? 'solid' : 'outline'}
-                                colorPalette="blue"
-                                borderRadius="xl"
-                                onClick={() => handleDirectoryChange('ROOT')}
-                            >
-                                <Folder size={14} style={{ marginRight: '8px' }} /> 全部
-                            </Button>
-                            {useMemo(() => directories.map(dir => (
-                                <Button
-                                    key={dir}
-                                    size="sm"
-                                    variant={activeDirectory === dir ? 'solid' : 'outline'}
-                                    colorPalette="blue"
-                                    borderRadius="xl"
-                                    onClick={() => handleDirectoryChange(dir)}
-                                >
-                                    <Folder size={14} style={{ marginRight: '8px' }} /> {dir}
-                                </Button>
-                            )), [directories, activeDirectory, handleDirectoryChange])}
                         </Flex>
                     </VStack>
                 </Box>
