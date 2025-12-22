@@ -25,9 +25,10 @@ export const Layout: React.FC<LayoutProps> = ({
             <Box 
                 as="header" 
                 h="16" 
-                bg={{ base: "white", _dark: "gray.900" }} 
+                bg={{ base: "whiteAlpha.800", _dark: "blackAlpha.800" }} 
+                backdropFilter="blur(20px)"
                 borderBottom="1px solid" 
-                borderColor={{ base: "gray.200", _dark: "whiteAlpha.10" }} 
+                borderColor={{ base: "whiteAlpha.300", _dark: "whiteAlpha.100" }} 
                 position="sticky" 
                 top={0} 
                 zIndex={50}
@@ -52,7 +53,7 @@ export const Layout: React.FC<LayoutProps> = ({
                                 </Center>
                                 <Heading 
                                     size="md" 
-                                    fontWeight="black" 
+                                    fontWeight="bold" 
                                     letterSpacing="tight" 
                                     color={{ base: "gray.800", _dark: "white" }}
                                     transition="color 0.2s"
@@ -93,13 +94,13 @@ export const Layout: React.FC<LayoutProps> = ({
                                 border="1px solid" 
                                 borderColor={{ base: "gray.200", _dark: "whiteAlpha.10" }}
                             >
-                                <Center w={8} h={8} borderRadius="full" bgGradient="to-tr" gradientFrom="amber.400" gradientTo="orange.500" color="white" fontSize="xs" fontWeight="black" shadow="sm">
+                                <Center w={8} h={8} borderRadius="full" bgGradient="to-tr" gradientFrom="amber.400" gradientTo="orange.500" color="white" fontSize="xs" fontWeight="bold" shadow="sm">
                                     <User size={14} />
                                 </Center>
                                 <VStack align="start" gap={0} minW="80px">
                                     <HStack gap={1.5}>
-                                        <Text fontSize="10px" fontWeight="black" color="gray.400">欢迎，</Text>
-                                        <Text fontSize="11px" fontWeight="black" color="blue.500">yanleichang</Text>
+                                        <Text fontSize="10px" fontWeight="bold" color="gray.400">欢迎，</Text>
+                                        <Text fontSize="11px" fontWeight="bold" color="blue.500">yanleichang</Text>
                                     </HStack>
                                 </VStack>
                             </HStack>

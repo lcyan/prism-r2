@@ -134,7 +134,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                 <Database size={28} />
                             </Center>
                             <VStack align="start" gap={0}>
-                                <Heading size="2xl" fontWeight="black" letterSpacing="tight">存储桶管理</Heading>
+                                <Heading size="2xl" fontWeight="bold" letterSpacing="tight">存储桶管理</Heading>
                                 <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
                                     Bucket Management
                                 </Text>
@@ -142,7 +142,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                         </HStack>
 
                         <HStack gap={3}>
-                            <HStack bg="bg.muted" p={1} borderRadius="2xl" gap={1}>
+                            <HStack bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }} backdropFilter="blur(10px)" p={1} borderRadius="2xl" gap={1}>
                                 <IconButton
                                     aria-label="Sync to cloud"
                                     variant="ghost"
@@ -197,13 +197,14 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             >
                                 <Box
                                     p={8}
-                                    bg="bg.panel"
+                                    bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
+                                    backdropFilter="blur(20px)"
                                     borderRadius="3xl"
                                     position="relative"
                                     transition="all 0.5s"
                                     cursor="pointer"
                                     borderWidth="2px"
-                                    borderColor={activeConfigId === config.id ? "blue.500" : "border.subtle"}
+                                    borderColor={activeConfigId === config.id ? "blue.500" : { base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
                                     shadow={activeConfigId === config.id ? "2xl" : "none"}
                                     _hover={{
                                         shadow: "xl",
@@ -221,7 +222,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                                 px={3}
                                                 py={1}
                                                 fontSize="2xs"
-                                                fontWeight="black"
+                                                fontWeight="bold"
                                                 letterSpacing="tighter"
                                             >
                                                 DEFAULT
@@ -246,7 +247,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                         </Center>
 
                                         <VStack align="start" gap={1}>
-                                            <Heading size="xl" fontWeight="black" truncate w="full">
+                                            <Heading size="xl" fontWeight="bold" truncate w="full">
                                                 {config.name}
                                             </Heading>
                                             <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
@@ -261,7 +262,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                                 <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="tighter" textTransform="uppercase">
                                                     Account ID
                                                 </Text>
-                                                <Text fontSize="xs" fontWeight="black" color="fg.subtle">
+                                                <Text fontSize="xs" fontWeight="bold" color="fg.subtle">
                                                     {config.accountId.substring(0, 12)}...
                                                 </Text>
                                             </VStack>
@@ -310,7 +311,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                         transition="all 0.5s"
                         _hover={{
                             borderColor: "blue.500/50",
-                            bg: "bg.panel",
+                            bg: { base: "whiteAlpha.800", _dark: "whiteAlpha.100" },
                             shadow: "lg"
                         }}
                         onClick={() => setFormData({})}
@@ -319,7 +320,8 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             w={16}
                             h={16}
                             borderRadius="2xl"
-                            bg="bg.panel"
+                            bg={{ base: "whiteAlpha.800", _dark: "whiteAlpha.100" }}
+                            backdropFilter="blur(10px)"
                             shadow="sm"
                             transition="all 0.5s"
                             _groupHover={{
@@ -332,7 +334,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             <Plus size={32} />
                         </Center>
                         <VStack gap={1}>
-                            <Text fontWeight="black" fontSize="sm" letterSpacing="tight">配置新存储桶</Text>
+                            <Text fontWeight="bold" fontSize="sm" letterSpacing="tight">配置新存储桶</Text>
                             <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
                                 Add New Bucket
                             </Text>
@@ -343,11 +345,12 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
 
             {/* Configuration Form Card */}
             <Box
-                bg="bg.panel"
+                bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
+                backdropFilter="blur(20px)"
                 borderRadius="3xl"
                 p={{ base: 6, md: 12 }}
                 borderWidth="1px"
-                borderColor="border.subtle"
+                borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
                 shadow="2xl"
                 animation="slide-up"
             >
@@ -365,7 +368,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                         <Settings size={32} />
                     </Center>
                     <VStack align="start" gap={0}>
-                        <Heading size={{ base: "xl", md: "3xl" }} fontWeight="black" letterSpacing="tight">
+                        <Heading size={{ base: "xl", md: "3xl" }} fontWeight="bold" letterSpacing="tight">
                             {formData.id ? '编辑现有配置' : '初始化新存储桶'}
                         </Heading>
                         <Text fontSize={{ base: "2xs", md: "xs" }} fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
@@ -378,7 +381,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                     <VStack gap={{ base: 6, md: 10 }} align="stretch">
                         <SimpleGrid columns={{ base: 1, md: 2 }} gap={{ base: 6, md: 10 }}>
                             <Field.Root required>
-                                <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     存储桶昵称 / Nickname
                                 </Field.Label>
                                 <HStack
@@ -403,7 +406,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </Field.Root>
 
                             <Field.Root required>
-                                <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     存储桶名称 / Bucket Name
                                 </Field.Label>
                                 <HStack
@@ -428,7 +431,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </Field.Root>
 
                             <Field.Root required>
-                                <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     Cloudflare Account ID
                                 </Field.Label>
                                 <HStack
@@ -453,7 +456,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </Field.Root>
 
                             <Field.Root>
-                                <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     Endpoint (可选)
                                 </Field.Label>
                                 <HStack
@@ -478,7 +481,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </Field.Root>
 
                             <Field.Root required>
-                                <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     Access Key ID
                                 </Field.Label>
                                 <HStack
@@ -503,7 +506,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </Field.Root>
 
                             <Field.Root required>
-                                <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     Secret Access Key
                                 </Field.Label>
                                 <HStack
@@ -530,7 +533,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                         </SimpleGrid>
 
                         <Field.Root>
-                            <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                            <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                 自定义分发域名 / Custom Domain
                             </Field.Label>
                             <HStack
@@ -561,7 +564,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                 size="xl"
                                 colorPalette="blue"
                                 borderRadius="2xl"
-                                fontWeight="black"
+                                fontWeight="bold"
                                 shadow="2xl"
                                 _hover={{ transform: "scale(1.01)" }}
                                 _active={{ transform: "scale(0.98)" }}

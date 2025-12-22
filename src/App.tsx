@@ -19,7 +19,7 @@ const PageLoader = () => (
   <Center minH="60vh">
     <VStack gap={4}>
       <Spinner size="xl" color="blue.500" />
-      <Text fontWeight="black" color="gray.400" textTransform="uppercase" letterSpacing="widest">加载中...</Text>
+      <Text fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="widest">加载中...</Text>
     </VStack>
   </Center>
 );
@@ -300,7 +300,7 @@ function App() {
                   gap={6}
                 >
                   <Spinner size="xl" color="blue.500" />
-                  <Text fontWeight="black" color="blue.500" letterSpacing="widest" fontSize="sm" textTransform="uppercase">
+                  <Text fontWeight="bold" color="blue.500" letterSpacing="widest" fontSize="sm" textTransform="uppercase">
                     正在同步 R2 数据...
                   </Text>
                 </VStack>
@@ -321,7 +321,7 @@ function App() {
             >
               <HStack gap={2} color="red.500" fontWeight="bold">
                 <Text>状态异常:</Text>
-                <Text fontSize="sm" fontWeight="black">{error}</Text>
+                <Text fontSize="sm" fontWeight="bold">{error}</Text>
               </HStack>
             </Box>
           )}
@@ -371,7 +371,7 @@ function App() {
                       <BoxIcon size={48} color="#007AFF" />
                     </Center>
                     <VStack gap={4}>
-                      <Heading size="2xl" fontWeight="black" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
+                      <Heading size="2xl" fontWeight="bold" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
                         欢迎使用 R2 对象存储增强管理
                       </Heading>
                       <Text fontSize="lg" color={{ base: "gray.500", _dark: "gray.400" }} fontWeight="bold" maxW="md" lineHeight="relaxed">
@@ -386,7 +386,7 @@ function App() {
                       h="auto"
                       py={5} 
                       borderRadius="2xl" 
-                      fontWeight="black" 
+                      fontWeight="bold" 
                       fontSize="xl" 
                       boxShadow="0 20px 40px rgba(0,122,255,0.3)"
                       _hover={{ transform: "scale(1.05)" }}

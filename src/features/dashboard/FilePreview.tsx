@@ -87,7 +87,8 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                             w="full"
                             maxW="5xl"
                             h="85vh"
-                            bg="bg.panel"
+                            bg={{ base: "whiteAlpha.800", _dark: "blackAlpha.800" }}
+                            backdropFilter="blur(30px)"
                             borderRadius="3xl"
                             overflow="hidden"
                             display="flex"
@@ -95,7 +96,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                             position="relative"
                             shadow="4xl"
                             borderWidth="1px"
-                            borderColor="border.subtle"
+                            borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
                         >
                             {/* Left side: Preview Area */}
                             <Box
@@ -137,7 +138,8 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                             w={32}
                                             h={32}
                                             borderRadius="3xl"
-                                            bg="bg.panel"
+                                            bg={{ base: "whiteAlpha.800", _dark: "whiteAlpha.100" }}
+                                            backdropFilter="blur(10px)"
                                             shadow="xl"
                                         >
                                             <FileText size={64} color="gray" />
@@ -174,9 +176,10 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                             <Box
                                 w={{ base: "full", sm: "80" }}
                                 h="full"
-                                bg="bg.panel"
+                                bg={{ base: "whiteAlpha.700", _dark: "blackAlpha.300" }}
+                                backdropFilter="blur(20px)"
                                 borderLeftWidth={{ base: 0, sm: "1px" }}
-                                borderColor="border.subtle"
+                                borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
                                 display="flex"
                                 flexDirection="column"
                             >
@@ -186,7 +189,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                         <Center p={2} bg="blue.500/10" borderRadius="xl">
                                             <Info size={20} color="blue" />
                                         </Center>
-                                        <Heading size="sm" fontWeight="black" textTransform="uppercase" letterSpacing="tighter">
+                                        <Heading size="sm" fontWeight="bold" textTransform="uppercase" letterSpacing="tighter">
                                             文件属性
                                         </Heading>
                                     </HStack>
@@ -207,13 +210,13 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                     <VStack align="stretch" gap={8}>
                                         {/* File Identity */}
                                         <VStack align="start" gap={4}>
-                                            <Center w={16} h={16} borderRadius="2xl" bg="bg.muted">
+                                            <Center w={16} h={16} borderRadius="2xl" bg={{ base: "whiteAlpha.800", _dark: "whiteAlpha.100" }} backdropFilter="blur(10px)">
                                                 {isImage ? <ImageIcon color="blue" /> : isVideo ? <Video color="purple" /> : isAudio ? <Music color="pink" /> : <FileText color="orange" />}
                                             </Center>
-                                            <Heading size="md" fontWeight="black" lineHeight="tight">
+                                            <Heading size="md" fontWeight="bold" lineHeight="tight">
                                                 {file.name}
                                             </Heading>
-                                            <Badge colorPalette="blue" variant="subtle" px={3} py={1} borderRadius="lg" fontSize="2xs" fontWeight="black" letterSpacing="widest">
+                                            <Badge colorPalette="blue" variant="subtle" px={3} py={1} borderRadius="lg" fontSize="2xs" fontWeight="bold" letterSpacing="widest">
                                                 {extension || 'FILE'} FORMAT
                                             </Badge>
                                         </VStack>
@@ -221,13 +224,13 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                         {/* Detail List */}
                                         <VStack align="stretch" gap={6}>
                                             <VStack align="start" gap={2}>
-                                                <HStack gap={2} fontSize="2xs" fontWeight="black" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                                                <HStack gap={2} fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                                     <HardDrive size={10} /> 文件容量
                                                 </HStack>
                                                 <Text fontSize="sm" fontWeight="bold">{formatSize(file.size)}</Text>
                                             </VStack>
                                             <VStack align="start" gap={2}>
-                                                <HStack gap={2} fontSize="2xs" fontWeight="black" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                                                <HStack gap={2} fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                                     <Calendar size={10} /> 修改日期
                                                 </HStack>
                                                 <Text fontSize="sm" fontWeight="bold">
@@ -235,7 +238,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                                 </Text>
                                             </VStack>
                                             <VStack align="start" gap={2}>
-                                                <HStack gap={2} fontSize="2xs" fontWeight="black" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                                                <HStack gap={2} fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                                     <Globe size={10} /> 公开链接
                                                 </HStack>
                                                 <Box
@@ -268,7 +271,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                         h={14}
                                         borderRadius="2xl"
                                         colorPalette="blue"
-                                        fontWeight="black"
+                                        fontWeight="bold"
                                         onClick={onDownload}
                                     >
                                         <Download size={18} style={{ marginRight: '8px' }} />
@@ -280,7 +283,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                         borderRadius="2xl"
                                         variant={isCopied ? "solid" : "outline"}
                                         colorPalette={isCopied ? "green" : "gray"}
-                                        fontWeight="black"
+                                        fontWeight="bold"
                                         onClick={handleCopy}
                                     >
                                         {isCopied ? (

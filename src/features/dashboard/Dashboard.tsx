@@ -87,12 +87,13 @@ const FileCard = React.memo(({
             transition={{ duration: 0.2 }}
         >
             <Box
-                bg="bg.panel"
+                bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
+                backdropFilter="blur(20px)"
                 borderRadius="3xl"
                 p={5}
                 shadow="sm"
                 borderWidth="1px"
-                borderColor="border.subtle"
+                borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
                 transition="all 0.3s"
                 _hover={{ shadow: 'xl', transform: 'translateY(-4px)' }}
                 position="relative"
@@ -102,7 +103,8 @@ const FileCard = React.memo(({
                 <Box
                     aspectRatio={16 / 9}
                     borderRadius="2xl"
-                    bg="bg.muted"
+                    bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                    backdropFilter="blur(10px)"
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
@@ -164,14 +166,14 @@ const FileCard = React.memo(({
 
                 {/* Info Section */}
                 <VStack align="stretch" gap={1} mb={4} px={1}>
-                    <Text fontWeight="black" fontSize="md" truncate title={file.key}>
+                    <Text fontWeight="bold" fontSize="md" truncate title={file.key}>
                         {file.name}
                     </Text>
                     <Flex justify="space-between" align="center">
                         <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="wider">
                             {file.lastModified ? format(new Date(file.lastModified), 'yyyy.MM.dd') : '-'}
                         </Text>
-                        <Badge variant="subtle" colorPalette="blue" fontSize="2xs" fontWeight="black">
+                        <Badge variant="subtle" colorPalette="blue" fontSize="2xs" fontWeight="bold">
                             {formatSize(file.size)}
                         </Badge>
                     </Flex>
@@ -186,9 +188,10 @@ const FileCard = React.memo(({
                         fontSize="2xs"
                         fontWeight="bold"
                         borderRadius="xl"
-                        bg="bg.muted"
+                        bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                        backdropFilter="blur(10px)"
                         border="none"
-                        _hover={{ bg: 'bg.emphasized' }}
+                        _hover={{ bg: { base: 'whiteAlpha.800', _dark: 'whiteAlpha.100' } }}
                         cursor="pointer"
                         onClick={(e) => {
                             (e.target as HTMLInputElement).select();
@@ -199,7 +202,8 @@ const FileCard = React.memo(({
 
                 {/* Actions Row */}
                 <HStack
-                    bg="bg.muted"
+                    bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                    backdropFilter="blur(10px)"
                     p={1}
                     borderRadius="2xl"
                     gap={1}
@@ -214,7 +218,7 @@ const FileCard = React.memo(({
                             colorPalette={ACTIVE_COLORS[fmt]}
                             onClick={() => onFormatChange(fmt)}
                             fontSize="2xs"
-                            fontWeight="black"
+                            fontWeight="bold"
                             borderRadius="xl"
                             h="8"
                         >
@@ -256,12 +260,13 @@ const FileRow = React.memo(({
             exit={{ opacity: 0, x: 20 }}
         >
             <Box
-                bg="bg.panel"
+                bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
+                backdropFilter="blur(20px)"
                 borderRadius="2xl"
                 p={4}
                 borderWidth="1px"
-                borderColor="border.subtle"
-                _hover={{ shadow: 'md', bg: 'bg.emphasized' }}
+                borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
+                _hover={{ shadow: 'md', bg: { base: 'whiteAlpha.800', _dark: 'whiteAlpha.100' } }}
                 transition="all 0.2s"
             >
                 <Flex align="center" gap={4}>
@@ -280,7 +285,8 @@ const FileRow = React.memo(({
                         w="12"
                         h="12"
                         borderRadius="lg"
-                        bg="bg.muted"
+                        bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                        backdropFilter="blur(10px)"
                         overflow="hidden"
                         flexShrink={0}
                         cursor="pointer"
@@ -427,12 +433,13 @@ export const Dashboard = React.memo(({
             <VStack gap={8} align="stretch">
                 {/* Header Card */}
                 <Box
-                    bg="bg.panel"
+                    bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
+                    backdropFilter="blur(20px)"
                     borderRadius="3xl"
                     p={{ base: 6, md: 8 }}
                     shadow="sm"
                     borderWidth="1px"
-                    borderColor="border.subtle"
+                    borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
                 >
                     <Flex direction={{ base: 'column', lg: 'row' }} justify="space-between" align={{ base: 'stretch', lg: 'center' }} gap={6}>
                         <HStack gap={5}>
@@ -449,7 +456,7 @@ export const Dashboard = React.memo(({
                                 <Database size={24} />
                             </Center>
                             <VStack align="start" gap={0}>
-                                <Heading size="xl" fontWeight="black" letterSpacing="tight">全部文件</Heading>
+                                <Heading size="xl" fontWeight="bold" letterSpacing="tight">全部文件</Heading>
                                 <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
                                     All Assets Library
                                 </Text>
@@ -463,17 +470,18 @@ export const Dashboard = React.memo(({
                                 </Center>
                                 <Input
                                     pl={12}
-                                    bg="bg.muted"
+                                    bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                                    backdropFilter="blur(10px)"
                                     border="none"
                                     borderRadius="2xl"
                                     placeholder="搜索文件..."
                                     value={searchQuery}
                                     onChange={e => handleSearchChange(e.target.value)}
-                                    _focus={{ bg: 'bg.panel', shadow: 'outline' }}
+                                    _focus={{ bg: { base: 'whiteAlpha.800', _dark: 'whiteAlpha.100' }, shadow: 'outline' }}
                                 />
                             </Box>
                             
-                            <HStack bg="bg.muted" p={1} borderRadius="2xl" gap={1}>
+                            <HStack bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }} backdropFilter="blur(10px)" p={1} borderRadius="2xl" gap={1}>
                                 <IconButton
                                     aria-label="List view"
                                     size="sm"
@@ -511,7 +519,7 @@ export const Dashboard = React.memo(({
                     <VStack align="stretch" gap={6}>
                         <Flex direction={{ base: 'column', sm: 'row' }} justify="space-between" align={{ base: 'stretch', sm: 'center' }} gap={4}>
                             <HStack gap={4}>
-                                <Text fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
+                                <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
                                     目录节点 / Directories
                                 </Text>
                                 <Box h="1px" w="12" bg="border.subtle" display={{ base: 'none', sm: 'block' }} />
@@ -524,7 +532,7 @@ export const Dashboard = React.memo(({
                                     style={{ 
                                         background: 'var(--chakra-colors-bg-muted)',
                                         fontSize: 'var(--chakra-fontSizes-2xs)',
-                                        fontWeight: 'var(--chakra-fontWeights-black)',
+                                        fontWeight: 'var(--chakra-fontWeights-bold)',
                                         padding: '0.5rem 1rem',
                                         borderRadius: 'var(--chakra-radii-xl)',
                                         border: 'none',
@@ -540,7 +548,7 @@ export const Dashboard = React.memo(({
                                     variant="ghost"
                                     onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
                                 >
-                                    <Text fontSize="xs" fontWeight="black">{sortOrder === 'asc' ? 'ASC' : 'DESC'}</Text>
+                                    <Text fontSize="xs" fontWeight="bold">{sortOrder === 'asc' ? 'ASC' : 'DESC'}</Text>
                                 </IconButton>
                             </HStack>
                         </Flex>
@@ -588,7 +596,7 @@ export const Dashboard = React.memo(({
                                 shadow="lg"
                             >
                                 <HStack gap={4}>
-                                    <Text fontWeight="black" fontSize="sm">已选择 {selectedKeys.length} 个文件</Text>
+                                    <Text fontWeight="bold" fontSize="sm">已选择 {selectedKeys.length} 个文件</Text>
                                     <Button size="xs" variant="subtle" onClick={selectAll}>
                                         {selectedKeys.length === paginatedFiles.length ? '取消全选' : '全选本页'}
                                     </Button>
@@ -661,9 +669,9 @@ export const Dashboard = React.memo(({
                         </VStack>
                     )
                 ) : (
-                    <Center py={20} bg="bg.panel" borderRadius="3xl" borderWidth="1px" borderStyle="dashed">
+                    <Center py={20} bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }} backdropFilter="blur(10px)" borderRadius="3xl" borderWidth="1px" borderStyle="dashed" borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}>
                         <VStack gap={4}>
-                            <Box p={6} borderRadius="full" bg="bg.muted">
+                            <Box p={6} borderRadius="full" bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }} backdropFilter="blur(10px)">
                                 <FileIcon size={48} style={{ opacity: 0.2 }} />
                             </Box>
                             <Text fontWeight="bold" color="fg.muted">暂无文件</Text>

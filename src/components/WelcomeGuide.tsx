@@ -59,13 +59,13 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }
                     inset={0}
                     zIndex={100}
                     p={6}
-                    bg="bg.canvas"
+                    bg={{ base: "gray.50", _dark: "black" }}
                 >
                     <MotionBox
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        bg="bg.panel"
-                        backdropFilter="blur(20px)"
+                        bg={{ base: "whiteAlpha.800", _dark: "whiteAlpha.50" }}
+                        backdropFilter="blur(30px)"
                         maxW="2xl"
                         w="full"
                         borderRadius="3xl"
@@ -78,6 +78,8 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }
                         alignItems="center"
                         textAlign="center"
                         borderWidth="1px"
+                        borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
+                    >
                         borderColor="border.subtle"
                     >
                         {/* Background Gradient Blobs */}
@@ -119,7 +121,8 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }
                             >
                                 <Center
                                     p={8}
-                                    bg="bg.panel"
+                                    bg={{ base: "whiteAlpha.800", _dark: "whiteAlpha.100" }}
+                                    backdropFilter="blur(10px)"
                                     borderRadius="3xl"
                                     shadow="2xl"
                                     transform="rotate(3deg)"
@@ -130,7 +133,7 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }
                                 </Center>
 
                                 <VStack gap={4}>
-                                    <Heading size="4xl" fontWeight="black" letterSpacing="tighter">
+                                    <Heading size="4xl" fontWeight="bold" letterSpacing="tighter">
                                         {steps[step].title}
                                     </Heading>
                                     <Text fontSize="lg" fontWeight="bold" color="fg.muted" maxW="md" lineHeight="relaxed">
@@ -161,7 +164,7 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }
                                     h={16}
                                     borderRadius="2xl"
                                     colorPalette="blue"
-                                    fontWeight="black"
+                                    fontWeight="bold"
                                     fontSize="lg"
                                     onClick={() => setStep(step + 1)}
                                 >
@@ -174,7 +177,7 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }
                                     h={16}
                                     borderRadius="2xl"
                                     colorPalette="blue"
-                                    fontWeight="black"
+                                    fontWeight="bold"
                                     fontSize="lg"
                                     onClick={onStart}
                                     shadow="2xl"

@@ -45,17 +45,18 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
 
     return (
         <Box
-            bg="bg.panel"
+            bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
+            backdropFilter="blur(20px)"
             borderRadius="3xl"
             p={{ base: 6, md: 8 }}
-            shadow="2xl"
+            shadow="xl"
             borderWidth="1px"
-            borderColor="border.subtle"
+            borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
         >
             <VStack gap={{ base: 6, md: 8 }} align="stretch">
                 <Flex justify="space-between" align="center">
                     <VStack align="start" gap={0}>
-                        <Heading size={{ base: "md", md: "xl" }} fontWeight="black" letterSpacing="tight">
+                        <Heading size={{ base: "md", md: "xl" }} fontWeight="bold" letterSpacing="tight">
                             存储概览
                         </Heading>
                         <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
@@ -84,13 +85,14 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                 <VStack gap={{ base: 5, md: 6 }} align="stretch">
                     {/* Bucket Name Section */}
                     <VStack align="stretch" gap={2}>
-                        <Text fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" ml={1} textTransform="uppercase">
+                        <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" ml={1} textTransform="uppercase">
                             当前存储桶
                         </Text>
                         <HStack gap={3}>
                             <Box
                                 flex={1}
-                                bg="bg.muted"
+                                bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                                backdropFilter="blur(10px)"
                                 borderRadius="2xl"
                                 px={5}
                                 py={3}
@@ -99,6 +101,8 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                                 color="fg.subtle"
                                 shadow="inner"
                                 truncate
+                                borderWidth="1px"
+                                borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
                             >
                                 {bucketName}
                             </Box>
@@ -120,23 +124,22 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                     <Box
                         position="relative"
                         overflow="hidden"
-                        bgGradient="to-br"
-                        gradientFrom="bg.muted"
-                        gradientTo="bg.panel"
+                        bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                        backdropFilter="blur(10px)"
                         borderRadius="2xl"
                         p={6}
                         borderWidth="1px"
-                        borderColor="border.subtle"
+                        borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
                         transition="all 0.3s"
                         _hover={{ shadow: "lg" }}
                     >
                         <Box position="absolute" top={0} right={0} p={4} opacity={0.1}>
                             <HardDrive size={64} />
                         </Box>
-                        <Text fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" mb={2} textTransform="uppercase">
+                        <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" mb={2} textTransform="uppercase">
                             访问域名
                         </Text>
-                        <Text fontSize="lg" fontWeight="black" letterSpacing="tight">
+                        <Text fontSize="lg" fontWeight="bold" letterSpacing="tight">
                             {customDomain || '未设置'}
                         </Text>
                     </Box>
@@ -145,6 +148,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                     <SimpleGrid columns={2} gap={4}>
                         <Box
                             bg="orange.500/10"
+                            backdropFilter="blur(10px)"
                             borderRadius="2xl"
                             p={6}
                             borderWidth="1px"
@@ -162,10 +166,10 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                                     <Database size={16} />
                                 </Center>
                                 <VStack align="start" gap={0}>
-                                    <Text fontSize="2xl" fontWeight="black" color="orange.600" letterSpacing="tighter">
+                                    <Text fontSize="2xl" fontWeight="bold" color="orange.600" letterSpacing="tighter">
                                         {fileCount}
                                     </Text>
-                                    <Text fontSize="2xs" fontWeight="black" color="orange.500/60" textTransform="uppercase">
+                                    <Text fontSize="2xs" fontWeight="bold" color="orange.500/60" textTransform="uppercase">
                                         文件总数
                                     </Text>
                                 </VStack>
@@ -174,6 +178,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
 
                         <Box
                             bg="blue.500/10"
+                            backdropFilter="blur(10px)"
                             borderRadius="2xl"
                             p={6}
                             borderWidth="1px"
@@ -191,10 +196,10 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                                     <HardDrive size={16} />
                                 </Center>
                                 <VStack align="start" gap={0}>
-                                    <Text fontSize="2xl" fontWeight="black" color="blue.600" letterSpacing="tighter">
+                                    <Text fontSize="2xl" fontWeight="bold" color="blue.600" letterSpacing="tighter">
                                         {formatTotalSize(totalSize)}
                                     </Text>
-                                    <Text fontSize="2xs" fontWeight="black" color="blue.500/60" textTransform="uppercase">
+                                    <Text fontSize="2xs" fontWeight="bold" color="blue.500/60" textTransform="uppercase">
                                         已用空间
                                     </Text>
                                 </VStack>
@@ -204,11 +209,12 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
 
                     {/* Connection Status */}
                     <Box
-                        bg="bg.muted/30"
+                        bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                        backdropFilter="blur(10px)"
                         borderRadius="3xl"
                         p={6}
                         borderWidth="1px"
-                        borderColor="border.subtle"
+                        borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
                     >
                         <VStack gap={4} align="stretch">
                             <Flex justify="space-between" align="center">
@@ -228,7 +234,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                                     </MotionBox>
                                     </Center>
                                     <VStack align="start" gap={0}>
-                                        <Text fontSize="sm" fontWeight="black">
+                                        <Text fontSize="sm" fontWeight="bold">
                                             {status === 'online' ? '连接正常' : status === 'offline' ? '连接断开' : '正在检测...'}
                                         </Text>
                                         <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
@@ -255,7 +261,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                                     borderWidth="1px"
                                     borderColor="red.500/20"
                                 >
-                                    <Text fontSize="2xs" fontWeight="black" color="red.500" lineHeight="relaxed">
+                                    <Text fontSize="2xs" fontWeight="bold" color="red.500" lineHeight="relaxed">
                                         尚未配置 R2 信息，请点击上方 “R2 存储桶配置” 按钮完成配置
                                     </Text>
                                 </Box>

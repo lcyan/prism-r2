@@ -92,7 +92,7 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                             <Github size={44} color={window.matchMedia('(prefers-color-scheme: dark)').matches ? 'black' : 'white'} />
                         </Center>
                         <Stack gap={2}>
-                            <Heading size="xl" fontWeight="black" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
+                            <Heading size="xl" fontWeight="bold" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
                                 欢迎回来
                             </Heading>
                             <Text fontSize="sm" fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="widest">
@@ -116,7 +116,7 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                                 <AlertCircle size={20} />
                             </Center>
                             <VStack align="start" gap={0}>
-                                <Text fontSize="13px" fontWeight="black" color={{ base: "red.700", _dark: "red.300" }}>登录失败</Text>
+                                <Text fontSize="13px" fontWeight="bold" color={{ base: "red.700", _dark: "red.300" }}>登录失败</Text>
                                 <Text fontSize="11px" fontWeight="bold" color={{ base: "red.600/70", _dark: "red.400/70" }}>{error}</Text>
                             </VStack>
                         </HStack>
@@ -129,7 +129,7 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                                 <Zap size={20} />
                             </Center>
                             <VStack align="start" gap={0}>
-                                <Text fontSize="13px" fontWeight="black" color={{ base: "gray.700", _dark: "gray.200" }}>极速响应</Text>
+                                <Text fontSize="13px" fontWeight="bold" color={{ base: "gray.700", _dark: "gray.200" }}>极速响应</Text>
                                 <Text fontSize="11px" fontWeight="bold" color="gray.400">基于 Cloudflare 全球网络</Text>
                             </VStack>
                         </HStack>
@@ -138,7 +138,7 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                                 <ShieldCheck size={20} />
                             </Center>
                             <VStack align="start" gap={0}>
-                                <Text fontSize="13px" fontWeight="black" color={{ base: "gray.700", _dark: "gray.200" }}>安全合规</Text>
+                                <Text fontSize="13px" fontWeight="bold" color={{ base: "gray.700", _dark: "gray.200" }}>安全合规</Text>
                                 <Text fontSize="11px" fontWeight="bold" color="gray.400">本地存储配置，不经过后端</Text>
                             </VStack>
                         </HStack>
@@ -165,19 +165,19 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                         ) : (
                             <>
                                 <Github size={22} />
-                                <Text fontSize="15px" fontWeight="black">通过 GitHub 继续</Text>
+                                <Text fontSize="15px" fontWeight="bold">通过 GitHub 继续</Text>
                                 <ArrowRight size={18} opacity={0.4} />
                             </>
                         )}
                     </Button>
 
-                    <Text mt={8} textAlign="center" fontSize="11px" fontWeight="black" color="gray.400" textTransform="uppercase" letterSpacing="widest" px={6} lineHeight="relaxed">
+                    <Text mt={8} textAlign="center" fontSize="11px" fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="widest" px={6} lineHeight="relaxed">
                         点击登录即表示您同意本系统的 <Box as="span" color="blue.500" cursor="pointer" _hover={{ textDecoration: "underline" }}>使用协议</Box> 与 <Box as="span" color="blue.500" cursor="pointer" _hover={{ textDecoration: "underline" }}>隐私政策</Box>
                     </Text>
                 </MotionBox>
 
                 {/* Footer Info */}
-                <HStack mt={8} justify="center" gap={6} fontSize="11px" fontWeight="black" color="gray.400" textTransform="uppercase" letterSpacing="2px">
+                <HStack mt={8} justify="center" gap={6} fontSize="11px" fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="2px">
                     <HStack gap={2}>
                         <Globe size={14} />
                         <Text>Powered by R2 Manager</Text>

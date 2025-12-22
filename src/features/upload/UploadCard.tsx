@@ -120,20 +120,20 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
 
     return (
         <Box
-            bg="bg.panel"
+            bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
             backdropFilter="blur(20px)"
             borderRadius="3xl"
             p={8}
             shadow="xl"
             borderWidth="1px"
-            borderColor="border.subtle"
+            borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
         >
             <VStack gap={8} align="stretch">
                 <VStack gap={6} align="stretch">
                     <Flex align="center" justify="space-between" px={1}>
                         <VStack align="start" gap={1}>
-                            <Heading size="xl" fontWeight="black" letterSpacing="tight">上传资源</Heading>
-                            <Text fontSize="2xs" fontWeight="black" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                            <Heading size="xl" fontWeight="bold" letterSpacing="tight">上传资源</Heading>
+                            <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                 Upload Assets
                             </Text>
                         </VStack>
@@ -151,25 +151,26 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                             _hover={{ transform: "translateY(-1px)" }}
                         >
                             <Zap size={12} fill={useWebP ? "currentColor" : "none"} />
-                            <Text fontSize="2xs" fontWeight="black" textTransform="uppercase" letterSpacing="wider">WebP</Text>
+                            <Text fontSize="2xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">WebP</Text>
                         </HStack>
                     </Flex>
 
                     <VStack align="stretch" gap={3}>
-                        <Text fontSize="2xs" fontWeight="black" color="fg.muted" textTransform="uppercase" letterSpacing="widest" ml={1}>
+                        <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest" ml={1}>
                             目标目录
                         </Text>
                         <Box position="relative">
                             <Input
                                 h={14}
                                 borderRadius="2xl"
-                                bg="bg.muted"
+                                bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                                backdropFilter="blur(10px)"
                                 borderWidth="2px"
                                 borderColor="transparent"
                                 fontSize="xs"
                                 fontWeight="bold"
                                 _focus={{
-                                    bg: "bg.panel",
+                                    bg: { base: "whiteAlpha.800", _dark: "whiteAlpha.100" },
                                     borderColor: "blue.500",
                                     boxShadow: "0 0 0 4px rgba(59, 130, 246, 0.1)"
                                 }}
@@ -185,7 +186,8 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                                 w={10}
                                 h={10}
                                 borderRadius="xl"
-                                bg="bg.panel"
+                                bg={{ base: "whiteAlpha.800", _dark: "whiteAlpha.100" }}
+                                backdropFilter="blur(10px)"
                                 shadow="sm"
                                 color="blue.500"
                                 cursor="pointer"
@@ -209,17 +211,17 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                                         left={0}
                                         right={0}
                                         mt={3}
-                                        bg="bg.panel"
-                                        backdropFilter="blur(20px)"
+                                        bg={{ base: "whiteAlpha.900", _dark: "blackAlpha.900" }}
+                                        backdropFilter="blur(30px)"
                                         borderRadius="3xl"
                                         shadow="2xl"
                                         borderWidth="1px"
-                                        borderColor="border.subtle"
+                                        borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
                                         zIndex={60}
                                         overflow="hidden"
                                     >
                                         <Flex p={5} borderBottomWidth="1px" borderColor="border.subtle" align="center" justify="space-between">
-                                            <Text fontSize="2xs" fontWeight="black" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                                            <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                                 选择目录
                                             </Text>
                                             <IconButton
@@ -236,7 +238,8 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                                             <HStack gap={2}>
                                                 <Input 
                                                     flex={1}
-                                                    bg="bg.muted"
+                                                    bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                                                    backdropFilter="blur(10px)"
                                                     borderRadius="xl"
                                                     fontSize="2xs"
                                                     fontWeight="bold"
@@ -333,7 +336,8 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                         w={{ base: 20, md: 24 }}
                         h={{ base: 20, md: 24 }}
                         borderRadius={{ base: "2xl", md: "3xl" }}
-                        bg="bg.panel"
+                        bg={{ base: "whiteAlpha.800", _dark: "whiteAlpha.100" }}
+                        backdropFilter="blur(10px)"
                         shadow="2xl"
                         flexDirection="column"
                         gap={1}
@@ -353,12 +357,12 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                         ) : (
                             <>
                                 <Cloud size={32} fill="currentColor" style={{ opacity: 0.2 }} />
-                                <Text fontSize="2xs" fontWeight="black" textTransform="uppercase" letterSpacing="tighter">Drop</Text>
+                                <Text fontSize="2xs" fontWeight="bold" textTransform="uppercase" letterSpacing="tighter">Drop</Text>
                             </>
                         )}
                     </Center>
                     <VStack gap={{ base: 1, md: 2 }} textAlign="center" position="relative" zIndex={10}>
-                        <Text fontSize={{ base: "sm", md: "md" }} fontWeight="black">拖拽图片到这里</Text>
+                        <Text fontSize={{ base: "sm", md: "md" }} fontWeight="bold">拖拽图片到这里</Text>
                         <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                             Drag & Drop Assets
                         </Text>
@@ -372,7 +376,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                     h={{ base: 14, md: 16 }}
                     borderRadius="2xl"
                     colorPalette="blue"
-                    fontWeight="black"
+                    fontWeight="bold"
                     fontSize="sm"
                     shadow="xl"
                     position="relative"
@@ -393,7 +397,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                 {tasks.length > 0 && (
                     <VStack mt={4} gap={3} pt={6} borderTopWidth="1px" borderColor="border.subtle" align="stretch">
                         {tasks.slice(-3).map((task, i) => (
-                            <VStack key={i} gap={2} p={4} bg="bg.muted/50" borderRadius="2xl" borderWidth="1px" borderColor="border.subtle" align="stretch">
+                            <VStack key={i} gap={2} p={4} bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }} backdropFilter="blur(10px)" borderRadius="2xl" borderWidth="1px" borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }} align="stretch">
                                 <Flex justify="space-between" align="center">
                                     <Text fontSize="2xs" fontWeight="bold" color="fg.muted" truncate maxW="200px">
                                         {task.processedName || task.file.name}
@@ -407,10 +411,10 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                                             <X size={12} />
                                         </Center>
                                     ) : (
-                                        <Text fontSize="2xs" fontWeight="black" color="blue.500">{task.progress}%</Text>
+                                        <Text fontSize="2xs" fontWeight="bold" color="blue.500">{task.progress}%</Text>
                                     )}
                                 </Flex>
-                                <Box h={1.5} bg="bg.muted" borderRadius="full" overflow="hidden">
+                                <Box h={1.5} bg={{ base: "blackAlpha.100", _dark: "whiteAlpha.100" }} borderRadius="full" overflow="hidden">
                                     <Box 
                                         h="full" 
                                         transition="all 0.5s" 
