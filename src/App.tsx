@@ -62,6 +62,27 @@ function App() {
     // Skip auth in development mode
     if (import.meta.env.DEV) {
       setIsAuthenticated(true);
+      
+      // Auto-load dev config from environment variables
+      const devConfig = {
+        id: 'dev-config',
+        name: 'Development Config',
+        accountId: import.meta.env.VITE_DEV_R2_ACCOUNT_ID || '',
+        accessKeyId: import.meta.env.VITE_DEV_R2_ACCESS_KEY_ID || '',
+        secretAccessKey: import.meta.env.VITE_DEV_R2_SECRET_ACCESS_KEY || '',
+        bucketName: import.meta.env.VITE_DEV_R2_BUCKET_NAME || '',
+        customDomain: import.meta.env.VITE_DEV_R2_CUSTOM_DOMAIN,
+        endpoint: import.meta.env.VITE_DEV_R2_ENDPOINT,
+      };
+      
+      // Only auto-import if credentials are provided
+      if (devConfig.accountId && devConfig.accessKeyId && devConfig.secretAccessKey && devConfig.bucketName) {
+        console.log('[Dev Mode] Auto-loading R2 config from environment variables');
+        saveConfig(devConfig);
+      } else {
+        console.log('[Dev Mode] No R2 credentials in environment variables. Please configure manually or create .env.local');
+      }
+      
       return;
     }
 
@@ -114,7 +135,7 @@ function App() {
     };
 
     checkAuth();
-  }, []);
+  }, [saveConfig]);
 
   useEffect(() => {
     if (activeConfigId && isAuthenticated) {
