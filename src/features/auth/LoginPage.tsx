@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Github, Zap, ShieldCheck, Globe, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Github, Zap, ShieldCheck, Globe, ArrowRight, AlertCircle } from 'lucide-react';
 
 interface LoginPageProps {
     onLogin: (userData: any) => void;
@@ -7,6 +7,17 @@ interface LoginPageProps {
 
 export const LoginPage: React.FC<LoginPageProps> = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const errorParam = params.get('error');
+        if (errorParam === 'unauthorized') {
+            setError('您的账号未被授权访问此系统，请联系管理员');
+            // 清除 URL 中的错误参数，避免刷新页面时一直显示
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }, []);
 
     const handleGithubLogin = () => {
         setIsLoading(true);
@@ -32,6 +43,19 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                             <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">请关联您的 GitHub 账户以继续管理 R2</p>
                         </div>
                     </div>
+
+                    {/* Error Message */}
+                    {error && (
+                        <div className="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-[1.5rem] flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center flex-shrink-0">
+                                <AlertCircle size={20} />
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-[13px] font-black text-red-700 dark:text-red-300">登录失败</span>
+                                <span className="text-[11px] font-bold text-red-600/70 dark:text-red-400/70">{error}</span>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Features Preview */}
                     <div className="grid grid-cols-1 gap-4 mb-10">

@@ -94,7 +94,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     }
     const whitelistIds = env.GITHUB_WHITELIST_IDS.split(',').map(id => id.trim());
     if (!whitelistIds.includes(String(userData.id))) {
-      return errorResponse('您的账号未被授权访问此系统，请联系管理员', 403);
+      const redirectUrl = new URL(appUrl);
+      redirectUrl.searchParams.set('error', 'unauthorized');
+      return Response.redirect(redirectUrl.toString(), 302);
     }
 
     // 5. 生成 JWT (7天过期)
