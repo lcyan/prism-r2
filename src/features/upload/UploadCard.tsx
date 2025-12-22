@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Upload as UploadIcon, Check, Cloud, RotateCw, Zap, Folder, X, LayoutGrid, Edit3 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     VStack,
@@ -31,6 +32,7 @@ interface UploadCardProps {
 }
 
 export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, onUploadComplete }) => {
+    const { t } = useTranslation();
     const [tasks, setTasks] = useState<UploadTask[]>([]);
     const [isDragging, setIsDragging] = useState(false);
     const [subPath, setSubPath] = useState('');
@@ -132,7 +134,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                 <VStack gap={6} align="stretch">
                     <Flex align="center" justify="space-between" px={1}>
                         <VStack align="start" gap={1}>
-                            <Heading size="xl" fontWeight="bold" letterSpacing="tight">上传资源</Heading>
+                            <Heading size="xl" fontWeight="bold" letterSpacing="tight">{t('common.upload')}</Heading>
                             <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                 Upload Assets
                             </Text>
@@ -362,7 +364,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                         )}
                     </Center>
                     <VStack gap={{ base: 1, md: 2 }} textAlign="center" position="relative" zIndex={10}>
-                        <Text fontSize={{ base: "sm", md: "md" }} fontWeight="bold">拖拽图片到这里</Text>
+                        <Text fontSize={{ base: "sm", md: "md" }} fontWeight="bold">{t('dashboard.dropzone')}</Text>
                         <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                             Drag & Drop Assets
                         </Text>
@@ -391,7 +393,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                             <RotateCw size={20} />
                         </MotionBox>
                     ) : <UploadIcon size={20} />}
-                    <Text ml={3}>{isUploading ? '正在处理并上传...' : '开始上传'}</Text>
+                    <Text ml={3}>{isUploading ? t('dashboard.uploading') : t('common.upload')}</Text>
                 </Button>
 
                 {tasks.length > 0 && (

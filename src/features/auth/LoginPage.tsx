@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Center, Container, Heading, Stack, Text, VStack, HStack, Spinner } from '@chakra-ui/react';
 import { Github, Zap, ShieldCheck, Globe, ArrowRight, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 
 const MotionBox = motion(Box as any);
@@ -10,6 +11,7 @@ interface LoginPageProps {
 }
 
 export const LoginPage: React.FC<LoginPageProps> = () => {
+    const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -17,10 +19,10 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
         const params = new URLSearchParams(window.location.search);
         const errorParam = params.get('error');
         if (errorParam === 'unauthorized') {
-            setError('您的账号未被授权访问此系统，请联系管理员');
+            setError(t('auth.unauthorized'));
             window.history.replaceState({}, document.title, window.location.pathname);
         }
-    }, []);
+    }, [t]);
 
     const handleGithubLogin = () => {
         setIsLoading(true);
@@ -93,10 +95,10 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                         </Center>
                         <Stack gap={2}>
                             <Heading size="xl" fontWeight="bold" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
-                                欢迎回来
+                                {t('auth.welcomeBack')}
                             </Heading>
                             <Text fontSize="sm" fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="widest">
-                                请关联您的 GitHub 账户以继续管理 R2
+                                {t('auth.loginSubtitle')}
                             </Text>
                         </Stack>
                     </VStack>
@@ -116,7 +118,7 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                                 <AlertCircle size={20} />
                             </Center>
                             <VStack align="start" gap={0}>
-                                <Text fontSize="13px" fontWeight="bold" color={{ base: "red.700", _dark: "red.300" }}>登录失败</Text>
+                                <Text fontSize="13px" fontWeight="bold" color={{ base: "red.700", _dark: "red.300" }}>{t('auth.loginFailed')}</Text>
                                 <Text fontSize="11px" fontWeight="bold" color={{ base: "red.600/70", _dark: "red.400/70" }}>{error}</Text>
                             </VStack>
                         </HStack>
@@ -129,8 +131,8 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                                 <Zap size={20} />
                             </Center>
                             <VStack align="start" gap={0}>
-                                <Text fontSize="13px" fontWeight="bold" color={{ base: "gray.700", _dark: "gray.200" }}>极速响应</Text>
-                                <Text fontSize="11px" fontWeight="bold" color="gray.400">基于 Cloudflare 全球网络</Text>
+                                <Text fontSize="13px" fontWeight="bold" color={{ base: "gray.700", _dark: "gray.200" }}>{t('auth.feature1Title')}</Text>
+                                <Text fontSize="11px" fontWeight="bold" color="gray.400">{t('auth.feature1Desc')}</Text>
                             </VStack>
                         </HStack>
                         <HStack p={4} bg={{ base: "gray.50", _dark: "whiteAlpha.50" }} borderRadius="1.5rem" border="1px solid" borderColor={{ base: "gray.100", _dark: "whiteAlpha.50" }} gap={4}>
@@ -138,8 +140,8 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                                 <ShieldCheck size={20} />
                             </Center>
                             <VStack align="start" gap={0}>
-                                <Text fontSize="13px" fontWeight="bold" color={{ base: "gray.700", _dark: "gray.200" }}>安全合规</Text>
-                                <Text fontSize="11px" fontWeight="bold" color="gray.400">本地存储配置，不经过后端</Text>
+                                <Text fontSize="13px" fontWeight="bold" color={{ base: "gray.700", _dark: "gray.200" }}>{t('auth.feature2Title')}</Text>
+                                <Text fontSize="11px" fontWeight="bold" color="gray.400">{t('auth.feature2Desc')}</Text>
                             </VStack>
                         </HStack>
                     </Stack>
@@ -165,14 +167,14 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                         ) : (
                             <>
                                 <Github size={22} />
-                                <Text fontSize="15px" fontWeight="bold">通过 GitHub 继续</Text>
+                                <Text fontSize="15px" fontWeight="bold">{t('auth.continueWithGithub')}</Text>
                                 <ArrowRight size={18} opacity={0.4} />
                             </>
                         )}
                     </Button>
 
                     <Text mt={8} textAlign="center" fontSize="11px" fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="widest" px={6} lineHeight="relaxed">
-                        点击登录即表示您同意本系统的 <Box as="span" color="blue.500" cursor="pointer" _hover={{ textDecoration: "underline" }}>使用协议</Box> 与 <Box as="span" color="blue.500" cursor="pointer" _hover={{ textDecoration: "underline" }}>隐私政策</Box>
+                        {t('auth.agreementPrefix')} <Box as="span" color="blue.500" cursor="pointer" _hover={{ textDecoration: "underline" }}>{t('auth.terms')}</Box> {t('auth.agreementAnd')} <Box as="span" color="blue.500" cursor="pointer" _hover={{ textDecoration: "underline" }}>{t('auth.privacy')}</Box>
                     </Text>
                 </MotionBox>
 

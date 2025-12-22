@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Search, Grid as GridIcon, List, Copy, Download, Trash2, Folder, File as FileIcon, Check, Eye, RotateCw, ChevronLeft, ChevronRight, Database, Link, Code, FileText, Type } from 'lucide-react';
+import React, { useState, useMemo, useCallback } from 'react';
+import { Search, Grid as GridIcon, List, Download, Trash2, Folder, File as FileIcon, Check, Eye, RotateCw, ChevronLeft, ChevronRight, Database, Link, Code, FileText, Type, ArrowUpDown } from 'lucide-react';
 import { 
     Box, 
     Flex, 
@@ -16,8 +16,20 @@ import {
     Portal,
     Image,
     Separator,
-    Container
+    Container,
+    Skeleton,
+    Table,
 } from '@chakra-ui/react';
+import { 
+    useReactTable, 
+    getCoreRowModel, 
+    getSortedRowModel, 
+    getFilteredRowModel,
+    flexRender,
+    createColumnHelper,
+    type SortingState,
+} from '@tanstack/react-table';
+import { useTranslation } from 'react-i18next';
 import type { R2File } from '../../types';
 import { formatSize } from '../../types';
 import { format } from 'date-fns';
@@ -25,6 +37,7 @@ import { FilePreview } from './FilePreview';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const MotionBox = motion(Box);
+const columnHelper = createColumnHelper<R2File>();
 
 interface DashboardProps {
     files: R2File[];
@@ -38,6 +51,7 @@ interface DashboardProps {
     hasMore?: boolean;
     onLoadMore?: () => void;
     isLoadingMore?: boolean;
+    isLoading?: boolean;
 }
 
 type CopyFormat = 'url' | 'html' | 'markdown' | 'bbcode';
@@ -239,100 +253,6 @@ const FileCard = React.memo(({
     );
 });
 
-interface FileRowProps {
-    file: R2File;
-    isSelected: boolean;
-    onToggleSelect: (key: string) => void;
-    onDelete: (key: string) => void;
-    onPreview: (file: R2File) => void;
-    onDownload: (file: R2File) => void;
-    onCopy: (url: string, format: CopyFormat) => void;
-    publicUrl: string;
-}
-
-const FileRow = React.memo(({
-    file,
-    isSelected,
-    onToggleSelect,
-    onDelete,
-    onPreview,
-    onDownload,
-    onCopy,
-    publicUrl
-}: FileRowProps) => {
-    const dirPath = file.key.split('/').slice(0, -1).join('/');
-    return (
-        <MotionBox
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-        >
-            <Box
-                bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
-                backdropFilter="blur(20px)"
-                borderRadius="2xl"
-                p={4}
-                borderWidth="1px"
-                borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
-                _hover={{ shadow: 'md', bg: { base: 'whiteAlpha.800', _dark: 'whiteAlpha.100' } }}
-                transition="all 0.2s"
-            >
-                <Flex align="center" gap={4}>
-                    <IconButton
-                        aria-label="Select"
-                        size="xs"
-                        rounded="lg"
-                        variant={isSelected ? 'solid' : 'outline'}
-                        colorPalette="blue"
-                        onClick={() => onToggleSelect(file.key)}
-                    >
-                        <Check size={12} />
-                    </IconButton>
-
-                    <Box
-                        w="12"
-                        h="12"
-                        borderRadius="lg"
-                        bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
-                        backdropFilter="blur(10px)"
-                        overflow="hidden"
-                        flexShrink={0}
-                        cursor="pointer"
-                        onClick={() => onPreview(file)}
-                    >
-                        {isImage(file.name) ? (
-                            <Image src={publicUrl} alt={file.name} w="full" h="full" objectFit="cover" />
-                        ) : (
-                            <Center h="full"><FileIcon size={20} /></Center>
-                        )}
-                    </Box>
-
-                    <VStack align="stretch" gap={0} flex={1} minW={0}>
-                        <Text fontWeight="bold" fontSize="sm" truncate title={file.key}>
-                            {file.key}
-                        </Text>
-                        <HStack gap={2}>
-                            <Text fontSize="xs" color="fg.muted">{formatSize(file.size)}</Text>
-                            {dirPath && (
-                                <Badge size="xs" variant="outline" colorPalette="blue">
-                                    {dirPath}
-                                </Badge>
-                            )}
-                        </HStack>
-                    </VStack>
-
-                    <HStack gap={1}>
-                        <IconButton aria-label="Preview" size="sm" variant="ghost" onClick={() => onPreview(file)}><Eye size={16} /></IconButton>
-                        <IconButton aria-label="Download" size="sm" variant="ghost" onClick={() => onDownload(file)}><Download size={16} /></IconButton>
-                        <IconButton aria-label="Copy" size="sm" variant="ghost" onClick={() => onCopy(publicUrl, 'url')}><Copy size={16} /></IconButton>
-                        <IconButton aria-label="Delete" size="sm" variant="ghost" colorPalette="red" onClick={() => onDelete(file.key)}><Trash2 size={16} /></IconButton>
-                    </HStack>
-                </Flex>
-            </Box>
-        </MotionBox>
-    );
-});
-
 export const Dashboard = React.memo(({
     files,
     directories,
@@ -344,31 +264,59 @@ export const Dashboard = React.memo(({
     onBulkDelete,
     hasMore,
     onLoadMore,
-    isLoadingMore
+    isLoadingMore,
+    isLoading = false
 }: DashboardProps) => {
+    const { t } = useTranslation();
     const [activeDirectory, setActiveDirectory] = useState('ROOT');
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-    const [sortBy, setSortBy] = useState<'name' | 'date'>('date');
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+    const [sorting, setSorting] = useState<SortingState>([]);
     const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
     const [previewFile, setPreviewFile] = useState<R2File | null>(null);
     const [globalFormat, setGlobalFormat] = useState<CopyFormat>('url');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
 
-    useEffect(() => {
-        if (selectedKeys.length > 0) {
-            setSelectedKeys(prev => prev.filter(key => files.some(f => f.key === key)));
-        }
-    }, [files]);
+    const columns = useMemo(() => [
+        columnHelper.accessor('key', {
+            header: () => t('common.name'),
+            cell: info => info.getValue(),
+        }),
+        columnHelper.accessor('size', {
+            header: () => t('common.size'),
+            cell: info => formatSize(info.getValue()),
+        }),
+        columnHelper.accessor('lastModified', {
+            header: () => t('common.date'),
+            cell: info => {
+                const val = info.getValue();
+                return val ? format(new Date(val), 'yyyy-MM-dd HH:mm') : '-';
+            },
+        }),
+    ], [t]);
 
-    useEffect(() => {
-        if (activeDirectory !== 'ROOT' && !directories.includes(activeDirectory)) {
-            setActiveDirectory('ROOT');
-            setCurrentPage(1);
-        }
-    }, [directories, activeDirectory]);
+    const filteredFiles = useMemo(() => {
+        return files.filter(file => {
+            const isRoot = activeDirectory === 'ROOT';
+            const dirMatch = isRoot || file.key.startsWith(activeDirectory + '/');
+            const searchMatch = file.name.toLowerCase().includes(searchQuery.toLowerCase());
+            return dirMatch && searchMatch;
+        });
+    }, [files, activeDirectory, searchQuery]);
+
+    const table = useReactTable({
+        data: filteredFiles,
+        columns,
+        state: {
+            sorting,
+            globalFilter: searchQuery,
+        },
+        onSortingChange: setSorting,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+    });
 
     const handleDirectoryChange = useCallback((dir: string) => {
         setActiveDirectory(dir);
@@ -394,27 +342,9 @@ export const Dashboard = React.memo(({
         navigator.clipboard.writeText(text);
     }, [getFormattedLink]);
 
-    const filteredFiles = useMemo(() => {
-        return files.filter(file => {
-            const isRoot = activeDirectory === 'ROOT';
-            const dirMatch = isRoot || file.key.startsWith(activeDirectory + '/');
-            const searchMatch = file.name.toLowerCase().includes(searchQuery.toLowerCase());
-            return dirMatch && searchMatch;
-        });
-    }, [files, activeDirectory, searchQuery]);
-
     const sortedFiles = useMemo(() => {
-        return [...filteredFiles].sort((a, b) => {
-            if (sortBy === 'name') {
-                const res = a.name.localeCompare(b.name);
-                return sortOrder === 'asc' ? res : -res;
-            } else {
-                const dateA = a.lastModified ? new Date(a.lastModified).getTime() : 0;
-                const dateB = b.lastModified ? new Date(b.lastModified).getTime() : 0;
-                return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
-            }
-        });
-    }, [filteredFiles, sortBy, sortOrder]);
+        return table.getRowModel().rows.map(row => row.original);
+    }, [table]);
 
     const totalPages = Math.ceil(sortedFiles.length / itemsPerPage);
     const paginatedFiles = useMemo(() => {
@@ -464,7 +394,7 @@ export const Dashboard = React.memo(({
                                 <Database size={24} />
                             </Center>
                             <VStack align="start" gap={0}>
-                                <Heading size="xl" fontWeight="bold" letterSpacing="tight">全部文件</Heading>
+                                <Heading size="xl" fontWeight="bold" letterSpacing="tight">{t('dashboard.title')}</Heading>
                                 <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
                                     All Assets Library
                                 </Text>
@@ -482,7 +412,7 @@ export const Dashboard = React.memo(({
                                     backdropFilter="blur(10px)"
                                     border="none"
                                     borderRadius="2xl"
-                                    placeholder="搜索文件..."
+                                    placeholder={t('common.search')}
                                     value={searchQuery}
                                     onChange={e => handleSearchChange(e.target.value)}
                                     _focus={{ bg: { base: 'whiteAlpha.800', _dark: 'whiteAlpha.100' }, shadow: 'outline' }}
@@ -534,30 +464,26 @@ export const Dashboard = React.memo(({
                             </HStack>
                             
                             <HStack gap={3}>
-                                <select 
-                                    value={sortBy} 
-                                    onChange={(e) => setSortBy(e.target.value as 'name' | 'date')}
-                                    style={{ 
-                                        background: 'var(--chakra-colors-bg-muted)',
-                                        fontSize: 'var(--chakra-fontSizes-2xs)',
-                                        fontWeight: 'var(--chakra-fontWeights-bold)',
-                                        padding: '0.5rem 1rem',
-                                        borderRadius: 'var(--chakra-radii-xl)',
-                                        border: 'none',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    <option value="date">按创建时间</option>
-                                    <option value="name">按文件名</option>
-                                </select>
-                                <IconButton
-                                    aria-label="Sort order"
-                                    size="sm"
+                                <Button
+                                    size="xs"
                                     variant="ghost"
-                                    onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
+                                    onClick={() => setSorting([{ id: 'lastModified', desc: sorting[0]?.id === 'lastModified' ? !sorting[0].desc : true }])}
+                                    borderRadius="xl"
+                                    fontWeight="bold"
+                                    fontSize="2xs"
                                 >
-                                    <Text fontSize="xs" fontWeight="bold">{sortOrder === 'asc' ? 'ASC' : 'DESC'}</Text>
-                                </IconButton>
+                                    {t('common.date')} <ArrowUpDown size={12} style={{ marginLeft: '4px' }} />
+                                </Button>
+                                <Button
+                                    size="xs"
+                                    variant="ghost"
+                                    onClick={() => setSorting([{ id: 'key', desc: sorting[0]?.id === 'key' ? !sorting[0].desc : false }])}
+                                    borderRadius="xl"
+                                    fontWeight="bold"
+                                    fontSize="2xs"
+                                >
+                                    {t('common.name')} <ArrowUpDown size={12} style={{ marginLeft: '4px' }} />
+                                </Button>
                             </HStack>
                         </Flex>
 
@@ -604,9 +530,9 @@ export const Dashboard = React.memo(({
                                 shadow="lg"
                             >
                                 <HStack gap={4}>
-                                    <Text fontWeight="bold" fontSize="sm">已选择 {selectedKeys.length} 个文件</Text>
+                                    <Text fontWeight="bold" fontSize="sm">{t('dashboard.selectedCount', { count: selectedKeys.length })}</Text>
                                     <Button size="xs" variant="subtle" onClick={selectAll}>
-                                        {selectedKeys.length === paginatedFiles.length ? '取消全选' : '全选本页'}
+                                        {selectedKeys.length === paginatedFiles.length ? t('dashboard.deselectAll') : t('dashboard.selectAll')}
                                     </Button>
                                 </HStack>
                                 <HStack gap={2}>
@@ -617,13 +543,13 @@ export const Dashboard = React.memo(({
                                         color="red.500"
                                         _hover={{ bg: 'red.50' }}
                                         onClick={() => {
-                                            if (confirm(`确定要删除选中的 ${selectedKeys.length} 个文件吗？`)) {
+                                            if (confirm(t('common.bulkDeleteConfirm', { count: selectedKeys.length }))) {
                                                 onBulkDelete(selectedKeys);
                                                 setSelectedKeys([]);
                                             }
                                         }}
                                     >
-                                        <Trash2 size={16} style={{ marginRight: '8px' }} /> 批量删除
+                                        <Trash2 size={16} style={{ marginRight: '8px' }} /> {t('dashboard.bulkDelete')}
                                     </Button>
                                     <IconButton
                                         aria-label="Close"
@@ -640,7 +566,13 @@ export const Dashboard = React.memo(({
                 </AnimatePresence>
 
                 {/* Files Grid/List */}
-                {paginatedFiles.length > 0 ? (
+                {isLoading ? (
+                    <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap={8}>
+                        {[1, 2, 3, 4, 5, 6].map(i => (
+                            <Skeleton key={i} h="200px" borderRadius="3xl" />
+                        ))}
+                    </SimpleGrid>
+                ) : paginatedFiles.length > 0 ? (
                     viewMode === 'grid' ? (
                         <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap={8}>
                             {paginatedFiles.map(file => (
@@ -660,21 +592,45 @@ export const Dashboard = React.memo(({
                             ))}
                         </SimpleGrid>
                     ) : (
-                        <VStack gap={4} align="stretch">
-                            {paginatedFiles.map(file => (
-                                <FileRow
-                                    key={file.key}
-                                    file={file}
-                                    isSelected={selectedKeys.includes(file.key)}
-                                    onToggleSelect={toggleSelect}
-                                    onDelete={onDelete}
-                                    onPreview={setPreviewFile}
-                                    onDownload={onDownload}
-                                    onCopy={handleCopy}
-                                    publicUrl={publicUrlGetter(file.key)}
-                                />
-                            ))}
-                        </VStack>
+                        <Box 
+                            bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }} 
+                            backdropFilter="blur(20px)" 
+                            borderRadius="3xl" 
+                            overflow="hidden"
+                            borderWidth="1px"
+                            borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
+                        >
+                            <Table.Root variant="outline" size="sm">
+                                <Table.Header>
+                                    {table.getHeaderGroups().map(headerGroup => (
+                                        <Table.Row key={headerGroup.id}>
+                                            {headerGroup.headers.map(header => (
+                                                <Table.ColumnHeader key={header.id} fontWeight="bold" fontSize="2xs" textTransform="uppercase" letterSpacing="widest">
+                                                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                                </Table.ColumnHeader>
+                                            ))}
+                                            <Table.ColumnHeader textAlign="right">{t('common.actions')}</Table.ColumnHeader>
+                                        </Table.Row>
+                                    ))}
+                                </Table.Header>
+                                <Table.Body>
+                                    {paginatedFiles.map(file => (
+                                        <Table.Row key={file.key} _hover={{ bg: "whiteAlpha.200" }}>
+                                            <Table.Cell fontWeight="bold" fontSize="xs">{file.key}</Table.Cell>
+                                            <Table.Cell fontSize="xs">{formatSize(file.size)}</Table.Cell>
+                                            <Table.Cell fontSize="xs">{file.lastModified ? format(new Date(file.lastModified), 'yyyy-MM-dd HH:mm') : '-'}</Table.Cell>
+                                            <Table.Cell textAlign="right">
+                                                <HStack gap={1} justify="flex-end">
+                                                    <IconButton aria-label="Preview" size="xs" variant="ghost" onClick={() => setPreviewFile(file)}><Eye size={14} /></IconButton>
+                                                    <IconButton aria-label="Download" size="xs" variant="ghost" onClick={() => onDownload(file)}><Download size={14} /></IconButton>
+                                                    <IconButton aria-label="Delete" size="xs" variant="ghost" colorPalette="red" onClick={() => onDelete(file.key)}><Trash2 size={14} /></IconButton>
+                                                </HStack>
+                                            </Table.Cell>
+                                        </Table.Row>
+                                    ))}
+                                </Table.Body>
+                            </Table.Root>
+                        </Box>
                     )
                 ) : (
                     <Center py={20} bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }} backdropFilter="blur(10px)" borderRadius="3xl" borderWidth="1px" borderStyle="dashed" borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}>
@@ -682,7 +638,7 @@ export const Dashboard = React.memo(({
                             <Box p={6} borderRadius="full" bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }} backdropFilter="blur(10px)">
                                 <FileIcon size={48} style={{ opacity: 0.2 }} />
                             </Box>
-                            <Text fontWeight="bold" color="fg.muted">暂无文件</Text>
+                            <Text fontWeight="bold" color="fg.muted">{t('common.noData')}</Text>
                         </VStack>
                     </Center>
                 )}
@@ -736,7 +692,7 @@ export const Dashboard = React.memo(({
                             size="lg"
                             borderRadius="2xl"
                         >
-                            加载更多
+                            {t('common.loadMore')}
                         </Button>
                     </Center>
                 )}

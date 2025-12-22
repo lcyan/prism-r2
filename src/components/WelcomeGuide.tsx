@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Box as BoxIcon, ShieldCheck, Zap, Globe, Rocket } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     VStack,
@@ -20,30 +21,31 @@ interface WelcomeGuideProps {
 }
 
 export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }) => {
+    const { t } = useTranslation();
     const [step, setStep] = useState(0);
 
     const steps = [
         {
-            title: "欢迎使用 R2 Manager",
-            desc: "这是您的全能 Cloudflare R2 对象存储增强管理工具，专为极致体验而生。",
+            title: t('welcome.title'),
+            desc: t('welcome.desc1'),
             icon: <BoxIcon size={40} color="blue" />,
             color: "blue.500"
         },
         {
-            title: "更安全的连接方式",
-            desc: "支持自定义 Endpoint 和 CORS 防护，您的数据凭据仅存储在本地浏览器中。",
+            title: t('welcome.step1'),
+            desc: t('welcome.desc2'),
             icon: <ShieldCheck size={40} color="green" />,
             color: "green.500"
         },
         {
-            title: "极致的文件交互",
-            desc: "iOS 风格的玻璃拟态设计，支持大文件分片上传、秒级预览和批量管理。",
+            title: t('welcome.step2'),
+            desc: t('welcome.desc3'),
             icon: <Zap size={40} color="orange" />,
             color: "orange.500"
         },
         {
-            title: "全球加速分发",
-            desc: "完美支持自定义域名，您可以直接通过 R2 桶生成带域名的 CDN 公开链接。",
+            title: t('welcome.step3'),
+            desc: t('welcome.desc4'),
             icon: <Globe size={40} color="purple" />,
             color: "purple.500"
         }
@@ -166,7 +168,7 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }
                                     fontSize="lg"
                                     onClick={() => setStep(step + 1)}
                                 >
-                                    继续探索
+                                    {t('welcome.next')}
                                     <ChevronRight size={20} style={{ marginLeft: '8px' }} />
                                 </Button>
                             ) : (
@@ -183,7 +185,7 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }
                                     _active={{ transform: "scale(0.98)" }}
                                 >
                                     <Rocket size={22} style={{ marginRight: '8px' }} />
-                                    立即开始配置
+                                    {t('welcome.getStarted')}
                                 </Button>
                             )}
                         </HStack>
@@ -197,7 +199,7 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }
                             _hover={{ color: "fg.default" }}
                             onClick={onStart}
                         >
-                            跳过向导
+                            {t('welcome.skip')}
                         </Button>
                     </MotionBox>
                 </Center>

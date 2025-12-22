@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { R2Config } from '../../lib/r2Client';
 import { Save, Trash2, Plus, Server, Key, Database, Globe, Settings, ChevronRight, Cloud, CloudRain } from 'lucide-react';
 import { r2Manager } from '../../lib/r2Client';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Container,
@@ -23,6 +27,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const MotionBox = motion(Box);
 
+const configSchema = z.object({
+    id: z.string().optional(),
+    name: z.string().min(1, 'Name is required'),
+    accountId: z.string().min(1, 'Account ID is required'),
+    accessKeyId: z.string().min(1, 'Access Key ID is required'),
+    secretAccessKey: z.string().min(1, 'Secret Access Key is required'),
+    bucketName: z.string().min(1, 'Bucket Name is required'),
+    customDomain: z.string().optional(),
+    endpoint: z.string().optional(),
+});
+
+type ConfigFormData = z.infer<typeof configSchema>;
+
 interface ConfigPageProps {
     configs: R2Config[];
     activeConfigId: string | null;
@@ -33,7 +50,12 @@ interface ConfigPageProps {
 }
 
 export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId, onSave, onDelete, onSwitch, onImport }) => {
-    const [formData, setFormData] = useState<Partial<R2Config>>({});
+    const { t } = useTranslation();
+    const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<ConfigFormData>({
+        resolver: zodResolver(configSchema),
+    });
+
+    const currentId = watch('id');
 
     const handleExport = () => {
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(configs));
@@ -54,30 +76,28 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
             try {
                 const imported = JSON.parse(e.target?.result as string);
                 if (Array.isArray(imported)) {
-                    if (window.confirm(`确定要导入 ${imported.length} 个配置吗？现有配置将被覆盖。`)) {
+                    if (window.confirm(t('config.importConfirm', { count: imported.length }))) {
                         onImport(imported);
                     }
                 } else {
-                    alert('无效的配置文件格式');
+                    alert(t('config.invalidFormat'));
                 }
             } catch (err) {
-                alert('解析文件失败');
+                alert(t('config.parseError'));
             }
         };
         reader.readAsText(file);
-        // Reset input
-        event.target.value = '';
         event.target.value = '';
     };
 
     const handleCloudSync = async () => {
-        if (!window.confirm('这将会尝试将当前配置同步到云端。注意：如果已配置环境变量，云端同步可能是只读的。确定吗？')) return;
+        if (!window.confirm(t('config.syncConfirm'))) return;
 
         try {
             await r2Manager.syncToCloud(configs);
-            alert('配置已成功同步！');
+            alert(t('config.syncSuccess'));
         } catch (e: any) {
-            alert('同步失败: ' + e.message);
+            alert(t('config.syncError') + ': ' + e.message);
         }
     };
 
@@ -85,33 +105,31 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
         try {
             const imported = await r2Manager.syncFromCloud();
             if (Array.isArray(imported)) {
-                if (window.confirm(`发现云端配置，包含 ${imported.length} 个项目。确定要恢复并覆盖当前本地配置吗？`)) {
+                if (window.confirm(t('config.restoreConfirm', { count: imported.length }))) {
                     onImport(imported);
-                    alert('配置恢复成功！');
+                    alert(t('config.restoreSuccess'));
                 }
             } else {
-                alert('云端没有有效的配置列表。');
+                alert(t('config.noCloudConfig'));
             }
         } catch (e: any) {
-            alert('恢复失败: ' + e.message);
+            alert(t('config.restoreError') + ': ' + e.message);
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (formData.accountId && formData.accessKeyId && formData.secretAccessKey && formData.bucketName) {
-            onSave({
-                id: formData.id || Date.now().toString(),
-                name: (formData.name || formData.bucketName || '').trim(),
-                accountId: (formData.accountId || '').trim(),
-                accessKeyId: (formData.accessKeyId || '').trim(),
-                secretAccessKey: (formData.secretAccessKey || '').trim(),
-                bucketName: (formData.bucketName || '').trim(),
-                customDomain: (formData.customDomain || '').trim(),
-                endpoint: (formData.endpoint || '').trim(),
-            } as R2Config);
-            setFormData({});
-        }
+    const onFormSubmit = (data: ConfigFormData) => {
+        onSave({
+            ...data,
+            id: data.id || Date.now().toString(),
+            name: data.name.trim(),
+            accountId: data.accountId.trim(),
+            accessKeyId: data.accessKeyId.trim(),
+            secretAccessKey: data.secretAccessKey.trim(),
+            bucketName: data.bucketName.trim(),
+            customDomain: data.customDomain?.trim(),
+            endpoint: data.endpoint?.trim(),
+        } as R2Config);
+        reset();
     };
 
     return (
@@ -271,7 +289,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                                     aria-label="Edit config"
                                                     variant="subtle"
                                                     size="sm"
-                                                    onClick={(e) => { e.stopPropagation(); setFormData(config); }}
+                                                    onClick={(e) => { e.stopPropagation(); reset(config); }}
                                                     borderRadius="xl"
                                                 >
                                                     <Settings size={18} />
@@ -314,7 +332,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             bg: { base: "whiteAlpha.800", _dark: "whiteAlpha.100" },
                             shadow: "lg"
                         }}
-                        onClick={() => setFormData({})}
+                        onClick={() => reset({})}
                     >
                         <Center
                             w={16}
@@ -369,7 +387,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                     </Center>
                     <VStack align="start" gap={0}>
                         <Heading size={{ base: "xl", md: "3xl" }} fontWeight="bold" letterSpacing="tight">
-                            {formData.id ? '编辑现有配置' : '初始化新存储桶'}
+                            {currentId ? '编辑现有配置' : '初始化新存储桶'}
                         </Heading>
                         <Text fontSize={{ base: "2xs", md: "xs" }} fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
                             R2 Connection Credentials
@@ -377,19 +395,19 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                     </VStack>
                 </Flex>
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit(onFormSubmit)}>
                     <VStack gap={{ base: 6, md: 10 }} align="stretch">
                         <SimpleGrid columns={{ base: 1, md: 2 }} gap={{ base: 6, md: 10 }}>
-                            <Field.Root required>
+                            <Field.Root invalid={!!errors.name}>
                                 <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
-                                    存储桶昵称 / Nickname
+                                    {t('config.name')} / Nickname
                                 </Field.Label>
                                 <HStack
                                     bg="bg.muted/50"
                                     borderRadius="2xl"
                                     px={5}
                                     borderWidth="2px"
-                                    borderColor="transparent"
+                                    borderColor={errors.name ? "red.500" : "transparent"}
                                     _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
                                     transition="all 0.2s"
                                 >
@@ -399,22 +417,22 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                         py={4}
                                         fontWeight="bold"
                                         placeholder="例如: 工作备份"
-                                        value={formData.name || ''}
-                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                        {...register('name')}
                                     />
                                 </HStack>
+                                {errors.name && <Field.ErrorText>{errors.name.message}</Field.ErrorText>}
                             </Field.Root>
 
-                            <Field.Root required>
+                            <Field.Root invalid={!!errors.bucketName}>
                                 <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
-                                    存储桶名称 / Bucket Name
+                                    {t('config.bucketName')} / Bucket Name
                                 </Field.Label>
                                 <HStack
                                     bg="bg.muted/50"
                                     borderRadius="2xl"
                                     px={5}
                                     borderWidth="2px"
-                                    borderColor="transparent"
+                                    borderColor={errors.bucketName ? "red.500" : "transparent"}
                                     _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
                                     transition="all 0.2s"
                                 >
@@ -424,13 +442,13 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                         py={4}
                                         fontWeight="bold"
                                         placeholder="r2-bucket-main"
-                                        value={formData.bucketName || ''}
-                                        onChange={e => setFormData({ ...formData, bucketName: e.target.value })}
+                                        {...register('bucketName')}
                                     />
                                 </HStack>
+                                {errors.bucketName && <Field.ErrorText>{errors.bucketName.message}</Field.ErrorText>}
                             </Field.Root>
 
-                            <Field.Root required>
+                            <Field.Root invalid={!!errors.accountId}>
                                 <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     Cloudflare Account ID
                                 </Field.Label>
@@ -439,7 +457,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                     borderRadius="2xl"
                                     px={5}
                                     borderWidth="2px"
-                                    borderColor="transparent"
+                                    borderColor={errors.accountId ? "red.500" : "transparent"}
                                     _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
                                     transition="all 0.2s"
                                 >
@@ -449,22 +467,22 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                         py={4}
                                         fontWeight="bold"
                                         placeholder="f12e..."
-                                        value={formData.accountId || ''}
-                                        onChange={e => setFormData({ ...formData, accountId: e.target.value })}
+                                        {...register('accountId')}
                                     />
                                 </HStack>
+                                {errors.accountId && <Field.ErrorText>{errors.accountId.message}</Field.ErrorText>}
                             </Field.Root>
 
-                            <Field.Root>
+                            <Field.Root invalid={!!errors.endpoint}>
                                 <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
-                                    Endpoint (可选)
+                                    {t('config.endpoint')} (可选)
                                 </Field.Label>
                                 <HStack
                                     bg="bg.muted/50"
                                     borderRadius="2xl"
                                     px={5}
                                     borderWidth="2px"
-                                    borderColor="transparent"
+                                    borderColor={errors.endpoint ? "red.500" : "transparent"}
                                     _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
                                     transition="all 0.2s"
                                 >
@@ -474,22 +492,21 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                         py={4}
                                         fontWeight="bold"
                                         placeholder="https://...r2.cloudflarestorage.com"
-                                        value={formData.endpoint || ''}
-                                        onChange={e => setFormData({ ...formData, endpoint: e.target.value })}
+                                        {...register('endpoint')}
                                     />
                                 </HStack>
                             </Field.Root>
 
-                            <Field.Root required>
+                            <Field.Root invalid={!!errors.accessKeyId}>
                                 <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
-                                    Access Key ID
+                                    {t('config.accessKey')}
                                 </Field.Label>
                                 <HStack
                                     bg="bg.muted/50"
                                     borderRadius="2xl"
                                     px={5}
                                     borderWidth="2px"
-                                    borderColor="transparent"
+                                    borderColor={errors.accessKeyId ? "red.500" : "transparent"}
                                     _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
                                     transition="all 0.2s"
                                 >
@@ -499,22 +516,22 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                         py={4}
                                         fontWeight="bold"
                                         placeholder="P2z..."
-                                        value={formData.accessKeyId || ''}
-                                        onChange={e => setFormData({ ...formData, accessKeyId: e.target.value })}
+                                        {...register('accessKeyId')}
                                     />
                                 </HStack>
+                                {errors.accessKeyId && <Field.ErrorText>{errors.accessKeyId.message}</Field.ErrorText>}
                             </Field.Root>
 
-                            <Field.Root required>
+                            <Field.Root invalid={!!errors.secretAccessKey}>
                                 <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
-                                    Secret Access Key
+                                    {t('config.secretKey')}
                                 </Field.Label>
                                 <HStack
                                     bg="bg.muted/50"
                                     borderRadius="2xl"
                                     px={5}
                                     borderWidth="2px"
-                                    borderColor="transparent"
+                                    borderColor={errors.secretAccessKey ? "red.500" : "transparent"}
                                     _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
                                     transition="all 0.2s"
                                 >
@@ -525,23 +542,23 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                         py={4}
                                         fontWeight="bold"
                                         placeholder="••••••••••••••••"
-                                        value={formData.secretAccessKey || ''}
-                                        onChange={e => setFormData({ ...formData, secretAccessKey: e.target.value })}
+                                        {...register('secretAccessKey')}
                                     />
                                 </HStack>
+                                {errors.secretAccessKey && <Field.ErrorText>{errors.secretAccessKey.message}</Field.ErrorText>}
                             </Field.Root>
                         </SimpleGrid>
 
-                        <Field.Root>
+                        <Field.Root invalid={!!errors.customDomain}>
                             <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
-                                自定义分发域名 / Custom Domain
+                                {t('config.publicUrl')} / Custom Domain
                             </Field.Label>
                             <HStack
                                 bg="bg.muted/50"
                                 borderRadius="2xl"
                                 px={5}
                                 borderWidth="2px"
-                                borderColor="transparent"
+                                borderColor={errors.customDomain ? "red.500" : "transparent"}
                                 _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
                                 transition="all 0.2s"
                             >
@@ -551,8 +568,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                     py={4}
                                     fontWeight="bold"
                                     placeholder="https://cdn.example.com"
-                                    value={formData.customDomain || ''}
-                                    onChange={e => setFormData({ ...formData, customDomain: e.target.value })}
+                                    {...register('customDomain')}
                                 />
                             </HStack>
                         </Field.Root>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Database, HardDrive, RotateCw, Activity } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     VStack,
@@ -33,6 +34,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
     onRefresh,
     status
 }) => {
+    const { t } = useTranslation();
     const formatTotalSize = (bytes: number) => {
         if (bytes === 0) return '0 B';
         const k = 1024;
@@ -57,7 +59,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                 <Flex justify="space-between" align="center">
                     <VStack align="start" gap={0}>
                         <Heading size={{ base: "md", md: "xl" }} fontWeight="bold" letterSpacing="tight">
-                            存储概览
+                            {t('dashboard.storageOverview')}
                         </Heading>
                         <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
                             Storage Overview
@@ -86,7 +88,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                     {/* Bucket Name Section */}
                     <VStack align="stretch" gap={2}>
                         <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" ml={1} textTransform="uppercase">
-                            当前存储桶
+                            {t('dashboard.currentBucket')}
                         </Text>
                         <HStack gap={3}>
                             <Box
@@ -137,10 +139,10 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                             <HardDrive size={64} />
                         </Box>
                         <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" mb={2} textTransform="uppercase">
-                            访问域名
+                            {t('config.publicUrl')}
                         </Text>
                         <Text fontSize="lg" fontWeight="bold" letterSpacing="tight">
-                            {customDomain || '未设置'}
+                            {customDomain || t('common.none')}
                         </Text>
                     </Box>
 
@@ -170,7 +172,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                                         {fileCount}
                                     </Text>
                                     <Text fontSize="2xs" fontWeight="bold" color="orange.500/60" textTransform="uppercase">
-                                        文件总数
+                                        {t('dashboard.fileCount')}
                                     </Text>
                                 </VStack>
                             </VStack>
@@ -200,7 +202,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                                         {formatTotalSize(totalSize)}
                                     </Text>
                                     <Text fontSize="2xs" fontWeight="bold" color="blue.500/60" textTransform="uppercase">
-                                        已用空间
+                                        {t('dashboard.totalSize')}
                                     </Text>
                                 </VStack>
                             </VStack>
@@ -235,7 +237,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                                     </Center>
                                     <VStack align="start" gap={0}>
                                         <Text fontSize="sm" fontWeight="bold">
-                                            {status === 'online' ? '连接正常' : status === 'offline' ? '连接断开' : '正在检测...'}
+                                            {status === 'online' ? t('dashboard.statusOnline') : status === 'offline' ? t('dashboard.statusOffline') : t('common.loading')}
                                         </Text>
                                         <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                             System Status
@@ -253,7 +255,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                                 </IconButton>
                             </Flex>
 
-                            {bucketName === '未选择' && (
+                            {bucketName === t('common.none') && (
                                 <Box
                                     p={4}
                                     bg="red.500/10"
@@ -262,7 +264,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                                     borderColor="red.500/20"
                                 >
                                     <Text fontSize="2xs" fontWeight="bold" color="red.500" lineHeight="relaxed">
-                                        尚未配置 R2 信息，请点击上方 “R2 存储桶配置” 按钮完成配置
+                                        {t('dashboard.noConfigWarning')}
                                     </Text>
                                 </Box>
                             )}

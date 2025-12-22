@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -14,7 +15,34 @@ export default defineConfig({
         process: true,
       },
     }),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['vite.svg'],
+      manifest: {
+        name: 'Prism R2 Manager',
+        short_name: 'PrismR2',
+        description: 'Cloudflare R2 File Manager with iOS 25 Aesthetic',
+        theme_color: '#ffffff',
+        icons: [
+          {
+            src: 'vite.svg',
+            sizes: '192x192',
+            type: 'image/svg+xml'
+          },
+          {
+            src: 'vite.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml'
+          }
+        ]
+      }
+    })
   ],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+  },
   resolve: {
     alias: {
       // Fix for AWS SDK v3 path issues in some environments

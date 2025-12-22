@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Copy, Download, ExternalLink, FileText, Image as ImageIcon, Video, Music, Info, Globe, Calendar, HardDrive, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { R2File } from '../../types';
 import { formatSize } from '../../types';
 import { format } from 'date-fns';
@@ -38,6 +39,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
     onDownload,
     onCopyLink
 }) => {
+    const { t } = useTranslation();
     const [isCopied, setIsCopied] = React.useState(false);
 
     const handleCopy = () => {
@@ -145,7 +147,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                             <FileText size={64} color="gray" />
                                         </Center>
                                         <Text color="fg.muted" fontWeight="bold" textTransform="uppercase" letterSpacing="widest" fontSize="sm">
-                                            暂不支持预览该格式
+                                            {t('dashboard.noPreview')}
                                         </Text>
                                         <Button
                                             variant="outline"
@@ -153,7 +155,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                             onClick={() => window.open(publicUrl, '_blank')}
                                         >
                                             <ExternalLink size={18} style={{ marginRight: '8px' }} />
-                                            在新窗口打开
+                                            {t('dashboard.openInNewWindow')}
                                         </Button>
                                     </VStack>
                                 )}
@@ -190,7 +192,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                             <Info size={20} color="blue" />
                                         </Center>
                                         <Heading size="sm" fontWeight="bold" textTransform="uppercase" letterSpacing="tighter">
-                                            文件属性
+                                            {t('dashboard.fileProperties')}
                                         </Heading>
                                     </HStack>
                                     <IconButton
@@ -225,13 +227,13 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                         <VStack align="stretch" gap={6}>
                                             <VStack align="start" gap={2}>
                                                 <HStack gap={2} fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
-                                                    <HardDrive size={10} /> 文件容量
+                                                    <HardDrive size={10} /> {t('common.size')}
                                                 </HStack>
                                                 <Text fontSize="sm" fontWeight="bold">{formatSize(file.size)}</Text>
                                             </VStack>
                                             <VStack align="start" gap={2}>
                                                 <HStack gap={2} fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
-                                                    <Calendar size={10} /> 修改日期
+                                                    <Calendar size={10} /> {t('common.date')}
                                                 </HStack>
                                                 <Text fontSize="sm" fontWeight="bold">
                                                     {file.lastModified ? format(file.lastModified, 'yyyy-MM-dd HH:mm:ss') : '-'}
@@ -239,7 +241,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                             </VStack>
                                             <VStack align="start" gap={2}>
                                                 <HStack gap={2} fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
-                                                    <Globe size={10} /> 公开链接
+                                                    <Globe size={10} /> {t('dashboard.publicLink')}
                                                 </HStack>
                                                 <Box
                                                     p={3}
@@ -275,7 +277,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                         onClick={onDownload}
                                     >
                                         <Download size={18} style={{ marginRight: '8px' }} />
-                                        立即下载
+                                        {t('common.download')}
                                     </Button>
                                     <Button
                                         w="full"
@@ -289,12 +291,12 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                         {isCopied ? (
                                             <>
                                                 <Check size={18} style={{ marginRight: '8px' }} />
-                                                已成功复制
+                                                {t('dashboard.copied')}
                                             </>
                                         ) : (
                                             <>
                                                 <Copy size={18} style={{ marginRight: '8px' }} />
-                                                复制外链
+                                                {t('dashboard.copyLink')}
                                             </>
                                         )}
                                     </Button>

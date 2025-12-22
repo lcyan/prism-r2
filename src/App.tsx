@@ -1,10 +1,12 @@
-import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { Box, Center, Spinner, Text, VStack, Portal, Container, Grid, GridItem, Button, HStack, Heading } from '@chakra-ui/react';
 import { Box as BoxIcon } from 'lucide-react';
 import { Layout } from './components/Layout';
 import { useR2 } from './hooks/useR2';
+import { useFiles } from './hooks/useFiles';
 import { r2Manager } from './lib/r2Client';
 import type { R2File } from './types';
+import { useTranslation } from 'react-i18next';
 
 // Lazy load features for better initial load speed
 const ConfigPage = lazy(() => import('./features/config/ConfigPage').then(m => ({ default: m.ConfigPage })));
@@ -15,16 +17,20 @@ const LoginPage = lazy(() => import('./features/auth/LoginPage').then(m => ({ de
 const WelcomeGuide = lazy(() => import('./components/WelcomeGuide').then(m => ({ default: m.WelcomeGuide })));
 
 // Loading fallback component
-const PageLoader = () => (
-  <Center minH="60vh">
-    <VStack gap={4}>
-      <Spinner size="xl" color="blue.500" />
-      <Text fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="widest">加载中...</Text>
-    </VStack>
-  </Center>
-);
+const PageLoader = () => {
+  const { t } = useTranslation();
+  return (
+    <Center minH="60vh">
+      <VStack gap={4}>
+        <Spinner size="xl" color="blue.500" />
+        <Text fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="widest">{t('common.loading')}</Text>
+      </VStack>
+    </Center>
+  );
+};
 
 function App() {
+  const { t } = useTranslation();
   const {
     configs,
     activeConfigId,
@@ -36,12 +42,8 @@ function App() {
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [activeTab, setActiveTab] = useState<'files' | 'config'>(activeConfigId ? 'files' : 'config');
-  const [files, setFiles] = useState<R2File[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { files, directories, isLoading, isError, error, refetch, deleteFile, bulkDelete } = useFiles();
   const [showWelcome, setShowWelcome] = useState(false);
-  const [continuationToken, setContinuationToken] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (isAuthenticated && configs.length === 0) {
@@ -55,21 +57,6 @@ function App() {
       }
     }
   }, [isAuthenticated, configs.length]);
-
-  const directories = useMemo(() => {
-    const dirs = new Set<string>();
-    files.forEach(file => {
-      const parts = file.key.split('/');
-      if (parts.length > 1) {
-        let current = '';
-        for (let i = 0; i < parts.length - 1; i++) {
-          current = current ? `${current}/${parts[i]}` : parts[i];
-          dirs.add(current);
-        }
-      }
-    });
-    return Array.from(dirs).sort();
-  }, [files]);
 
   useEffect(() => {
     // Check auth session via API
@@ -125,100 +112,37 @@ function App() {
 
   useEffect(() => {
     if (activeConfigId && isAuthenticated) {
-      // Try to load from cache first for instant UI
-      try {
-        const cached = localStorage.getItem(`r2_files_${activeConfigId}`);
-        if (cached) {
-          const parsedFiles = JSON.parse(cached).map((f: any) => ({
-            ...f,
-            lastModified: f.lastModified ? new Date(f.lastModified) : undefined
-          }));
-          setFiles(parsedFiles);
-        }
-      } catch (e) {
-        console.warn("Failed to load files from cache", e);
-      }
-      loadFiles();
       setActiveTab('files');
     } else if (configs.length > 0) {
       setActiveTab('config');
     }
   }, [activeConfigId, configs.length, isAuthenticated]);
 
-  const loadFiles = useCallback(async (isLoadMore: boolean = false) => {
-    if (!activeConfigId || !isAuthenticated) return;
-    
-    if (isLoadMore) {
-      setIsLoadingMore(true);
-    } else {
-      setLoading(true);
-      setContinuationToken(undefined);
-    }
-    
-    setError(null);
-    try {
-      const response = await r2Manager.listFiles("", true, 1000, isLoadMore ? continuationToken : undefined);
-      const mappedFiles: R2File[] = (response.Contents || [])
-        .map(c => ({
-          name: c.Key?.split('/').pop() || '',
-          key: c.Key || '',
-          size: c.Size || 0,
-          lastModified: c.LastModified,
-          type: 'file' as const
-        }));
-      
-      const newFiles = isLoadMore ? [...files, ...mappedFiles] : mappedFiles;
-      setFiles(newFiles);
-      setContinuationToken(response.NextContinuationToken);
-
-      // Update cache
-      try {
-        localStorage.setItem(`r2_files_${activeConfigId}`, JSON.stringify(newFiles));
-      } catch (e) {
-        console.warn("Failed to save files to cache", e);
-      }
-    } catch (e: any) {
-      console.error(e);
-      setError(e.message || '获取文件列表失败，请检查 R2 配置或 CORS 设置');
-    } finally {
-      setLoading(false);
-      setIsLoadingMore(false);
-    }
-  }, [activeConfigId, isAuthenticated, continuationToken, files]);
-
   const handleUpload = async (file: File, path: string, onProgress: (p: number, s: number) => void) => {
-    return await r2Manager.uploadFile(file, path, onProgress);
+    const result = await r2Manager.uploadFile(file, path, onProgress);
+    refetch();
+    return result;
   };
 
   const handleDelete = useCallback(async (key: string) => {
-    if (window.confirm('确定要删除这个文件吗？')) {
-      setLoading(true);
-      setError(null);
+    if (window.confirm(t('common.deleteConfirm'))) {
       try {
-        await r2Manager.deleteFile(key);
-        await loadFiles();
+        await deleteFile(key);
       } catch (e: any) {
-        setError(e.message || '删除失败');
-      } finally {
-        setLoading(false);
+        alert(t('common.deleteError') + ': ' + e.message);
       }
     }
-  }, [loadFiles]);
+  }, [deleteFile, t]);
 
   const handleBulkDelete = useCallback(async (keys: string[]) => {
-    if (window.confirm(`确定要批量删除选中的 ${keys.length} 个文件吗？`)) {
-      setLoading(true);
-      setError(null);
+    if (window.confirm(t('common.bulkDeleteConfirm', { count: keys.length }))) {
       try {
-        await Promise.all(keys.map(key => r2Manager.deleteFile(key)));
-        await loadFiles();
+        await bulkDelete(keys);
       } catch (e: any) {
-        setError(e.message || '批量删除失败');
-      } finally {
-        setLoading(false);
+        alert(t('common.deleteError') + ': ' + e.message);
       }
     }
-  }, [loadFiles]);
+  }, [bulkDelete, t]);
 
   const handleCopyLink = useCallback((file: R2File) => {
     const url = r2Manager.getPublicUrl(file.key);
@@ -270,8 +194,8 @@ function App() {
   }
 
   const activeConfig = configs.find(c => c.id === activeConfigId);
-  const totalSize = files.reduce((acc, f) => acc + (f.size || 0), 0);
-  const connectionStatus = loading ? 'checking' : (error ? 'offline' : (activeConfigId ? 'online' : 'offline'));
+  const totalSize = files.reduce((acc: number, f: R2File) => acc + (f.size || 0), 0);
+  const connectionStatus = isLoading ? 'checking' : (isError ? 'offline' : (activeConfigId ? 'online' : 'offline'));
 
   return (
     <>
@@ -282,12 +206,12 @@ function App() {
       <Layout
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        onRefresh={() => loadFiles()}
+        onRefresh={() => refetch()}
         onLogout={handleLogout}
         connectionStatus={connectionStatus}
       >
         <Suspense fallback={<PageLoader />}>
-          {loading && (
+          {isLoading && (
             <Portal>
               <Center position="fixed" inset={0} bg="blackAlpha.200" backdropFilter="blur(10px)" zIndex={70}>
                 <VStack 
@@ -308,9 +232,9 @@ function App() {
             </Portal>
           )}
 
-          {error && (
+          {isError && (
             <Box 
-              mb={6} 
+              mb={8} 
               p={4} 
               bg="red.500/10" 
               border="1px solid" 
@@ -320,8 +244,8 @@ function App() {
               maxW="4xl"
             >
               <HStack gap={2} color="red.500" fontWeight="bold">
-                <Text>状态异常:</Text>
-                <Text fontSize="sm" fontWeight="bold">{error}</Text>
+                <Text>{t('common.error')}:</Text>
+                <Text fontSize="sm" fontWeight="bold">{error?.toString()}</Text>
               </HStack>
             </Box>
           )}
@@ -344,15 +268,13 @@ function App() {
                   <Dashboard
                     files={files}
                     directories={directories}
-                    onRefresh={() => loadFiles(false)}
+                    onRefresh={refetch}
                     onDelete={handleDelete}
                     onDownload={handleDownload}
                     onCopyLink={handleCopyLink}
                     publicUrlGetter={publicUrlGetter}
                     onBulkDelete={handleBulkDelete}
-                    hasMore={!!continuationToken}
-                    onLoadMore={() => loadFiles(true)}
-                    isLoadingMore={isLoadingMore}
+                    isLoading={isLoading}
                   />
                 ) : (
                   <VStack 
@@ -402,15 +324,15 @@ function App() {
                   <UploadCard
                     directories={directories}
                     onUpload={handleUpload}
-                    onUploadComplete={() => loadFiles()}
+                    onUploadComplete={() => refetch()}
                   />
                   <BucketOverview
-                    bucketName={activeConfig?.name || '未选择'}
+                    bucketName={activeConfig?.name || t('common.none')}
                     customDomain={activeConfig?.customDomain}
                     fileCount={files.length}
                     totalSize={totalSize}
-                    onRefresh={() => loadFiles()}
-                    status={connectionStatus}
+                    onRefresh={() => refetch()}
+                    status={isLoading ? 'checking' : 'online'}
                   />
                 </VStack>
               </GridItem>
