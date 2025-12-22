@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex, HStack, VStack, Text, IconButton, Button, Container, Center, Spacer } from '@chakra-ui/react';
+import { Box, Flex, HStack, VStack, Text, IconButton, Container, Center, Heading } from '@chakra-ui/react';
 import { LogOut, Box as BoxIcon, RefreshCw, User } from 'lucide-react';
 
 interface LayoutProps {
@@ -51,11 +51,11 @@ export const Layout: React.FC<LayoutProps> = ({
                                     letterSpacing="tight" 
                                     color={{ base: "gray.800", _dark: "white" }}
                                     transition="color 0.2s"
-                                    maxW={{ base: "120px", xs: "200px", md: "none" }}
+                                    maxW={{ base: "120px", sm: "200px", md: "none" }}
                                     truncate
                                 >
-                                    <Box as="span" display={{ base: "none", xs: "inline" }}>Cloudflare R2 对象存储增强管理</Box>
-                                    <Box as="span" display={{ base: "inline", xs: "none" }}>Prism R2</Box>
+                                    <Box as="span" display={{ base: "none", sm: "inline" }}>Cloudflare R2 对象存储增强管理</Box>
+                                    <Box as="span" display={{ base: "inline", sm: "none" }}>Prism R2</Box>
                                 </Heading>
                             </HStack>
                         </HStack>

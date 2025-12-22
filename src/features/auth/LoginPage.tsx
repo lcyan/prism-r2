@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Center, Container, Flex, Heading, Stack, Text, VStack, HStack, Spinner } from '@chakra-ui/react';
+import { Box, Button, Center, Container, Heading, Stack, Text, VStack, HStack, Spinner } from '@chakra-ui/react';
 import { Github, Zap, ShieldCheck, Globe, ArrowRight, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
-import { Box, Center, Spinner, Text, VStack, Portal, Container, Grid, GridItem, Button } from '@chakra-ui/react';
+import { Box, Center, Spinner, Text, VStack, Portal, Container, Grid, GridItem, Button, HStack, Heading } from '@chakra-ui/react';
 import { Box as BoxIcon } from 'lucide-react';
 import { Layout } from './components/Layout';
 import { useR2 } from './hooks/useR2';
@@ -18,7 +18,7 @@ const WelcomeGuide = lazy(() => import('./components/WelcomeGuide').then(m => ({
 const PageLoader = () => (
   <Center minH="60vh">
     <VStack gap={4}>
-      <Spinner size="xl" color="blue.500" thickness="4px" />
+      <Spinner size="xl" color="blue.500" />
       <Text fontWeight="black" color="gray.400" textTransform="uppercase" letterSpacing="widest">加载中...</Text>
     </VStack>
   </Center>
@@ -299,7 +299,7 @@ function App() {
                   borderColor="blackAlpha.50" 
                   gap={6}
                 >
-                  <Spinner size="xl" color="blue.500" thickness="5px" />
+                  <Spinner size="xl" color="blue.500" />
                   <Text fontWeight="black" color="blue.500" letterSpacing="widest" fontSize="sm" textTransform="uppercase">
                     正在同步 R2 数据...
                   </Text>
