@@ -2,15 +2,23 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { r2Manager } from '../lib/r2Client';
 import type { R2File } from '../types';
 
-export const useFiles = (prefix: string = '') => {
+export const useFiles = (activeConfigId: string | null, prefix: string = '') => {
   const queryClient = useQueryClient();
 
   const filesQuery = useQuery({
-    queryKey: ['files', prefix],
+    queryKey: ['files', activeConfigId, prefix],
     queryFn: async () => {
-      const result = await r2Manager.listFiles(prefix);
-      
-      const files: R2File[] = (result.Contents || []).map(item => ({
+      if (!activeConfigId) return { files: [], directories: [] };
+
+      // Fetch top-level items non-recursively to get directories reliably
+      const dirResult = await r2Manager.listFiles(prefix, false);
+      const directories = (dirResult.CommonPrefixes || [])
+        .map(cp => cp.Prefix?.replace(prefix, '').replace(/\/$/, '') || '')
+        .filter(Boolean);
+
+      // Fetch all files recursively for the dashboard view
+      const filesResult = await r2Manager.listFiles(prefix, true);
+      const files: R2File[] = (filesResult.Contents || []).map(item => ({
         name: item.Key?.split('/').pop() || '',
         key: item.Key || '',
         size: item.Size || 0,
@@ -19,27 +27,9 @@ export const useFiles = (prefix: string = '') => {
         extension: item.Key?.split('.').pop()?.toLowerCase()
       }));
 
-      // Extract unique top-level directories from all file keys
-      const dirSet = new Set<string>();
-      (result.Contents || []).forEach(item => {
-        if (item.Key && item.Key.includes('/')) {
-          const parts = item.Key.split('/');
-          dirSet.add(parts[0]);
-        }
-      });
-      
-      // Also include CommonPrefixes if any (for non-recursive calls)
-      (result.CommonPrefixes || []).forEach(cp => {
-        if (cp.Prefix) {
-          dirSet.add(cp.Prefix.replace(/\/$/, ''));
-        }
-      });
-
-      const directories = Array.from(dirSet).sort();
-
-      return { files, directories };
+      return { files, directories: directories.sort() };
     },
-    enabled: !!r2Manager,
+    enabled: !!activeConfigId,
   });
 
   const deleteMutation = useMutation({

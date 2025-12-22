@@ -42,7 +42,7 @@ function App() {
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [activeTab, setActiveTab] = useState<'files' | 'config'>(activeConfigId ? 'files' : 'config');
-  const { files, directories, isLoading, isError, error, refetch, deleteFile, bulkDelete } = useFiles();
+  const { files, directories, isLoading, isError, error, refetch, deleteFile, bulkDelete } = useFiles(activeConfigId);
   const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
