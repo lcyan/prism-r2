@@ -80,8 +80,6 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }
                         borderWidth="1px"
                         borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
                     >
-                        borderColor="border.subtle"
-                    >
                         {/* Background Gradient Blobs */}
                         <Box
                             position="absolute"

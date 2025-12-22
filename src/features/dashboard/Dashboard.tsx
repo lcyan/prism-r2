@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Search, Grid as GridIcon, List, Copy, Download, Trash2, Folder, File as FileIcon, Check, Eye, RotateCw, ChevronLeft, ChevronRight, Database } from 'lucide-react';
+import { Search, Grid as GridIcon, List, Copy, Download, Trash2, Folder, File as FileIcon, Check, Eye, RotateCw, ChevronLeft, ChevronRight, Database, Link, Code, FileText, Type } from 'lucide-react';
 import { 
     Box, 
     Flex, 
@@ -209,22 +209,30 @@ const FileCard = React.memo(({
                     gap={1}
                     position="relative"
                 >
-                    {(['url', 'html', 'markdown', 'bbcode'] as const).map((fmt) => (
-                        <Button
-                            key={fmt}
-                            flex={1}
-                            size="xs"
-                            variant={activeFormat === fmt ? 'solid' : 'ghost'}
-                            colorPalette={ACTIVE_COLORS[fmt]}
-                            onClick={() => onFormatChange(fmt)}
-                            fontSize="2xs"
-                            fontWeight="bold"
-                            borderRadius="xl"
-                            h="8"
-                        >
-                            {fmt.toUpperCase()}
-                        </Button>
-                    ))}
+                    {(['url', 'html', 'markdown', 'bbcode'] as const).map((fmt) => {
+                        const Icon = {
+                            url: Link,
+                            html: Code,
+                            markdown: FileText,
+                            bbcode: Type
+                        }[fmt];
+                        
+                        return (
+                            <Button
+                                key={fmt}
+                                flex={1}
+                                size="xs"
+                                variant={activeFormat === fmt ? 'solid' : 'ghost'}
+                                colorPalette={ACTIVE_COLORS[fmt]}
+                                onClick={() => onFormatChange(fmt)}
+                                borderRadius="xl"
+                                h="8"
+                                title={fmt.toUpperCase()}
+                            >
+                                <Icon size={14} />
+                            </Button>
+                        );
+                    })}
                 </HStack>
             </Box>
         </MotionBox>
