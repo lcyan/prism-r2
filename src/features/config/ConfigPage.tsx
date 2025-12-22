@@ -361,7 +361,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                         borderRadius="2xl"
                         bgGradient="to-br"
                         gradientFrom="purple.500"
-                        gradientTo="indigo-600"
+                        gradientTo="purple.700"
                         shadow="lg"
                         color="white"
                     >

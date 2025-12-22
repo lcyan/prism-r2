@@ -94,7 +94,7 @@ export const Layout: React.FC<LayoutProps> = ({
                                 border="1px solid" 
                                 borderColor={{ base: "gray.200", _dark: "whiteAlpha.10" }}
                             >
-                                <Center w={8} h={8} borderRadius="full" bgGradient="to-tr" gradientFrom="amber.400" gradientTo="orange.500" color="white" fontSize="xs" fontWeight="bold" shadow="sm">
+                                <Center w={8} h={8} borderRadius="full" bgGradient="to-tr" gradientFrom="orange.400" gradientTo="orange.600" color="white" fontSize="xs" fontWeight="bold" shadow="sm">
                                     <User size={14} />
                                 </Center>
                                 <VStack align="start" gap={0} minW="80px">
