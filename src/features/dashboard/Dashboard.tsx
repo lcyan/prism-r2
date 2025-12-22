@@ -258,7 +258,7 @@ export const Dashboard = React.memo(({
     onRefresh,
     onDelete,
     onDownload,
-    onCopyLink: _onCopyLink,
+    onCopyLink,
     publicUrlGetter,
     onBulkDelete,
     hasMore,
@@ -275,6 +275,7 @@ export const Dashboard = React.memo(({
     const [previewFile, setPreviewFile] = useState<R2File | null>(null);
     const [globalFormat, setGlobalFormat] = useState<CopyFormat>('url');
     const [currentPage, setCurrentPage] = useState(1);
+    const [isDirectorySwitching, setIsDirectorySwitching] = useState(false);
     const itemsPerPage = 20;
 
     const columns = useMemo(() => [
@@ -316,9 +317,17 @@ export const Dashboard = React.memo(({
     });
 
     const handleDirectoryChange = useCallback((dir: string) => {
+        setIsDirectorySwitching(true);
         setActiveDirectory(dir);
         setCurrentPage(1);
         setSelectedKeys([]);
+        setSearchQuery(''); // 清空搜索避免混淆
+        // 使用 requestAnimationFrame 确保状态更新后立即清除加载状态
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                setIsDirectorySwitching(false);
+            });
+        });
     }, []);
 
     const handleSearchChange = useCallback((query: string) => {
@@ -340,10 +349,10 @@ export const Dashboard = React.memo(({
         navigator.clipboard.writeText(text);
     }, [getFormattedLink]);
 
-    const sortedFiles = useMemo(() => 
-        table.getSortedRowModel().rows.map(row => row.original),
-        [filteredFiles, sorting]
-    );
+    const sortedFiles = useMemo(() => {
+        const rows = table.getSortedRowModel().rows;
+        return rows.map(row => row.original);
+    }, [table.getSortedRowModel()]);
 
     const totalPages = Math.ceil(sortedFiles.length / itemsPerPage);
     const paginatedFiles = useMemo(() => {
@@ -477,6 +486,7 @@ export const Dashboard = React.memo(({
                                     flexShrink={0}
                                     fontWeight="bold"
                                     shadow={activeDirectory === 'ROOT' ? 'sm' : 'none'}
+                                    loading={isDirectorySwitching && activeDirectory === 'ROOT'}
                                 >
                                     全部
                                 </Button>
@@ -491,10 +501,11 @@ export const Dashboard = React.memo(({
                                         onClick={() => handleDirectoryChange(dir)}
                                         flexShrink={0}
                                         shadow={activeDirectory === dir ? 'sm' : 'none'}
+                                        loading={isDirectorySwitching && activeDirectory === dir}
                                     >
                                         {dir}
                                     </Button>
-                                )), [directories, activeDirectory, handleDirectoryChange])}
+                                )), [directories, activeDirectory, handleDirectoryChange, isDirectorySwitching])}
                             </HStack>
 
                             <HStack gap={2} flexShrink={0}>
@@ -719,7 +730,7 @@ export const Dashboard = React.memo(({
                             isOpen={!!previewFile}
                             onClose={() => setPreviewFile(null)}
                             onDownload={() => onDownload(previewFile)}
-                            onCopyLink={() => _onCopyLink(previewFile)}
+                            onCopyLink={() => onCopyLink(previewFile)}
                             publicUrl={publicUrlGetter(previewFile.key)}
                         />
                     )}

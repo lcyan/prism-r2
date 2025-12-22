@@ -34,11 +34,13 @@ function App() {
   const {
     configs,
     activeConfigId,
-    saveConfig,
+    saveConfig: saveConfigOriginal,
     deleteConfig,
     switchConfig,
     importConfigs,
   } = useR2();
+  
+  const saveConfig = useCallback(saveConfigOriginal, []);
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [activeTab, setActiveTab] = useState<'files' | 'config'>(activeConfigId ? 'files' : 'config');
