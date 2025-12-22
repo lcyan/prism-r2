@@ -340,9 +340,10 @@ export const Dashboard = React.memo(({
         navigator.clipboard.writeText(text);
     }, [getFormattedLink]);
 
-    const sortedFiles = useMemo(() => {
-        return table.getSortedRowModel().rows.map(row => row.original);
-    }, [table, sorting, filteredFiles]);
+    const sortedFiles = useMemo(() => 
+        table.getSortedRowModel().rows.map(row => row.original),
+        [filteredFiles, sorting]
+    );
 
     const totalPages = Math.ceil(sortedFiles.length / itemsPerPage);
     const paginatedFiles = useMemo(() => {
