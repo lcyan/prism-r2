@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Flex, HStack, VStack, Text, IconButton, Container, Center, Heading } from '@chakra-ui/react';
-import { LogOut, Box as BoxIcon, RefreshCw, User } from 'lucide-react';
+import { LogOut, Database, RefreshCw, User } from 'lucide-react';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -39,13 +39,19 @@ export const Layout: React.FC<LayoutProps> = ({
                                 gap={4} 
                                 cursor="pointer" 
                                 onClick={() => onTabChange('files')}
-                                _hover={{ "& .logo-icon": { transform: "scale(1.1)" }, "& .logo-text": { color: "blue.500" } }}
+                                group
                             >
-                                <Center className="logo-icon" bg="blue.500" borderRadius="xl" p={2} shadow="sm" transition="transform 0.2s">
-                                    <BoxIcon size={20} color="white" />
+                                <Center 
+                                    bg="blue.500" 
+                                    borderRadius="xl" 
+                                    p={2} 
+                                    shadow="sm" 
+                                    transition="transform 0.2s"
+                                    _groupHover={{ transform: "scale(1.1)" }}
+                                >
+                                    <Database size={20} color="white" />
                                 </Center>
                                 <Heading 
-                                    className="logo-text"
                                     size="md" 
                                     fontWeight="black" 
                                     letterSpacing="tight" 
@@ -53,6 +59,7 @@ export const Layout: React.FC<LayoutProps> = ({
                                     transition="color 0.2s"
                                     maxW={{ base: "120px", sm: "300px", md: "none" }}
                                     truncate
+                                    _groupHover={{ color: "blue.500" }}
                                 >
                                     <Box as="span" display={{ base: "none", sm: "inline" }}>Cloudflare R2 对象存储增强管理</Box>
                                     <Box as="span" display={{ base: "inline", sm: "none" }}>Prism R2</Box>
@@ -109,7 +116,7 @@ export const Layout: React.FC<LayoutProps> = ({
                                 shadow={activeTab === 'config' ? "lg" : "none"}
                                 _hover={{ bg: activeTab === 'config' ? "purple.700" : "purple.200" }}
                             >
-                                <BoxIcon size={18} />
+                                <Database size={18} />
                             </IconButton>
 
                             <IconButton

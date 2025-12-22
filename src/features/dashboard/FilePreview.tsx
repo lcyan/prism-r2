@@ -3,7 +3,23 @@ import { X, Copy, Download, ExternalLink, FileText, Image as ImageIcon, Video, M
 import type { R2File } from '../../types';
 import { formatSize } from '../../types';
 import { format } from 'date-fns';
+import {
+    Box,
+    VStack,
+    HStack,
+    Heading,
+    Text,
+    IconButton,
+    Flex,
+    Center,
+    Image,
+    Separator,
+    Button,
+    Portal,
+} from '@chakra-ui/react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const MotionBox = motion(Box);
 
 interface FilePreviewProps {
     file: R2File | null;
@@ -39,160 +55,252 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
     const isPdf = extension === 'pdf';
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">
-                    {/* Backdrop */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-                    />
-
-                    {/* Modal Container */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="ios-glass w-full max-w-5xl h-[85vh] rounded-[2.5rem] overflow-hidden flex flex-col sm:flex-row relative shadow-4xl border-none"
+        <Portal>
+            <AnimatePresence>
+                {isOpen && (
+                    <Box
+                        position="fixed"
+                        inset={0}
+                        zIndex={1000}
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        p={{ base: 4, sm: 6 }}
                     >
-                        {/* Left side: Preview Area */}
-                        <div className="flex-1 bg-gray-100/50 dark:bg-zinc-950/30 flex items-center justify-center relative overflow-hidden group">
-                            {isImage ? (
-                                <img
-                                    src={publicUrl}
-                                    alt={file.name}
-                                    className="max-w-[95%] max-h-[95%] object-contain rounded-xl shadow-2xl transition-transform duration-500 group-hover:scale-105"
-                                />
-                            ) : isVideo ? (
-                                <video controls className="max-w-[95%] max-h-[95%] rounded-xl shadow-2xl">
-                                    <source src={publicUrl} />
-                                    Your browser does not support the video tag.
-                                </video>
-                            ) : isAudio ? (
-                                <audio controls className="w-[80%]">
-                                    <source src={publicUrl} />
-                                    Your browser does not support the audio tag.
-                                </audio>
-                            ) : isPdf ? (
-                                <iframe src={publicUrl} className="w-full h-full border-none" title={file.name} />
-                            ) : (
-                                <div className="flex flex-col items-center gap-6">
-                                    <div className="w-32 h-32 rounded-[2.5rem] bg-white dark:bg-zinc-800 flex items-center justify-center shadow-xl">
-                                        <FileText size={64} className="text-gray-300" />
-                                    </div>
-                                    <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">暂不支持预览该格式</p>
-                                    <button onClick={() => window.open(publicUrl, '_blank')} className="btn-ios-glass flex items-center gap-2">
-                                        <ExternalLink size={18} />
-                                        在新窗口打开
-                                    </button>
-                                </div>
-                            )}
+                        {/* Backdrop */}
+                        <MotionBox
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={onClose}
+                            position="absolute"
+                            inset={0}
+                            bg="black/40"
+                            backdropFilter="blur(8px)"
+                        />
 
-                            <button
-                                onClick={onClose}
-                                className="absolute top-6 left-6 w-10 h-10 rounded-full bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors shadow-lg active:scale-90 sm:hidden"
+                        {/* Modal Container */}
+                        <MotionBox
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            w="full"
+                            maxW="5xl"
+                            h="85vh"
+                            bg="bg.panel"
+                            borderRadius="3xl"
+                            overflow="hidden"
+                            display="flex"
+                            flexDirection={{ base: "column", sm: "row" }}
+                            position="relative"
+                            shadow="4xl"
+                            borderWidth="1px"
+                            borderColor="border.subtle"
+                        >
+                            {/* Left side: Preview Area */}
+                            <Box
+                                flex={1}
+                                bg="bg.muted/30"
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
+                                position="relative"
+                                overflow="hidden"
                             >
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        {/* Right side: Sidebar Info */}
-                        <div className="w-full sm:w-80 h-full bg-white/40 dark:bg-zinc-900/40 backdrop-blur-xl border-l border-white/20 flex flex-col">
-                            {/* Header */}
-                            <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-primary/10 rounded-xl">
-                                        <Info size={20} className="text-primary" />
-                                    </div>
-                                    <h3 className="font-black text-gray-900 dark:text-white uppercase tracking-tighter">文件属性</h3>
-                                </div>
-                                <button
-                                    onClick={onClose}
-                                    className="hidden sm:flex w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 items-center justify-center text-gray-400 transition-colors"
-                                >
-                                    <X size={18} />
-                                </button>
-                            </div>
-
-                            {/* Body */}
-                            <div className="flex-1 overflow-y-auto p-8 space-y-8 no-scrollbar">
-                                {/* File Identity */}
-                                <div className="space-y-4">
-                                    <div className="w-16 h-16 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-6">
-                                        {isImage ? <ImageIcon className="text-blue-500" /> : isVideo ? <Video className="text-purple-500" /> : isAudio ? <Music className="text-pink-500" /> : <FileText className="text-orange-500" />}
-                                    </div>
-                                    <h4 className="text-xl font-black text-gray-900 dark:text-white break-all leading-tight">
-                                        {file.name}
-                                    </h4>
-                                    <div className="px-3 py-1 bg-gray-100 dark:bg-white/5 rounded-lg w-fit text-[10px] font-black uppercase tracking-widest text-gray-500">
-                                        {extension || 'FILE'} FORMAT
-                                    </div>
-                                </div>
-
-                                {/* Detail List */}
-                                <div className="space-y-6">
-                                    <div className="space-y-2">
-                                        <p className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
-                                            <HardDrive size={10} /> 文件容量
-                                        </p>
-                                        <p className="text-sm font-bold text-gray-700 dark:text-gray-300">{formatSize(file.size)}</p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <p className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
-                                            <Calendar size={10} /> 修改日期
-                                        </p>
-                                        <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                                            {file.lastModified ? format(file.lastModified, 'yyyy-MM-dd HH:mm:ss') : '-'}
-                                        </p>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <p className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
-                                            <Globe size={10} /> 公开链接
-                                        </p>
-                                        <div
-                                            className={`p-3 rounded-xl border flex items-center gap-3 group cursor-pointer transition-all ${isCopied ? 'bg-green-50 border-green-200' : 'bg-gray-50/50 dark:bg-black/20 border-gray-100 dark:border-white/5'}`}
-                                            onClick={handleCopy}
+                                {isImage ? (
+                                    <Image
+                                        src={publicUrl}
+                                        alt={file.name}
+                                        maxW="95%"
+                                        maxH="95%"
+                                        objectFit="contain"
+                                        borderRadius="xl"
+                                        shadow="2xl"
+                                        transition="transform 0.5s"
+                                        _hover={{ transform: "scale(1.05)" }}
+                                    />
+                                ) : isVideo ? (
+                                    <Box as="video" controls maxW="95%" maxH="95%" borderRadius="xl" shadow="2xl">
+                                        <source src={publicUrl} />
+                                        Your browser does not support the video tag.
+                                    </Box>
+                                ) : isAudio ? (
+                                    <Box as="audio" controls w="80%">
+                                        <source src={publicUrl} />
+                                        Your browser does not support the audio tag.
+                                    </Box>
+                                ) : isPdf ? (
+                                    <Box as="iframe" src={publicUrl} w="full" h="full" border="none" title={file.name} />
+                                ) : (
+                                    <VStack gap={6}>
+                                        <Center
+                                            w={32}
+                                            h={32}
+                                            borderRadius="3xl"
+                                            bg="bg.panel"
+                                            shadow="xl"
                                         >
-                                            <p className={`text-[10px] font-bold truncate flex-1 ${isCopied ? 'text-green-600' : 'text-gray-400'}`}>{publicUrl}</p>
-                                            {isCopied ? <Check size={12} className="text-green-500" /> : <Copy size={12} className="text-gray-300 group-hover:text-primary transition-colors" />}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                            <FileText size={64} color="gray" />
+                                        </Center>
+                                        <Text color="fg.muted" fontWeight="bold" textTransform="uppercase" letterSpacing="widest" fontSize="sm">
+                                            暂不支持预览该格式
+                                        </Text>
+                                        <Button
+                                            variant="outline"
+                                            borderRadius="2xl"
+                                            onClick={() => window.open(publicUrl, '_blank')}
+                                        >
+                                            <ExternalLink size={18} style={{ marginRight: '8px' }} />
+                                            在新窗口打开
+                                        </Button>
+                                    </VStack>
+                                )}
 
-                            {/* Footer Actions */}
-                            <div className="p-8 space-y-3">
-                                <button
-                                    onClick={onDownload}
-                                    className="w-full btn-ios-primary flex items-center justify-center gap-2 h-14 rounded-2xl font-black transition-all"
+                                <IconButton
+                                    aria-label="Close"
+                                    position="absolute"
+                                    top={6}
+                                    left={6}
+                                    variant="subtle"
+                                    borderRadius="full"
+                                    display={{ base: "flex", sm: "none" }}
+                                    onClick={onClose}
                                 >
-                                    <Download size={18} />
-                                    立即下载
-                                </button>
-                                <button
-                                    onClick={handleCopy}
-                                    className={`w-full flex items-center justify-center gap-2 h-14 rounded-2xl font-black transition-all border ${isCopied ? 'bg-green-500 text-white border-transparent shadow-lg shadow-green-500/30' : 'btn-ios-glass hover:bg-gray-50'}`}
-                                >
-                                    {isCopied ? (
-                                        <>
-                                            <Check size={18} />
-                                            已成功复制
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Copy size={18} />
-                                            复制外链
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                    </motion.div>
-                </div>
-            )}
-        </AnimatePresence>
+                                    <X size={20} />
+                                </IconButton>
+                            </Box>
+
+                            {/* Right side: Sidebar Info */}
+                            <Box
+                                w={{ base: "full", sm: "80" }}
+                                h="full"
+                                bg="bg.panel"
+                                borderLeftWidth={{ base: 0, sm: "1px" }}
+                                borderColor="border.subtle"
+                                display="flex"
+                                flexDirection="column"
+                            >
+                                {/* Header */}
+                                <Flex p={8} borderBottomWidth="1px" borderColor="border.subtle" justify="space-between" align="center">
+                                    <HStack gap={3}>
+                                        <Center p={2} bg="blue.500/10" borderRadius="xl">
+                                            <Info size={20} color="blue" />
+                                        </Center>
+                                        <Heading size="sm" fontWeight="black" textTransform="uppercase" letterSpacing="tighter">
+                                            文件属性
+                                        </Heading>
+                                    </HStack>
+                                    <IconButton
+                                        aria-label="Close"
+                                        variant="ghost"
+                                        size="sm"
+                                        borderRadius="full"
+                                        display={{ base: "none", sm: "flex" }}
+                                        onClick={onClose}
+                                    >
+                                        <X size={18} />
+                                    </IconButton>
+                                </Flex>
+
+                                {/* Body */}
+                                <Box flex={1} overflowY="auto" p={8} css={{ "&::-webkit-scrollbar": { display: "none" } }}>
+                                    <VStack align="stretch" gap={8}>
+                                        {/* File Identity */}
+                                        <VStack align="start" gap={4}>
+                                            <Center w={16} h={16} borderRadius="2xl" bg="bg.muted">
+                                                {isImage ? <ImageIcon color="blue" /> : isVideo ? <Video color="purple" /> : isAudio ? <Music color="pink" /> : <FileText color="orange" />}
+                                            </Center>
+                                            <Heading size="md" fontWeight="black" breakAnywhere lineHeight="tight">
+                                                {file.name}
+                                            </Heading>
+                                            <Badge colorPalette="blue" variant="subtle" px={3} py={1} borderRadius="lg" fontSize="2xs" fontWeight="black" letterSpacing="widest">
+                                                {extension || 'FILE'} FORMAT
+                                            </Badge>
+                                        </VStack>
+
+                                        {/* Detail List */}
+                                        <VStack align="stretch" gap={6}>
+                                            <VStack align="start" gap={2}>
+                                                <HStack gap={2} fontSize="2xs" fontWeight="black" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                                                    <HardDrive size={10} /> 文件容量
+                                                </HStack>
+                                                <Text fontSize="sm" fontWeight="bold">{formatSize(file.size)}</Text>
+                                            </VStack>
+                                            <VStack align="start" gap={2}>
+                                                <HStack gap={2} fontSize="2xs" fontWeight="black" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                                                    <Calendar size={10} /> 修改日期
+                                                </HStack>
+                                                <Text fontSize="sm" fontWeight="bold">
+                                                    {file.lastModified ? format(file.lastModified, 'yyyy-MM-dd HH:mm:ss') : '-'}
+                                                </Text>
+                                            </VStack>
+                                            <VStack align="start" gap={2}>
+                                                <HStack gap={2} fontSize="2xs" fontWeight="black" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                                                    <Globe size={10} /> 公开链接
+                                                </HStack>
+                                                <Box
+                                                    p={3}
+                                                    borderRadius="xl"
+                                                    borderWidth="1px"
+                                                    borderColor={isCopied ? "green.500/50" : "border.subtle"}
+                                                    bg={isCopied ? "green.500/5" : "bg.muted/30"}
+                                                    cursor="pointer"
+                                                    transition="all 0.2s"
+                                                    onClick={handleCopy}
+                                                    w="full"
+                                                >
+                                                    <Flex align="center" gap={3}>
+                                                        <Text fontSize="2xs" fontWeight="bold" truncate flex={1} color={isCopied ? "green.600" : "fg.muted"}>
+                                                            {publicUrl}
+                                                        </Text>
+                                                        {isCopied ? <Check size={12} color="green" /> : <Copy size={12} color="gray" />}
+                                                    </Flex>
+                                                </Box>
+                                            </VStack>
+                                        </VStack>
+                                    </VStack>
+                                </Box>
+
+                                {/* Footer Actions */}
+                                <VStack p={8} gap={3}>
+                                    <Button
+                                        w="full"
+                                        h={14}
+                                        borderRadius="2xl"
+                                        colorPalette="blue"
+                                        fontWeight="black"
+                                        onClick={onDownload}
+                                    >
+                                        <Download size={18} style={{ marginRight: '8px' }} />
+                                        立即下载
+                                    </Button>
+                                    <Button
+                                        w="full"
+                                        h={14}
+                                        borderRadius="2xl"
+                                        variant={isCopied ? "solid" : "outline"}
+                                        colorPalette={isCopied ? "green" : "gray"}
+                                        fontWeight="black"
+                                        onClick={handleCopy}
+                                    >
+                                        {isCopied ? (
+                                            <>
+                                                <Check size={18} style={{ marginRight: '8px' }} />
+                                                已成功复制
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Copy size={18} style={{ marginRight: '8px' }} />
+                                                复制外链
+                                            </>
+                                        )}
+                                    </Button>
+                                </VStack>
+                            </Box>
+                        </MotionBox>
+                    </Box>
+                )}
+            </AnimatePresence>
+        </Portal>
     );
 };

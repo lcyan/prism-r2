@@ -2,6 +2,27 @@ import React, { useState } from 'react';
 import type { R2Config } from '../../lib/r2Client';
 import { Save, Trash2, Plus, Server, Key, Database, Globe, Settings, ChevronRight, Cloud, CloudRain } from 'lucide-react';
 import { r2Manager } from '../../lib/r2Client';
+import {
+    Box,
+    Container,
+    VStack,
+    HStack,
+    Heading,
+    Text,
+    SimpleGrid,
+    Button,
+    IconButton,
+    Input,
+    Field,
+    Flex,
+    Center,
+    Separator,
+    Badge,
+    Portal,
+} from '@chakra-ui/react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const MotionBox = motion(Box);
 
 interface ConfigPageProps {
     configs: R2Config[];
@@ -95,242 +116,465 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
     };
 
     return (
-        <div className="max-w-5xl mx-auto space-y-12 animate-slide-up pb-20">
-            {/* Active Buckets Section */}
-            <section className="space-y-8">
-                <div className="flex items-center justify-between px-2">
-                    <div className="flex items-center gap-5">
-                        <div className="w-14 h-14 rounded-[1.5rem] bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-lg shadow-primary/20">
-                            <Database className="text-white" size={28} />
-                        </div>
-                        <div className="space-y-1">
-                            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">存储桶管理</h2>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Bucket Management</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <div className="flex bg-gray-100/50 dark:bg-white/5 backdrop-blur-sm rounded-2xl p-1 border border-gray-200/50 dark:border-white/5">
-                            <button
-                                onClick={handleCloudSync}
-                                title="同步配置到云端"
-                                className="p-2.5 hover:bg-white dark:hover:bg-zinc-800 rounded-xl text-gray-400 hover:text-primary transition-all shadow-sm"
+        <Container maxW="container.xl" py={8}>
+            <VStack gap={12} align="stretch">
+                {/* Active Buckets Section */}
+                <VStack align="stretch" gap={8}>
+                    <Flex justify="space-between" align="center" px={2}>
+                        <HStack gap={5}>
+                            <Center
+                                w={14}
+                                h={14}
+                                borderRadius="2xl"
+                                bgGradient="to-br"
+                                gradientFrom="blue.500"
+                                gradientTo="blue.700"
+                                shadow="lg"
+                                color="white"
                             >
-                                <Cloud size={18} />
-                            </button>
-                            <button
-                                onClick={handleCloudRestore}
-                                title="从云端恢复配置"
-                                className="p-2.5 hover:bg-white dark:hover:bg-zinc-800 rounded-xl text-gray-400 hover:text-primary transition-all shadow-sm"
+                                <Database size={28} />
+                            </Center>
+                            <VStack align="start" gap={0}>
+                                <Heading size="2xl" fontWeight="black" letterSpacing="tight">存储桶管理</Heading>
+                                <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
+                                    Bucket Management
+                                </Text>
+                            </VStack>
+                        </HStack>
+
+                        <HStack gap={3}>
+                            <HStack bg="bg.muted" p={1} borderRadius="2xl" gap={1}>
+                                <IconButton
+                                    aria-label="Sync to cloud"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={handleCloudSync}
+                                    borderRadius="xl"
+                                >
+                                    <Cloud size={18} />
+                                </IconButton>
+                                <IconButton
+                                    aria-label="Restore from cloud"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={handleCloudRestore}
+                                    borderRadius="xl"
+                                >
+                                    <CloudRain size={18} />
+                                </IconButton>
+                            </HStack>
+                            
+                            <Button
+                                as="label"
+                                variant="outline"
+                                borderRadius="2xl"
+                                size="sm"
+                                cursor="pointer"
                             >
-                                <CloudRain size={18} />
-                            </button>
-                        </div>
-                        <label className="cursor-pointer px-5 py-2.5 bg-white/80 dark:bg-white/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl text-[11px] font-black text-gray-500 hover:text-primary transition-all shadow-sm flex items-center gap-2">
-                            <input type="file" accept=".json" className="hidden" onChange={handleImport} />
-                            <Plus size={14} /> 导入
-                        </label>
-                        <button
-                            onClick={handleExport}
-                            className="px-5 py-2.5 bg-white/80 dark:bg-white/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl text-[11px] font-black text-gray-500 hover:text-primary transition-all shadow-sm"
-                        >
-                            导出备份
-                        </button>
-                    </div>
-                </div>
+                                <input type="file" accept=".json" style={{ display: 'none' }} onChange={handleImport} />
+                                <Plus size={14} style={{ marginRight: '8px' }} /> 导入
+                            </Button>
+                            
+                            <Button
+                                variant="outline"
+                                borderRadius="2xl"
+                                size="sm"
+                                onClick={handleExport}
+                            >
+                                导出备份
+                            </Button>
+                        </HStack>
+                    </Flex>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {configs.map(config => (
-                        <div
-                            key={config.id}
-                            className={`group p-8 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-ios rounded-[2.5rem] relative transition-all duration-500 cursor-pointer border-2 ${activeConfigId === config.id
-                                ? 'border-primary shadow-2xl shadow-primary/10 scale-[1.02]'
-                                : 'border-white/20 dark:border-white/5 hover:shadow-xl hover:-translate-y-2'
-                                }`}
-                            onClick={() => onSwitch(config.id)}
-                        >
-                            {activeConfigId === config.id && (
-                                <div className="absolute top-6 right-6">
-                                    <div className="bg-primary text-white text-[9px] font-black px-3 py-1 rounded-full shadow-lg shadow-primary/30 uppercase tracking-tighter animate-pulse">
-                                        DEFAULT
-                                    </div>
-                                </div>
-                            )}
+                <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={8}>
+                    <AnimatePresence mode="popLayout">
+                        {configs.map((config, index) => (
+                            <MotionBox
+                                key={config.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ delay: index * 0.05 }}
+                            >
+                                <Box
+                                    p={8}
+                                    bg="bg.panel"
+                                    borderRadius="3xl"
+                                    position="relative"
+                                    transition="all 0.5s"
+                                    cursor="pointer"
+                                    borderWidth="2px"
+                                    borderColor={activeConfigId === config.id ? "blue.500" : "border.subtle"}
+                                    shadow={activeConfigId === config.id ? "2xl" : "none"}
+                                    _hover={{
+                                        shadow: "xl",
+                                        transform: "translateY(-8px)",
+                                        borderColor: activeConfigId === config.id ? "blue.500" : "blue.500/30"
+                                    }}
+                                    onClick={() => onSwitch(config.id)}
+                                >
+                                    {activeConfigId === config.id && (
+                                        <Box position="absolute" top={6} right={6}>
+                                            <Badge
+                                                colorPalette="blue"
+                                                variant="solid"
+                                                borderRadius="full"
+                                                px={3}
+                                                py={1}
+                                                fontSize="2xs"
+                                                fontWeight="black"
+                                                letterSpacing="tighter"
+                                            >
+                                                DEFAULT
+                                            </Badge>
+                                        </Box>
+                                    )}
 
-                            <div className="flex flex-col h-full space-y-6">
-                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 ${activeConfigId === config.id ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-gray-100 dark:bg-white/5 text-gray-400 group-hover:bg-primary/10 group-hover:text-primary'}`}>
-                                    <Database size={28} />
-                                </div>
-
-                                <div>
-                                    <h4 className="font-black text-xl text-gray-900 dark:text-white truncate">{config.name}</h4>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1.5">{config.bucketName}</p>
-                                </div>
-
-                                <div className="pt-4 flex items-center justify-between border-t border-gray-100 dark:border-white/5">
-                                    <div className="space-y-1">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Account ID</p>
-                                        <p className="text-[11px] font-black text-gray-600 dark:text-gray-300">{config.accountId.substring(0, 12)}...</p>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); setFormData(config); }}
-                                            className="w-10 h-10 flex items-center justify-center bg-gray-100/50 dark:bg-white/5 hover:bg-primary/10 rounded-xl text-gray-400 hover:text-primary transition-all active:scale-90"
+                                    <VStack align="stretch" gap={6} h="full">
+                                        <Center
+                                            w={14}
+                                            h={14}
+                                            borderRadius="2xl"
+                                            bg={activeConfigId === config.id ? "blue.500" : "bg.muted"}
+                                            color={activeConfigId === config.id ? "white" : "fg.muted"}
+                                            transition="all 0.5s"
+                                            _groupHover={{
+                                                bg: "blue.500/10",
+                                                color: "blue.500"
+                                            }}
                                         >
-                                            <Settings size={18} />
-                                        </button>
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); onDelete(config.id); }}
-                                            className="w-10 h-10 flex items-center justify-center bg-gray-100/50 dark:bg-white/5 hover:bg-red-500/10 rounded-xl text-gray-400 hover:text-red-500 transition-all active:scale-90"
-                                        >
-                                            <Trash2 size={18} />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                                            <Database size={28} />
+                                        </Center>
 
-                    <button
-                        className="group p-8 bg-white/30 dark:bg-white/[0.02] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-[2.5rem] flex flex-col items-center justify-center gap-5 text-gray-400 hover:border-primary/50 hover:bg-white/50 dark:hover:bg-zinc-900/50 transition-all duration-500 cursor-pointer min-h-[240px]"
+                                        <VStack align="start" gap={1}>
+                                            <Heading size="xl" fontWeight="black" truncate w="full">
+                                                {config.name}
+                                            </Heading>
+                                            <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
+                                                {config.bucketName}
+                                            </Text>
+                                        </VStack>
+
+                                        <Separator />
+
+                                        <Flex justify="space-between" align="center">
+                                            <VStack align="start" gap={0}>
+                                                <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="tighter" textTransform="uppercase">
+                                                    Account ID
+                                                </Text>
+                                                <Text fontSize="xs" fontWeight="black" color="fg.subtle">
+                                                    {config.accountId.substring(0, 12)}...
+                                                </Text>
+                                            </VStack>
+                                            <HStack gap={2}>
+                                                <IconButton
+                                                    aria-label="Edit config"
+                                                    variant="subtle"
+                                                    size="sm"
+                                                    onClick={(e) => { e.stopPropagation(); setFormData(config); }}
+                                                    borderRadius="xl"
+                                                >
+                                                    <Settings size={18} />
+                                                </IconButton>
+                                                <IconButton
+                                                    aria-label="Delete config"
+                                                    variant="subtle"
+                                                    colorPalette="red"
+                                                    size="sm"
+                                                    onClick={(e) => { e.stopPropagation(); onDelete(config.id); }}
+                                                    borderRadius="xl"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </IconButton>
+                                            </HStack>
+                                        </Flex>
+                                    </VStack>
+                                </Box>
+                            </MotionBox>
+                        ))}
+                    </AnimatePresence>
+
+                    <Box
+                        as="button"
+                        p={8}
+                        bg="bg.muted/30"
+                        borderWidth="2px"
+                        borderStyle="dashed"
+                        borderColor="border.subtle"
+                        borderRadius="3xl"
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="center"
+                        gap={5}
+                        minH="240px"
+                        transition="all 0.5s"
+                        _hover={{
+                            borderColor: "blue.500/50",
+                            bg: "bg.panel",
+                            shadow: "lg"
+                        }}
                         onClick={() => setFormData({})}
                     >
-                        <div className="w-16 h-16 rounded-[1.5rem] bg-white dark:bg-white/5 flex items-center justify-center shadow-sm group-hover:bg-primary group-hover:text-white group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-primary/30 transition-all duration-500">
+                        <Center
+                            w={16}
+                            h={16}
+                            borderRadius="2xl"
+                            bg="bg.panel"
+                            shadow="sm"
+                            transition="all 0.5s"
+                            _groupHover={{
+                                bg: "blue.500",
+                                color: "white",
+                                transform: "scale(1.1)",
+                                shadow: "lg"
+                            }}
+                        >
                             <Plus size={32} />
-                        </div>
-                        <div className="text-center">
-                            <span className="block font-black text-sm tracking-tight text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">配置新存储桶</span>
-                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1 block">Add New Bucket</span>
-                        </div>
-                    </button>
-                </div>
-            </section>
+                        </Center>
+                        <VStack gap={1}>
+                            <Text fontWeight="black" fontSize="sm" letterSpacing="tight">配置新存储桶</Text>
+                            <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
+                                Add New Bucket
+                            </Text>
+                        </VStack>
+                    </Box>
+                </SimpleGrid>
+            </VStack>
 
             {/* Configuration Form Card */}
-            <section className="bg-white/70 dark:bg-zinc-900/70 backdrop-blur-ios rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-12 border border-white/20 dark:border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)] animate-slide-up">
-                <div className="flex items-center gap-4 md:gap-6 mb-8 md:mb-12">
-                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-[1.5rem] bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20 flex-shrink-0">
-                        <Settings className="w-6 h-6 md:w-8 md:h-8 text-white" />
-                    </div>
-                    <div>
-                        <h3 className="text-xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+            <Box
+                bg="bg.panel"
+                borderRadius="3xl"
+                p={{ base: 6, md: 12 }}
+                borderWidth="1px"
+                borderColor="border.subtle"
+                shadow="2xl"
+                animation="slide-up"
+            >
+                <Flex align="center" gap={{ base: 4, md: 6 }} mb={{ base: 8, md: 12 }}>
+                    <Center
+                        w={{ base: 12, md: 16 }}
+                        h={{ base: 12, md: 16 }}
+                        borderRadius="2xl"
+                        bgGradient="to-br"
+                        gradientFrom="purple.500"
+                        gradientTo="indigo-600"
+                        shadow="lg"
+                        color="white"
+                    >
+                        <Settings size={32} />
+                    </Center>
+                    <VStack align="start" gap={0}>
+                        <Heading size={{ base: "xl", md: "3xl" }} fontWeight="black" letterSpacing="tight">
                             {formData.id ? '编辑现有配置' : '初始化新存储桶'}
-                        </h3>
-                        <p className="text-[9px] md:text-[11px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">R2 Connection Credentials</p>
-                    </div>
-                </div>
+                        </Heading>
+                        <Text fontSize={{ base: "2xs", md: "xs" }} fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
+                            R2 Connection Credentials
+                        </Text>
+                    </VStack>
+                </Flex>
 
-                <form onSubmit={handleSubmit} className="space-y-6 md:space-y-10">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-                        <div className="space-y-2 md:space-y-3">
-                            <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">存储桶昵称 / Nickname</label>
-                            <div className="relative group">
-                                <Database className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
-                                <input
-                                    required
-                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
-                                    placeholder="例如: 工作备份"
-                                    value={formData.name || ''}
-                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                <form onSubmit={handleSubmit}>
+                    <VStack gap={{ base: 6, md: 10 }} align="stretch">
+                        <SimpleGrid columns={{ base: 1, md: 2 }} gap={{ base: 6, md: 10 }}>
+                            <Field.Root required>
+                                <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                    存储桶昵称 / Nickname
+                                </Field.Label>
+                                <HStack
+                                    bg="bg.muted/50"
+                                    borderRadius="2xl"
+                                    px={5}
+                                    borderWidth="2px"
+                                    borderColor="transparent"
+                                    _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
+                                    transition="all 0.2s"
+                                >
+                                    <Database size={20} color="gray" />
+                                    <Input
+                                        variant="plain"
+                                        py={4}
+                                        fontWeight="bold"
+                                        placeholder="例如: 工作备份"
+                                        value={formData.name || ''}
+                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                    />
+                                </HStack>
+                            </Field.Root>
+
+                            <Field.Root required>
+                                <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                    存储桶名称 / Bucket Name
+                                </Field.Label>
+                                <HStack
+                                    bg="bg.muted/50"
+                                    borderRadius="2xl"
+                                    px={5}
+                                    borderWidth="2px"
+                                    borderColor="transparent"
+                                    _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
+                                    transition="all 0.2s"
+                                >
+                                    <Database size={20} color="gray" />
+                                    <Input
+                                        variant="plain"
+                                        py={4}
+                                        fontWeight="bold"
+                                        placeholder="r2-bucket-main"
+                                        value={formData.bucketName || ''}
+                                        onChange={e => setFormData({ ...formData, bucketName: e.target.value })}
+                                    />
+                                </HStack>
+                            </Field.Root>
+
+                            <Field.Root required>
+                                <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                    Cloudflare Account ID
+                                </Field.Label>
+                                <HStack
+                                    bg="bg.muted/50"
+                                    borderRadius="2xl"
+                                    px={5}
+                                    borderWidth="2px"
+                                    borderColor="transparent"
+                                    _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
+                                    transition="all 0.2s"
+                                >
+                                    <Server size={20} color="gray" />
+                                    <Input
+                                        variant="plain"
+                                        py={4}
+                                        fontWeight="bold"
+                                        placeholder="f12e..."
+                                        value={formData.accountId || ''}
+                                        onChange={e => setFormData({ ...formData, accountId: e.target.value })}
+                                    />
+                                </HStack>
+                            </Field.Root>
+
+                            <Field.Root>
+                                <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                    Endpoint (可选)
+                                </Field.Label>
+                                <HStack
+                                    bg="bg.muted/50"
+                                    borderRadius="2xl"
+                                    px={5}
+                                    borderWidth="2px"
+                                    borderColor="transparent"
+                                    _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
+                                    transition="all 0.2s"
+                                >
+                                    <Globe size={20} color="gray" />
+                                    <Input
+                                        variant="plain"
+                                        py={4}
+                                        fontWeight="bold"
+                                        placeholder="https://...r2.cloudflarestorage.com"
+                                        value={formData.endpoint || ''}
+                                        onChange={e => setFormData({ ...formData, endpoint: e.target.value })}
+                                    />
+                                </HStack>
+                            </Field.Root>
+
+                            <Field.Root required>
+                                <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                    Access Key ID
+                                </Field.Label>
+                                <HStack
+                                    bg="bg.muted/50"
+                                    borderRadius="2xl"
+                                    px={5}
+                                    borderWidth="2px"
+                                    borderColor="transparent"
+                                    _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
+                                    transition="all 0.2s"
+                                >
+                                    <Key size={20} color="gray" />
+                                    <Input
+                                        variant="plain"
+                                        py={4}
+                                        fontWeight="bold"
+                                        placeholder="P2z..."
+                                        value={formData.accessKeyId || ''}
+                                        onChange={e => setFormData({ ...formData, accessKeyId: e.target.value })}
+                                    />
+                                </HStack>
+                            </Field.Root>
+
+                            <Field.Root required>
+                                <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                    Secret Access Key
+                                </Field.Label>
+                                <HStack
+                                    bg="bg.muted/50"
+                                    borderRadius="2xl"
+                                    px={5}
+                                    borderWidth="2px"
+                                    borderColor="transparent"
+                                    _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
+                                    transition="all 0.2s"
+                                >
+                                    <Key size={20} color="gray" />
+                                    <Input
+                                        variant="plain"
+                                        type="password"
+                                        py={4}
+                                        fontWeight="bold"
+                                        placeholder="••••••••••••••••"
+                                        value={formData.secretAccessKey || ''}
+                                        onChange={e => setFormData({ ...formData, secretAccessKey: e.target.value })}
+                                    />
+                                </HStack>
+                            </Field.Root>
+                        </SimpleGrid>
+
+                        <Field.Root>
+                            <Field.Label fontSize="2xs" fontWeight="black" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                自定义分发域名 / Custom Domain
+                            </Field.Label>
+                            <HStack
+                                bg="bg.muted/50"
+                                borderRadius="2xl"
+                                px={5}
+                                borderWidth="2px"
+                                borderColor="transparent"
+                                _focusWithin={{ bg: "bg.panel", borderColor: "blue.500", shadow: "sm" }}
+                                transition="all 0.2s"
+                            >
+                                <Globe size={20} color="gray" />
+                                <Input
+                                    variant="plain"
+                                    py={4}
+                                    fontWeight="bold"
+                                    placeholder="https://cdn.example.com"
+                                    value={formData.customDomain || ''}
+                                    onChange={e => setFormData({ ...formData, customDomain: e.target.value })}
                                 />
-                            </div>
-                        </div>
+                            </HStack>
+                        </Field.Root>
 
-                        <div className="space-y-2 md:space-y-3">
-                            <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">存储桶名称 / Bucket Name</label>
-                            <div className="relative group">
-                                <Database className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
-                                <input
-                                    required
-                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
-                                    placeholder="r2-bucket-main"
-                                    value={formData.bucketName || ''}
-                                    onChange={e => setFormData({ ...formData, bucketName: e.target.value })}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2 md:space-y-3">
-                            <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Cloudflare Account ID</label>
-                            <div className="relative group">
-                                <Server className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
-                                <input
-                                    required
-                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
-                                    placeholder="f12e..."
-                                    value={formData.accountId || ''}
-                                    onChange={e => setFormData({ ...formData, accountId: e.target.value })}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2 md:space-y-3">
-                            <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Endpoint (可选)</label>
-                            <div className="relative group">
-                                <Globe className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
-                                <input
-                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
-                                    placeholder="https://...r2.cloudflarestorage.com"
-                                    value={formData.endpoint || ''}
-                                    onChange={e => setFormData({ ...formData, endpoint: e.target.value })}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2 md:space-y-3">
-                            <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Access Key ID</label>
-                            <div className="relative group">
-                                <Key className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
-                                <input
-                                    required
-                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
-                                    placeholder="P2z..."
-                                    value={formData.accessKeyId || ''}
-                                    onChange={e => setFormData({ ...formData, accessKeyId: e.target.value })}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-2 md:space-y-3">
-                            <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Secret Access Key</label>
-                            <div className="relative group">
-                                <Key className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
-                                <input
-                                    required
-                                    type="password"
-                                    className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
-                                    placeholder="••••••••••••••••"
-                                    value={formData.secretAccessKey || ''}
-                                    onChange={e => setFormData({ ...formData, secretAccessKey: e.target.value })}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-2 md:space-y-3">
-                        <label className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">自定义分发域名 / Custom Domain</label>
-                        <div className="relative group">
-                            <Globe className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-primary transition-colors w-4.5 h-4.5 md:w-5 md:h-5" />
-                            <input
-                                className="w-full bg-gray-100/50 dark:bg-white/5 border-2 border-transparent rounded-xl md:rounded-2xl py-3.5 md:py-4.5 pl-12 md:pl-14 pr-4 md:pr-6 focus:bg-white dark:focus:bg-zinc-800 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-bold text-sm shadow-inner"
-                                placeholder="https://cdn.example.com"
-                                value={formData.customDomain || ''}
-                                onChange={e => setFormData({ ...formData, customDomain: e.target.value })}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="pt-4 md:pt-8">
-                        <button
-                            type="submit"
-                            className="w-full bg-primary text-white py-4 md:py-5 rounded-xl md:rounded-[2rem] flex items-center justify-center gap-3 md:gap-4 text-base md:text-lg font-black shadow-2xl shadow-primary/30 hover:bg-primary-hover hover:scale-[1.01] active:scale-[0.98] transition-all"
-                        >
-                            <Save className="w-5 h-5 md:w-6 md:h-6" />
-                            保存连接配置
-                            <ChevronRight className="w-5 h-5 md:w-5.5 md:h-5.5 ml-1 md:ml-2 opacity-50" />
-                        </button>
-                    </div>
+                        <Box pt={{ base: 4, md: 8 }}>
+                            <Button
+                                type="submit"
+                                w="full"
+                                size="xl"
+                                colorPalette="blue"
+                                borderRadius="2xl"
+                                fontWeight="black"
+                                shadow="2xl"
+                                _hover={{ transform: "scale(1.01)" }}
+                                _active={{ transform: "scale(0.98)" }}
+                            >
+                                <Save size={20} style={{ marginRight: '12px' }} />
+                                保存连接配置
+                                <ChevronRight size={20} style={{ marginLeft: '8px', opacity: 0.5 }} />
+                            </Button>
+                        </Box>
+                    </VStack>
                 </form>
-            </section>
-        </div>
+            </Box>
+        </Container>
     );
 };

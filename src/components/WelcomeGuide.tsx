@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Box, ShieldCheck, Zap, Globe, Rocket } from 'lucide-react';
+import { ChevronRight, Box as BoxIcon, ShieldCheck, Zap, Globe, Rocket } from 'lucide-react';
+import {
+    Box,
+    VStack,
+    HStack,
+    Flex,
+    Heading,
+    Text,
+    Button,
+    Center,
+    Portal,
+} from '@chakra-ui/react';
+
+const MotionBox = motion.create(Box);
 
 interface WelcomeGuideProps {
     onStart: () => void;
@@ -14,101 +27,181 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ onStart, isVisible }
         {
             title: "欢迎使用 R2 Manager",
             desc: "这是您的全能 Cloudflare R2 对象存储增强管理工具，专为极致体验而生。",
-            icon: <Box size={40} className="text-primary" />,
-            color: "from-blue-500 to-indigo-600"
+            icon: <BoxIcon size={40} color="blue" />,
+            color: "blue.500"
         },
         {
             title: "更安全的连接方式",
             desc: "支持自定义 Endpoint 和 CORS 防护，您的数据凭据仅存储在本地浏览器中。",
-            icon: <ShieldCheck size={40} className="text-green-500" />,
-            color: "from-green-500 to-teal-600"
+            icon: <ShieldCheck size={40} color="green" />,
+            color: "green.500"
         },
         {
             title: "极致的文件交互",
             desc: "iOS 风格的玻璃拟态设计，支持大文件分片上传、秒级预览和批量管理。",
-            icon: <Zap size={40} className="text-amber-500" />,
-            color: "from-amber-500 to-orange-600"
+            icon: <Zap size={40} color="orange" />,
+            color: "orange.500"
         },
         {
             title: "全球加速分发",
             desc: "完美支持自定义域名，您可以直接通过 R2 桶生成带域名的 CDN 公开链接。",
-            icon: <Globe size={40} className="text-purple-500" />,
-            color: "from-purple-500 to-pink-600"
+            icon: <Globe size={40} color="purple" />,
+            color: "purple.500"
         }
     ];
 
     if (!isVisible) return null;
 
     return (
-        <AnimatePresence>
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#F2F2F7] dark:bg-black">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="ios-glass max-w-2xl w-full rounded-[3rem] p-12 shadow-4xl relative overflow-hidden flex flex-col items-center text-center"
+        <Portal>
+            <AnimatePresence>
+                <Center
+                    position="fixed"
+                    inset={0}
+                    zIndex={100}
+                    p={6}
+                    bg="bg.canvas"
                 >
-                    {/* Background Gradient Blob */}
-                    <div className={`absolute -top-24 -right-24 w-64 h-64 bg-gradient-to-br ${steps[step].color} opacity-20 blur-[80px] rounded-full`} />
-                    <div className={`absolute -bottom-24 -left-24 w-64 h-64 bg-gradient-to-tr ${steps[step].color} opacity-10 blur-[80px] rounded-full`} />
-
-                    <motion.div
-                        key={step}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        className="flex flex-col items-center gap-8 relative z-10"
+                    <MotionBox
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        bg="bg.panel"
+                        backdropFilter="blur(20px)"
+                        maxW="2xl"
+                        w="full"
+                        borderRadius="3xl"
+                        p={12}
+                        shadow="2xl"
+                        position="relative"
+                        overflow="hidden"
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="center"
+                        textAlign="center"
+                        borderWidth="1px"
+                        borderColor="border.subtle"
                     >
-                        <div className="p-8 bg-white dark:bg-zinc-800 rounded-[2rem] shadow-2xl shadow-black/5 rotate-3 hover:rotate-0 transition-transform duration-500">
-                            {steps[step].icon}
-                        </div>
+                        {/* Background Gradient Blobs */}
+                        <Box
+                            position="absolute"
+                            top="-24"
+                            right="-24"
+                            w={64}
+                            h={64}
+                            bg={steps[step].color}
+                            opacity={0.1}
+                            filter="blur(80px)"
+                            borderRadius="full"
+                        />
+                        <Box
+                            position="absolute"
+                            bottom="-24"
+                            left="-24"
+                            w={64}
+                            h={64}
+                            bg={steps[step].color}
+                            opacity={0.05}
+                            filter="blur(80px)"
+                            borderRadius="full"
+                        />
 
-                        <div className="space-y-4">
-                            <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter">
-                                {steps[step].title}
-                            </h2>
-                            <p className="text-lg font-bold text-gray-500 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
-                                {steps[step].desc}
-                            </p>
-                        </div>
-                    </motion.div>
-
-                    <div className="flex gap-2 mt-12 mb-12">
-                        {steps.map((_, i) => (
-                            <div
-                                key={i}
-                                className={`h-1.5 transition-all duration-500 rounded-full ${i === step ? 'w-8 bg-primary shadow-[0_0_10px_rgba(0,122,255,0.4)]' : 'w-1.5 bg-gray-300 dark:bg-zinc-800'}`}
-                            />
-                        ))}
-                    </div>
-
-                    <div className="flex items-center gap-4 w-full">
-                        {step < steps.length - 1 ? (
-                            <button
-                                onClick={() => setStep(step + 1)}
-                                className="flex-1 btn-ios-primary py-5 rounded-[1.5rem] flex items-center justify-center gap-3 text-lg font-black"
+                        <AnimatePresence mode="wait">
+                            <MotionBox
+                                key={step}
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                display="flex"
+                                flexDirection="column"
+                                alignItems="center"
+                                gap={8}
+                                position="relative"
+                                zIndex={10}
                             >
-                                继续探索
-                                <ChevronRight size={20} />
-                            </button>
-                        ) : (
-                            <button
-                                onClick={onStart}
-                                className="flex-1 bg-gradient-to-br from-primary to-blue-600 text-white py-5 rounded-[1.5rem] flex items-center justify-center gap-3 text-lg font-black shadow-2xl shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all border border-white/10"
-                            >
-                                <Rocket size={22} />
-                                立即开始配置
-                            </button>
-                        )}
-                    </div>
+                                <Center
+                                    p={8}
+                                    bg="bg.panel"
+                                    borderRadius="3xl"
+                                    shadow="2xl"
+                                    transform="rotate(3deg)"
+                                    _hover={{ transform: "rotate(0deg)" }}
+                                    transition="transform 0.5s"
+                                >
+                                    {steps[step].icon}
+                                </Center>
 
-                    <button
-                        onClick={onStart}
-                        className="mt-6 text-sm font-bold text-gray-400 hover:text-gray-600 transition-colors"
-                    >
-                        跳过向导
-                    </button>
-                </motion.div>
-            </div>
-        </AnimatePresence>
+                                <VStack gap={4}>
+                                    <Heading size="4xl" fontWeight="black" letterSpacing="tighter">
+                                        {steps[step].title}
+                                    </Heading>
+                                    <Text fontSize="lg" fontWeight="bold" color="fg.muted" maxW="md" lineHeight="relaxed">
+                                        {steps[step].desc}
+                                    </Text>
+                                </VStack>
+                            </MotionBox>
+                        </AnimatePresence>
+
+                        <HStack gap={2} mt={12} mb={12}>
+                            {steps.map((_, i) => (
+                                <Box
+                                    key={i}
+                                    h={1.5}
+                                    transition="all 0.5s"
+                                    borderRadius="full"
+                                    w={i === step ? 8 : 1.5}
+                                    bg={i === step ? "blue.500" : "border.subtle"}
+                                    shadow={i === step ? "0 0 10px rgba(59, 130, 246, 0.4)" : "none"}
+                                />
+                            ))}
+                        </HStack>
+
+                        <HStack gap={4} w="full">
+                            {step < steps.length - 1 ? (
+                                <Button
+                                    flex={1}
+                                    h={16}
+                                    borderRadius="2xl"
+                                    colorPalette="blue"
+                                    fontWeight="black"
+                                    fontSize="lg"
+                                    onClick={() => setStep(step + 1)}
+                                >
+                                    继续探索
+                                    <ChevronRight size={20} style={{ marginLeft: '8px' }} />
+                                </Button>
+                            ) : (
+                                <Button
+                                    flex={1}
+                                    h={16}
+                                    borderRadius="2xl"
+                                    colorPalette="blue"
+                                    fontWeight="black"
+                                    fontSize="lg"
+                                    onClick={onStart}
+                                    shadow="2xl"
+                                    _hover={{ transform: "scale(1.02)" }}
+                                    _active={{ transform: "scale(0.98)" }}
+                                >
+                                    <Rocket size={22} style={{ marginRight: '8px' }} />
+                                    立即开始配置
+                                </Button>
+                            )}
+                        </HStack>
+
+                        <Button
+                            variant="ghost"
+                            mt={6}
+                            fontSize="sm"
+                            fontWeight="bold"
+                            color="fg.muted"
+                            _hover={{ color: "fg.default" }}
+                            onClick={onStart}
+                        >
+                            跳过向导
+                        </Button>
+                    </MotionBox>
+                </Center>
+            </AnimatePresence>
+        </Portal>
     );
 };
