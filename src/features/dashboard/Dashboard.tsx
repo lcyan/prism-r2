@@ -24,7 +24,6 @@ import {
     useReactTable, 
     getCoreRowModel, 
     getSortedRowModel, 
-    getFilteredRowModel,
     flexRender,
     createColumnHelper,
     type SortingState,
@@ -300,7 +299,7 @@ export const Dashboard = React.memo(({
         return files.filter(file => {
             const isRoot = activeDirectory === 'ROOT';
             const dirMatch = isRoot || file.key.startsWith(activeDirectory + '/');
-            const searchMatch = file.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const searchMatch = searchQuery ? file.name.toLowerCase().includes(searchQuery.toLowerCase()) : true;
             return dirMatch && searchMatch;
         });
     }, [files, activeDirectory, searchQuery]);
@@ -310,17 +309,16 @@ export const Dashboard = React.memo(({
         columns,
         state: {
             sorting,
-            globalFilter: searchQuery,
         },
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
     });
 
     const handleDirectoryChange = useCallback((dir: string) => {
         setActiveDirectory(dir);
         setCurrentPage(1);
+        setSelectedKeys([]);
     }, []);
 
     const handleSearchChange = useCallback((query: string) => {
@@ -343,8 +341,8 @@ export const Dashboard = React.memo(({
     }, [getFormattedLink]);
 
     const sortedFiles = useMemo(() => {
-        return table.getRowModel().rows.map(row => row.original);
-    }, [table]);
+        return table.getSortedRowModel().rows.map(row => row.original);
+    }, [table, sorting, filteredFiles]);
 
     const totalPages = Math.ceil(sortedFiles.length / itemsPerPage);
     const paginatedFiles = useMemo(() => {
