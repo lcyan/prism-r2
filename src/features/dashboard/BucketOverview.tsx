@@ -58,7 +58,15 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
             <VStack gap={{ base: 6, md: 8 }} align="stretch">
                 <Flex justify="space-between" align="center">
                     <VStack align="start" gap={0}>
-                        <Heading size={{ base: "md", md: "xl" }} fontWeight="bold" letterSpacing="tight">
+                        <Heading 
+                            size={{ base: "md", md: "xl" }} 
+                            fontWeight="black" 
+                            letterSpacing="tighter" 
+                            bgGradient="to-br"
+                            gradientFrom="blue.500"
+                            gradientTo="purple.600"
+                            bgClip="text"
+                        >
                             {t('dashboard.storageOverview')}
                         </Heading>
                         <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
@@ -141,7 +149,15 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                         <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" mb={2} textTransform="uppercase">
                             {t('config.publicUrl')}
                         </Text>
-                        <Text fontSize="lg" fontWeight="bold" letterSpacing="tight">
+                        <Text 
+                            fontSize="lg" 
+                            fontWeight="black" 
+                            letterSpacing="tighter"
+                            bgGradient="to-br"
+                            gradientFrom="blue.500"
+                            gradientTo="purple.600"
+                            bgClip="text"
+                        >
                             {customDomain || t('common.none')}
                         </Text>
                     </Box>
@@ -236,9 +252,21 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                                     </MotionBox>
                                     </Center>
                                     <VStack align="start" gap={0}>
-                                        <Text fontSize="sm" fontWeight="bold">
-                                            {status === 'online' ? t('dashboard.statusOnline') : status === 'offline' ? t('dashboard.statusOffline') : t('common.loading')}
-                                        </Text>
+                                        <MotionBox
+                                            animate={status === 'online' ? { 
+                                                opacity: [1, 0.6, 1],
+                                                textShadow: [
+                                                    "0 0 0px rgba(72, 187, 120, 0)",
+                                                    "0 0 10px rgba(72, 187, 120, 0.4)",
+                                                    "0 0 0px rgba(72, 187, 120, 0)"
+                                                ]
+                                            } : {}}
+                                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                                        >
+                                            <Text fontSize="sm" fontWeight="black" color={status === 'online' ? "green.500" : "red.500"}>
+                                                {status === 'online' ? t('dashboard.statusOnline') : status === 'offline' ? t('dashboard.statusOffline') : t('common.loading')}
+                                            </Text>
+                                        </MotionBox>
                                         <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                             System Status
                                         </Text>

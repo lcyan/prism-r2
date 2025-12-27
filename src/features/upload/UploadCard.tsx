@@ -134,7 +134,17 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                 <VStack gap={6} align="stretch">
                     <Flex align="center" justify="space-between" px={1}>
                         <VStack align="start" gap={1}>
-                            <Heading size="xl" fontWeight="bold" letterSpacing="tight">{t('common.upload')}</Heading>
+                            <Heading 
+                                size="xl" 
+                                fontWeight="black" 
+                                letterSpacing="tighter"
+                                bgGradient="to-br"
+                                gradientFrom="blue.500"
+                                gradientTo="purple.600"
+                                bgClip="text"
+                            >
+                                {t('common.upload')}
+                            </Heading>
                             <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                 Upload Assets
                             </Text>

@@ -52,17 +52,17 @@ export const Layout: React.FC<LayoutProps> = ({
                                     <Database size={20} color="white" />
                                 </Center>
                                 <Heading 
-                                    size="md" 
-                                    fontWeight="bold" 
-                                    letterSpacing="tight" 
-                                    color={{ base: "gray.800", _dark: "white" }}
-                                    transition="color 0.2s"
-                                    maxW={{ base: "120px", sm: "300px", md: "none" }}
-                                    truncate
-                                    _groupHover={{ color: "blue.500" }}
+                                    size="lg" 
+                                    fontWeight="black" 
+                                    letterSpacing="tighter" 
+                                    bgGradient="to-br"
+                                    gradientFrom="blue.500"
+                                    gradientTo="purple.600"
+                                    bgClip="text"
+                                    transition="all 0.3s"
+                                    _hover={{ filter: "brightness(1.1)" }}
                                 >
-                                    <Box as="span" display={{ base: "none", sm: "inline" }}>Cloudflare R2 对象存储增强管理</Box>
-                                    <Box as="span" display={{ base: "inline", sm: "none" }}>Prism R2</Box>
+                                    Prism R2
                                 </Heading>
                             </HStack>
                         </HStack>

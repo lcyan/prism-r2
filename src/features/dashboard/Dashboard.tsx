@@ -549,7 +549,15 @@ export const Dashboard = React.memo(
                   <Database size={24} />
                 </Center>
                 <VStack align="start" gap={0}>
-                  <Heading size="xl" fontWeight="bold" letterSpacing="tight">
+                  <Heading 
+                    size="xl" 
+                    fontWeight="black" 
+                    letterSpacing="tighter"
+                    bgGradient="to-br"
+                    gradientFrom="blue.500"
+                    gradientTo="purple.600"
+                    bgClip="text"
+                  >
                     {t("dashboard.title")}
                   </Heading>
                   <Text
