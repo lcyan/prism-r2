@@ -145,7 +145,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                             >
                                 {t('common.upload')}
                             </Heading>
-                            <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                            <Text fontSize="2xs" fontWeight="semibold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                 Upload Assets
                             </Text>
                         </VStack>
@@ -168,7 +168,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                     </Flex>
 
                     <VStack align="stretch" gap={3}>
-                        <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest" ml={1}>
+                        <Text fontSize="2xs" fontWeight="semibold" color="fg.muted" textTransform="uppercase" letterSpacing="widest" ml={1}>
                             目标目录
                         </Text>
                         <Box position="relative">
@@ -233,7 +233,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                                         overflow="hidden"
                                     >
                                         <Flex p={5} borderBottomWidth="1px" borderColor="border.subtle" align="center" justify="space-between">
-                                            <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                                            <Text fontSize="2xs" fontWeight="semibold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                                 选择目录
                                             </Text>
                                             <IconButton
@@ -369,13 +369,13 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                         ) : (
                             <>
                                 <Cloud size={32} fill="currentColor" style={{ opacity: 0.2 }} />
-                                <Text fontSize="2xs" fontWeight="bold" textTransform="uppercase" letterSpacing="tighter">Drop</Text>
+                                <Text fontSize="2xs" fontWeight="semibold" textTransform="uppercase" letterSpacing="tighter">Drop</Text>
                             </>
                         )}
                     </Center>
                     <VStack gap={{ base: 1, md: 2 }} textAlign="center" position="relative" zIndex={10}>
                         <Text fontSize={{ base: "sm", md: "md" }} fontWeight="bold">{t('dashboard.dropzone')}</Text>
-                        <Text fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                        <Text fontSize="2xs" fontWeight="semibold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                             Drag & Drop Assets
                         </Text>
                     </VStack>

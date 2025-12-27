@@ -42,14 +42,18 @@ export const Layout: React.FC<LayoutProps> = ({
                                 onClick={() => onTabChange('files')}
                             >
                                 <Center 
-                                    bg="blue.500" 
+                                    w={10}
+                                    h={10}
                                     borderRadius="xl" 
-                                    p={2} 
+                                    bg="bg.muted/30"
+                                    backdropFilter="blur(10px)"
                                     shadow="sm" 
-                                    transition="transform 0.2s"
-                                    _groupHover={{ transform: "scale(1.1)" }}
+                                    transition="all 0.3s"
+                                    _groupHover={{ transform: "scale(1.1)", bg: "blue.500/10" }}
+                                    position="relative"
+                                    overflow="hidden"
                                 >
-                                    <Database size={20} color="white" />
+                                    <img src="/logo.svg" alt="Prism R2 Logo" style={{ width: '80%', height: '80%' }} />
                                 </Center>
                                 <Heading 
                                     size="lg" 
@@ -94,13 +98,13 @@ export const Layout: React.FC<LayoutProps> = ({
                                 border="1px solid" 
                                 borderColor={{ base: "gray.200", _dark: "whiteAlpha.10" }}
                             >
-                                <Center w={8} h={8} borderRadius="full" bgGradient="to-tr" gradientFrom="orange.400" gradientTo="orange.600" color="white" fontSize="xs" fontWeight="bold" shadow="sm">
+                                <Center w={8} h={8} borderRadius="full" bgGradient="to-tr" gradientFrom="blue.500" gradientTo="purple.600" color="white" fontSize="xs" fontWeight="bold" shadow="sm">
                                     <User size={14} />
                                 </Center>
                                 <VStack align="start" gap={0} minW="80px">
                                     <HStack gap={1.5}>
-                                        <Text fontSize="10px" fontWeight="bold" color="gray.400">欢迎，</Text>
-                                        <Text fontSize="11px" fontWeight="bold" color="blue.500">yanleichang</Text>
+                                        <Text fontSize="10px" fontWeight="semibold" color="gray.400">欢迎，</Text>
+                                        <Text fontSize="11px" fontWeight="semibold" color="blue.500">yanleichang</Text>
                                     </HStack>
                                 </VStack>
                             </HStack>

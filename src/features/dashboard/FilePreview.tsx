@@ -20,7 +20,7 @@ import {
 } from '@chakra-ui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const MotionBox = motion(Box);
+const MotionBox = motion.create(Box);
 
 interface FilePreviewProps {
     file: R2File | null;
@@ -218,7 +218,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                             <Heading size="md" fontWeight="bold" lineHeight="tight">
                                                 {file.name}
                                             </Heading>
-                                            <Badge colorPalette="blue" variant="subtle" px={3} py={1} borderRadius="lg" fontSize="2xs" fontWeight="bold" letterSpacing="widest">
+                                            <Badge colorPalette="blue" variant="subtle" px={3} py={1} borderRadius="lg" fontSize="2xs" fontWeight="semibold" letterSpacing="widest">
                                                 {extension || 'FILE'} FORMAT
                                             </Badge>
                                         </VStack>
@@ -226,13 +226,13 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                         {/* Detail List */}
                                         <VStack align="stretch" gap={6}>
                                             <VStack align="start" gap={2}>
-                                                <HStack gap={2} fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                                                <HStack gap={2} fontSize="2xs" fontWeight="semibold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                                     <HardDrive size={10} /> {t('common.size')}
                                                 </HStack>
                                                 <Text fontSize="sm" fontWeight="bold">{formatSize(file.size)}</Text>
                                             </VStack>
                                             <VStack align="start" gap={2}>
-                                                <HStack gap={2} fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                                                <HStack gap={2} fontSize="2xs" fontWeight="semibold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                                     <Calendar size={10} /> {t('common.date')}
                                                 </HStack>
                                                 <Text fontSize="sm" fontWeight="bold">
@@ -240,7 +240,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                                 </Text>
                                             </VStack>
                                             <VStack align="start" gap={2}>
-                                                <HStack gap={2} fontSize="2xs" fontWeight="bold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
+                                                <HStack gap={2} fontSize="2xs" fontWeight="semibold" color="fg.muted" textTransform="uppercase" letterSpacing="widest">
                                                     <Globe size={10} /> {t('dashboard.publicLink')}
                                                 </HStack>
                                                 <Box

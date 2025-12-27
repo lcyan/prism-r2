@@ -28,7 +28,9 @@ export class R2Manager {
     const accountId = config.accountId.trim();
     const endpoint = config.endpoint?.trim() || `https://${accountId}.r2.cloudflarestorage.com`;
 
-    console.log(`[R2] Initializing with endpoint: ${endpoint}, bucket: ${config.bucketName}`);
+    if (import.meta.env.DEV) {
+      console.log(`[R2] Initializing with endpoint: ${endpoint}, bucket: ${config.bucketName}`);
+    }
 
     this.client = new S3Client({
       region: "auto",

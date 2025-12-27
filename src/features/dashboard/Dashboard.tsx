@@ -55,7 +55,7 @@ import { FilePreview } from "./FilePreview";
 import { motion, AnimatePresence } from "framer-motion";
 import { toaster } from '../../components/ui/toaster';
 
-const MotionBox = motion(Box);
+const MotionBox = motion.create(Box);
 const columnHelper = createColumnHelper<R2File>();
 
 interface DashboardProps {
@@ -562,7 +562,7 @@ export const Dashboard = React.memo(
                   </Heading>
                   <Text
                     fontSize="2xs"
-                    fontWeight="bold"
+                    fontWeight="semibold"
                     color="fg.muted"
                     letterSpacing="widest"
                     textTransform="uppercase"
@@ -677,8 +677,8 @@ export const Dashboard = React.memo(
                   py={1}
                   css={{
                     "&::-webkit-scrollbar": { display: "none" },
-                    "-ms-overflow-style": "none",
-                    "scrollbar-width": "none",
+                    msOverflowStyle: "none",
+                    scrollbarWidth: "none",
                   }}
                 >
                   <Button

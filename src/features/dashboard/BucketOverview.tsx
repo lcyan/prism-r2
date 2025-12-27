@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 
-const MotionBox = motion(Box);
+const MotionBox = motion.create(Box);
 
 interface BucketOverviewProps {
     bucketName: string;
@@ -78,8 +78,8 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                         h={{ base: 10, md: 12 }}
                         borderRadius="2xl"
                         bgGradient="to-br"
-                        gradientFrom="orange.400"
-                        gradientTo="orange.600"
+                        gradientFrom="blue.500"
+                        gradientTo="purple.600"
                         shadow="lg"
                     >
                         <Image
@@ -95,7 +95,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                 <VStack gap={{ base: 5, md: 6 }} align="stretch">
                     {/* Bucket Name Section */}
                     <VStack align="stretch" gap={2}>
-                        <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" ml={1} textTransform="uppercase">
+                        <Text fontSize="2xs" fontWeight="semibold" color="fg.muted" letterSpacing="widest" ml={1} textTransform="uppercase">
                             {t('dashboard.currentBucket')}
                         </Text>
                         <HStack gap={3}>
@@ -165,29 +165,29 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                     {/* Stats Grid */}
                     <SimpleGrid columns={2} gap={4}>
                         <Box
-                            bg="orange.500/10"
+                            bg="purple.500/10"
                             backdropFilter="blur(10px)"
                             borderRadius="2xl"
                             p={6}
                             borderWidth="1px"
-                            borderColor="orange.500/20"
+                            borderColor="purple.500/20"
                         >
                             <VStack align="start" gap={3}>
                                 <Center
                                     w={8}
                                     h={8}
                                     borderRadius="xl"
-                                    bg="orange.500"
+                                    bg="purple.500"
                                     color="white"
                                     shadow="lg"
                                 >
                                     <Database size={16} />
                                 </Center>
                                 <VStack align="start" gap={0}>
-                                    <Text fontSize="2xl" fontWeight="bold" color="orange.600" letterSpacing="tighter">
+                                    <Text fontSize="2xl" fontWeight="black" color="purple.600" letterSpacing="tighter">
                                         {fileCount}
                                     </Text>
-                                    <Text fontSize="2xs" fontWeight="bold" color="orange.500/60" textTransform="uppercase">
+                                    <Text fontSize="2xs" fontWeight="semibold" color="purple.500/60" textTransform="uppercase">
                                         {t('dashboard.fileCount')}
                                     </Text>
                                 </VStack>
@@ -217,7 +217,7 @@ export const BucketOverview: React.FC<BucketOverviewProps> = ({
                                     <Text fontSize="2xl" fontWeight="bold" color="blue.600" letterSpacing="tighter">
                                         {formatTotalSize(totalSize)}
                                     </Text>
-                                    <Text fontSize="2xs" fontWeight="bold" color="blue.500/60" textTransform="uppercase">
+                                    <Text fontSize="2xs" fontWeight="semibold" color="blue.500/60" textTransform="uppercase">
                                         {t('dashboard.totalSize')}
                                     </Text>
                                 </VStack>

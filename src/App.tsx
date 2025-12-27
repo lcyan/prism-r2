@@ -80,10 +80,14 @@ function App() {
       
       // Only auto-import if credentials are provided
       if (devConfig.accountId && devConfig.accessKeyId && devConfig.secretAccessKey && devConfig.bucketName) {
-        console.log('[Dev Mode] Auto-loading R2 config from environment variables');
+        if (import.meta.env.DEV) {
+          console.log('[Dev Mode] Auto-loading R2 config from environment variables');
+        }
         saveConfig(devConfig);
       } else {
-        console.log('[Dev Mode] No R2 credentials in environment variables. Please configure manually or create .env.local');
+        if (import.meta.env.DEV) {
+          console.log('[Dev Mode] No R2 credentials in environment variables. Please configure manually or create .env.local');
+        }
       }
       
       return;

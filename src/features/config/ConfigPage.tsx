@@ -25,7 +25,7 @@ import {
 } from '@chakra-ui/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const MotionBox = motion(Box);
+const MotionBox = motion.create(Box);
 
 const configSchema = z.object({
     id: z.string().optional(),
@@ -153,7 +153,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </Center>
                             <VStack align="start" gap={0}>
                                 <Heading size="2xl" fontWeight="bold" letterSpacing="tight">存储桶管理</Heading>
-                                <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
+                                <Text fontSize="2xs" fontWeight="semibold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
                                     Bucket Management
                                 </Text>
                             </VStack>
@@ -233,16 +233,16 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                 >
                                     {activeConfigId === config.id && (
                                         <Box position="absolute" top={6} right={6}>
-                                            <Badge
-                                                colorPalette="blue"
-                                                variant="solid"
-                                                borderRadius="full"
-                                                px={3}
-                                                py={1}
-                                                fontSize="2xs"
-                                                fontWeight="bold"
-                                                letterSpacing="tighter"
-                                            >
+                                                <Badge
+                                                    colorPalette="blue"
+                                                    variant="solid"
+                                                    borderRadius="full"
+                                                    px={3}
+                                                    py={1}
+                                                    fontSize="2xs"
+                                                    fontWeight="semibold"
+                                                    letterSpacing="tighter"
+                                                >
                                                 DEFAULT
                                             </Badge>
                                         </Box>
@@ -268,7 +268,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                                             <Heading size="xl" fontWeight="bold" truncate w="full">
                                                 {config.name}
                                             </Heading>
-                                            <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
+                                            <Text fontSize="2xs" fontWeight="semibold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
                                                 {config.bucketName}
                                             </Text>
                                         </VStack>
@@ -277,7 +277,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
 
                                         <Flex justify="space-between" align="center">
                                             <VStack align="start" gap={0}>
-                                                <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="tighter" textTransform="uppercase">
+                                                <Text fontSize="2xs" fontWeight="semibold" color="fg.muted" letterSpacing="tighter" textTransform="uppercase">
                                                     Account ID
                                                 </Text>
                                                 <Text fontSize="xs" fontWeight="bold" color="fg.subtle">
@@ -353,7 +353,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                         </Center>
                         <VStack gap={1}>
                             <Text fontWeight="bold" fontSize="sm" letterSpacing="tight">配置新存储桶</Text>
-                            <Text fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
+                            <Text fontSize="2xs" fontWeight="semibold" color="fg.muted" letterSpacing="widest" textTransform="uppercase">
                                 Add New Bucket
                             </Text>
                         </VStack>
@@ -399,7 +399,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                     <VStack gap={{ base: 6, md: 10 }} align="stretch">
                         <SimpleGrid columns={{ base: 1, md: 2 }} gap={{ base: 6, md: 10 }}>
                             <Field.Root invalid={!!errors.name}>
-                                <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                <Field.Label fontSize="2xs" fontWeight="semibold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     {t('config.name')} / Nickname
                                 </Field.Label>
                                 <HStack
@@ -424,7 +424,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </Field.Root>
 
                             <Field.Root invalid={!!errors.bucketName}>
-                                <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                <Field.Label fontSize="2xs" fontWeight="semibold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     {t('config.bucketName')} / Bucket Name
                                 </Field.Label>
                                 <HStack
@@ -449,7 +449,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </Field.Root>
 
                             <Field.Root invalid={!!errors.accountId}>
-                                <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                <Field.Label fontSize="2xs" fontWeight="semibold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     Cloudflare Account ID
                                 </Field.Label>
                                 <HStack
@@ -474,7 +474,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </Field.Root>
 
                             <Field.Root invalid={!!errors.endpoint}>
-                                <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                <Field.Label fontSize="2xs" fontWeight="semibold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     {t('config.endpoint')} (可选)
                                 </Field.Label>
                                 <HStack
@@ -498,7 +498,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </Field.Root>
 
                             <Field.Root invalid={!!errors.accessKeyId}>
-                                <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                <Field.Label fontSize="2xs" fontWeight="semibold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     {t('config.accessKey')}
                                 </Field.Label>
                                 <HStack
@@ -523,7 +523,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                             </Field.Root>
 
                             <Field.Root invalid={!!errors.secretAccessKey}>
-                                <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                                <Field.Label fontSize="2xs" fontWeight="semibold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                     {t('config.secretKey')}
                                 </Field.Label>
                                 <HStack
@@ -550,7 +550,7 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ configs, activeConfigId,
                         </SimpleGrid>
 
                         <Field.Root invalid={!!errors.customDomain}>
-                            <Field.Label fontSize="2xs" fontWeight="bold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
+                            <Field.Label fontSize="2xs" fontWeight="semibold" color="fg.muted" letterSpacing="widest" textTransform="uppercase" mb={2}>
                                 {t('config.publicUrl')} / Custom Domain
                             </Field.Label>
                             <HStack
