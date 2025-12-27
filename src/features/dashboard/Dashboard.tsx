@@ -53,6 +53,7 @@ import { formatSize } from "../../types";
 import { format } from "date-fns";
 import { FilePreview } from "./FilePreview";
 import { motion, AnimatePresence } from "framer-motion";
+import { toaster } from '../../components/ui/toaster';
 
 const MotionBox = motion(Box);
 const columnHelper = createColumnHelper<R2File>();
@@ -116,6 +117,15 @@ const FileCard = React.memo(
   }: FileCardProps) => {
     const [imageLoaded, setImageLoaded] = React.useState(false);
     const [imageError, setImageError] = React.useState(false);
+    const [isCopied, setIsCopied] = React.useState(false);
+
+    const handleCopyClick = (e: React.MouseEvent) => {
+        const input = e.target as HTMLInputElement;
+        input.select();
+        onCopy(currentUrl, activeFormat);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+    };
 
     return (
       <MotionBox
@@ -255,14 +265,14 @@ const FileCard = React.memo(
 
           {/* Info Section */}
           <VStack align="stretch" gap={1} mb={4} px={1}>
-            <Text fontWeight="bold" fontSize="md" truncate title={file.key}>
+            <Text fontWeight="semibold" fontSize="md" truncate title={file.key} color={{ base: "gray.800", _dark: "white" }}>
               {file.name}
             </Text>
             <Flex justify="space-between" align="center">
               <Text
                 fontSize="2xs"
-                fontWeight="bold"
-                color="fg.muted"
+                fontWeight="medium"
+                color="gray.400"
                 letterSpacing="wider"
               >
                 {file.lastModified
@@ -273,7 +283,7 @@ const FileCard = React.memo(
                 variant="subtle"
                 colorPalette="blue"
                 fontSize="2xs"
-                fontWeight="bold"
+                fontWeight="medium"
               >
                 {formatSize(file.size)}
               </Badge>
@@ -282,26 +292,24 @@ const FileCard = React.memo(
 
           {/* Code Input Box */}
           <Box mb={4}>
-            <Input
-              readOnly
-              value={getFormattedLink(currentUrl, activeFormat)}
-              size="sm"
-              fontSize="2xs"
-              fontWeight="bold"
-              borderRadius="xl"
-              bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
-              backdropFilter="blur(10px)"
-              border="none"
-              _hover={{
-                bg: { base: "whiteAlpha.800", _dark: "whiteAlpha.100" },
-              }}
-              cursor="pointer"
-              onClick={(e) => {
-                (e.target as HTMLInputElement).select();
-                onCopy(currentUrl, activeFormat);
-              }}
-            />
-          </Box>
+                    <Input
+                        readOnly
+                        value={getFormattedLink(currentUrl, activeFormat)}
+                        size="sm"
+                        fontSize="2xs"
+                        fontWeight="normal"
+                        borderRadius="xl"
+                        bg={isCopied ? "green.500/10" : { base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                        color={isCopied ? "green.600" : "inherit"}
+                        backdropFilter="blur(10px)"
+                        border={isCopied ? "1px solid" : "none"}
+                        borderColor="green.500/30"
+                        _hover={{ bg: isCopied ? "green.500/15" : { base: 'whiteAlpha.800', _dark: 'whiteAlpha.100' } }}
+                        cursor="pointer"
+                        onClick={handleCopyClick}
+                        transition="all 0.2s"
+                    />
+</Box>
 
           {/* Actions Row */}
           <HStack
@@ -470,13 +478,15 @@ export const Dashboard = React.memo(
       }
     }, []);
 
-    const handleCopy = useCallback(
-      (url: string, format: CopyFormat) => {
+    const handleCopy = useCallback((url: string, format: CopyFormat) => {
         const text = getFormattedLink(url, format);
         navigator.clipboard.writeText(text);
-      },
-      [getFormattedLink]
-    );
+        toaster.create({
+            title: '复制成功',
+            type: 'success',
+            duration: 2000,
+        });
+    }, [getFormattedLink]);
 
     const sortedFiles = useMemo(() => {
       const rows = table.getSortedRowModel().rows;

@@ -15,6 +15,7 @@ const UploadCard = lazy(() => import('./features/upload/UploadCard').then(m => (
 const BucketOverview = lazy(() => import('./features/dashboard/BucketOverview').then(m => ({ default: m.BucketOverview })));
 const LoginPage = lazy(() => import('./features/auth/LoginPage').then(m => ({ default: m.LoginPage })));
 const WelcomeGuide = lazy(() => import('./components/WelcomeGuide').then(m => ({ default: m.WelcomeGuide })));
+import { Toaster } from './components/ui/toaster';
 
 // Loading fallback component
 const PageLoader = () => {
@@ -369,6 +370,7 @@ function App() {
           )}
         </Suspense>
       </Layout>
+      <Toaster />
     </>
   );
 }
