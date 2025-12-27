@@ -88,7 +88,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
                             w="full"
                             maxW="5xl"
-                            h="85vh"
+                            h={{ base: "90vh", sm: "85vh" }}
                             bg={{ base: "whiteAlpha.800", _dark: "blackAlpha.800" }}
                             backdropFilter="blur(30px)"
                             borderRadius="3xl"
@@ -186,7 +186,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                 flexDirection="column"
                             >
                                 {/* Header */}
-                                <Flex p={8} borderBottomWidth="1px" borderColor="border.subtle" justify="space-between" align="center">
+                                <Flex p={{ base: 4, sm: 8 }} borderBottomWidth="1px" borderColor="border.subtle" justify="space-between" align="center">
                                     <HStack gap={3}>
                                         <Center p={2} bg="blue.500/10" borderRadius="xl">
                                             <Info size={20} color="blue" />
@@ -208,8 +208,8 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                 </Flex>
 
                                 {/* Body */}
-                                <Box flex={1} overflowY="auto" p={8} css={{ "&::-webkit-scrollbar": { display: "none" } }}>
-                                    <VStack align="stretch" gap={8}>
+                                <Box flex={1} overflowY="auto" p={{ base: 4, sm: 8 }} css={{ "&::-webkit-scrollbar": { display: "none" } }}>
+                                    <VStack align="stretch" gap={6}>
                                         {/* File Identity */}
                                         <VStack align="start" gap={4}>
                                             <Center w={16} h={16} borderRadius="2xl" bg={{ base: "whiteAlpha.800", _dark: "whiteAlpha.100" }} backdropFilter="blur(10px)">
@@ -267,10 +267,10 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                 </Box>
 
                                 {/* Footer Actions */}
-                                <VStack p={8} gap={3}>
+                                <VStack p={{ base: 4, sm: 8 }} gap={3}>
                                     <Button
                                         w="full"
-                                        h={14}
+                                        h={12}
                                         borderRadius="2xl"
                                         colorPalette="blue"
                                         fontWeight="bold"
@@ -281,7 +281,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                                     </Button>
                                     <Button
                                         w="full"
-                                        h={14}
+                                        h={12}
                                         borderRadius="2xl"
                                         variant={isCopied ? "solid" : "outline"}
                                         colorPalette={isCopied ? "green" : "gray"}

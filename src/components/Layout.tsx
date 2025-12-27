@@ -24,7 +24,7 @@ export const Layout: React.FC<LayoutProps> = ({
             {/* Top Header */}
             <Box 
                 as="header" 
-                h="16" 
+                h={{ base: "14", md: "16" }} 
                 bg={{ base: "whiteAlpha.800", _dark: "blackAlpha.800" }} 
                 backdropFilter="blur(20px)"
                 borderBottom="1px solid" 
@@ -33,17 +33,17 @@ export const Layout: React.FC<LayoutProps> = ({
                 top={0} 
                 zIndex={50}
             >
-                <Container maxW="1700px" h="full" px={{ base: 4, md: 8 }}>
+                <Container maxW="1700px" h="full" px={{ base: 3, md: 8 }}>
                     <Flex h="full" align="center" justify="space-between">
-                        <HStack gap={6}>
+                        <HStack gap={3}>
                             <HStack 
-                                gap={4} 
+                                gap={{ base: 2, md: 4 }} 
                                 cursor="pointer" 
                                 onClick={() => onTabChange('files')}
                             >
                                 <Center 
-                                    w={10}
-                                    h={10}
+                                    w={{ base: 8, md: 10 }}
+                                    h={{ base: 8, md: 10 }}
                                     borderRadius="xl" 
                                     bg="bg.muted/30"
                                     backdropFilter="blur(10px)"
@@ -56,7 +56,7 @@ export const Layout: React.FC<LayoutProps> = ({
                                     <img src="/logo.svg" alt="Prism R2 Logo" style={{ width: '80%', height: '80%' }} />
                                 </Center>
                                 <Heading 
-                                    size="lg" 
+                                    size={{ base: "md", md: "lg" }}
                                     fontWeight="black" 
                                     letterSpacing="tighter" 
                                     bgGradient="to-br"
@@ -65,17 +65,19 @@ export const Layout: React.FC<LayoutProps> = ({
                                     bgClip="text"
                                     transition="all 0.3s"
                                     _hover={{ filter: "brightness(1.1)" }}
+                                    display={{ base: "none", sm: "block" }}
                                 >
                                     Prism R2
                                 </Heading>
                             </HStack>
                         </HStack>
 
-                        <HStack gap={{ base: 2, md: 4 }}>
+                        <HStack gap={{ base: 1, md: 4 }}>
                             {onRefresh && activeTab === 'files' && (
                                 <IconButton
                                     aria-label="刷新"
                                     variant="ghost"
+                                    size={{ base: "sm", md: "md" }}
                                     onClick={onRefresh}
                                     color="gray.400"
                                     _hover={{ color: "blue.500", bg: { base: "gray.100", _dark: "whiteAlpha.10" } }}
@@ -85,10 +87,10 @@ export const Layout: React.FC<LayoutProps> = ({
                                 </IconButton>
                             )}
 
-                            <Box h={8} w="1px" bg={{ base: "gray.200", _dark: "whiteAlpha.20" }} mx={{ base: 0.5, md: 1 }} />
+                            <Box h={6} w="1px" bg={{ base: "gray.200", _dark: "whiteAlpha.20" }} mx={{ base: 0.5, md: 1 }} />
 
                             <HStack 
-                                display={{ base: "none", md: "flex" }} 
+                                display={{ base: "none", lg: "flex" }} 
                                 gap={3} 
                                 py={1} 
                                 pl={1} 
@@ -112,8 +114,9 @@ export const Layout: React.FC<LayoutProps> = ({
                             <IconButton
                                 aria-label="存储桶配置"
                                 onClick={() => onTabChange('config')}
-                                w={9}
-                                h={9}
+                                w={{ base: 8, md: 9 }}
+                                h={{ base: 8, md: 9 }}
+                                size={{ base: "sm", md: "md" }}
                                 borderRadius="xl"
                                 bg={activeTab === 'config' ? "purple.600" : "purple.100"}
                                 color={activeTab === 'config' ? "white" : "purple.600"}
@@ -126,8 +129,9 @@ export const Layout: React.FC<LayoutProps> = ({
                             <IconButton
                                 aria-label="退出登录"
                                 onClick={onLogout}
-                                w={9}
-                                h={9}
+                                w={{ base: 8, md: 9 }}
+                                h={{ base: 8, md: 9 }}
+                                size={{ base: "sm", md: "md" }}
                                 borderRadius="xl"
                                 bg="red.100"
                                 color="red.600"
@@ -141,7 +145,7 @@ export const Layout: React.FC<LayoutProps> = ({
             </Box>
 
             {/* Content Area */}
-            <Box as="main" flex={1} w="full" maxW="1700px" mx="auto" p={{ base: 4, md: 8 }}>
+            <Box as="main" flex={1} w="full" maxW="1700px" mx="auto" p={{ base: 3, md: 8 }}>
                 {children}
             </Box>
         </Box>

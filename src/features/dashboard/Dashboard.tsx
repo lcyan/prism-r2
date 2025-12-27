@@ -137,7 +137,7 @@ const FileCard = React.memo(
           bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
           backdropFilter="blur(20px)"
           borderRadius="3xl"
-          p={5}
+          p={{ base: 3, md: 5 }}
           shadow="sm"
           borderWidth="1px"
           borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
@@ -245,9 +245,9 @@ const FileCard = React.memo(
             <IconButton
               aria-label="Delete file"
               position="absolute"
-              top={3}
-              right={3}
-              size="sm"
+              top={2}
+              right={2}
+              size="xs"
               rounded="full"
               colorPalette="red"
               bg="red.500"
@@ -258,7 +258,7 @@ const FileCard = React.memo(
               }}
               _hover={{ bg: "red.600", transform: "scale(1.1)" }}
             >
-              <Trash2 size={16} />
+              <Trash2 size={14} />
             </IconButton>
           </Box>
 
@@ -571,11 +571,16 @@ export const Dashboard = React.memo(
                 </VStack>
               </HStack>
 
-              <HStack gap={4} flexWrap="wrap">
+              <Flex
+                gap={3}
+                flexWrap="wrap"
+                flex={{ base: "none", md: 1 }}
+                w={{ base: "full", lg: "auto" }}
+              >
                 <Box
                   position="relative"
-                  flex={{ base: 1, md: "none" }}
-                  minW="200px"
+                  flex={1}
+                  minW={{ base: "full", md: "200px" }}
                 >
                   <Center
                     position="absolute"
@@ -603,45 +608,51 @@ export const Dashboard = React.memo(
                   />
                 </Box>
 
-                <HStack
-                  bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
-                  backdropFilter="blur(10px)"
-                  p={1}
-                  borderRadius="2xl"
-                  gap={1}
-                >
-                  <IconButton
-                    aria-label="List view"
-                    size="sm"
-                    variant={viewMode === "list" ? "solid" : "ghost"}
-                    onClick={() => setViewMode("list")}
-                    borderRadius="xl"
-                  >
-                    <List size={18} />
-                  </IconButton>
-                  <IconButton
-                    aria-label="Grid view"
-                    size="sm"
-                    variant={viewMode === "grid" ? "solid" : "ghost"}
-                    onClick={() => setViewMode("grid")}
-                    borderRadius="xl"
-                  >
-                    <GridIcon size={18} />
-                  </IconButton>
-                </HStack>
+                <HStack gap={3} w={{ base: "full", md: "auto" }}>
+                    <HStack
+                    bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                    backdropFilter="blur(10px)"
+                    p={1}
+                    borderRadius="2xl"
+                    gap={1}
+                    flex={{ base: 1, md: "none" }}
+                    justify="center"
+                    >
+                    <IconButton
+                        aria-label="List view"
+                        size="sm"
+                        variant={viewMode === "list" ? "solid" : "ghost"}
+                        onClick={() => setViewMode("list")}
+                        borderRadius="xl"
+                        flex={1}
+                    >
+                        <List size={18} />
+                    </IconButton>
+                    <IconButton
+                        aria-label="Grid view"
+                        size="sm"
+                        variant={viewMode === "grid" ? "solid" : "ghost"}
+                        onClick={() => setViewMode("grid")}
+                        borderRadius="xl"
+                        flex={1}
+                    >
+                        <GridIcon size={18} />
+                    </IconButton>
+                    </HStack>
 
-                <IconButton
-                  aria-label="Refresh"
-                  variant="outline"
-                  borderRadius="2xl"
-                  onClick={() => {
-                    onRefresh();
-                    setSelectedKeys([]);
-                  }}
-                >
-                  <RotateCw size={18} />
-                </IconButton>
-              </HStack>
+                    <IconButton
+                    aria-label="Refresh"
+                    variant="outline"
+                    borderRadius="2xl"
+                    onClick={() => {
+                        onRefresh();
+                        setSelectedKeys([]);
+                    }}
+                    >
+                    <RotateCw size={18} />
+                    </IconButton>
+                </HStack>
+              </Flex>
             </Flex>
 
             <Separator my={6} />
@@ -668,12 +679,14 @@ export const Dashboard = React.memo(
                 />
               </Flex>
 
-              <Flex justify="space-between" align="center" gap={4}>
+              <Flex direction={{ base: "column", sm: "row" }} justify="space-between" align={{ base: "stretch", sm: "center" }} gap={4}>
                 <HStack
                   gap={2}
                   flex={1}
                   overflowX="auto"
                   py={1}
+                  mx={{ base: -1, sm: 0 }}
+                  px={{ base: 1, sm: 0 }}
                   css={{
                     "&::-webkit-scrollbar": { display: "none" },
                     msOverflowStyle: "none",
@@ -723,7 +736,7 @@ export const Dashboard = React.memo(
                   )}
                 </HStack>
 
-                <HStack gap={2} flexShrink={0}>
+                <HStack gap={2} flexShrink={0} justify={{ base: "flex-end", sm: "center" }}>
                   <Button
                     size="xs"
                     variant="ghost"
@@ -838,14 +851,14 @@ export const Dashboard = React.memo(
 
           {/* Files Grid/List */}
           {isLoading ? (
-            <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap={8}>
+            <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap={{ base: 4, md: 8 }}>
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <Skeleton key={i} h="200px" borderRadius="3xl" />
               ))}
             </SimpleGrid>
           ) : paginatedFiles.length > 0 ? (
             viewMode === "grid" ? (
-              <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap={8}>
+              <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap={{ base: 4, md: 8 }}>
                 {paginatedFiles.map((file) => (
                   <FileCard
                     key={file.key}

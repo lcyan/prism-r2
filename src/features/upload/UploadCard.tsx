@@ -125,7 +125,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
             bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
             backdropFilter="blur(20px)"
             borderRadius="3xl"
-            p={8}
+            p={{ base: 4, md: 8 }}
             shadow="xl"
             borderWidth="1px"
             borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
@@ -135,7 +135,7 @@ export const UploadCard: React.FC<UploadCardProps> = ({ directories, onUpload, o
                     <Flex align="center" justify="space-between" px={1}>
                         <VStack align="start" gap={1}>
                             <Heading 
-                                size="xl" 
+                                size={{ base: "lg", md: "xl" }}
                                 fontWeight="black" 
                                 letterSpacing="tighter"
                                 bgGradient="to-br"

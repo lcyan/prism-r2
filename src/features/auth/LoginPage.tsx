@@ -73,7 +73,7 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                     transition={{ duration: 0.5 }}
                     bg={{ base: "white", _dark: "gray.900" }}
                     borderRadius="3rem"
-                    p={10}
+                    p={{ base: 6, sm: 10 }}
                     boxShadow="2xl"
                     border="1px solid"
                     borderColor={{ base: "blackAlpha.50", _dark: "whiteAlpha.50" }}
@@ -94,10 +94,10 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                             <Github size={44} color={window.matchMedia('(prefers-color-scheme: dark)').matches ? 'black' : 'white'} />
                         </Center>
                         <Stack gap={2}>
-                            <Heading size="xl" fontWeight="bold" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
+                            <Heading size={{ base: "lg", md: "xl" }} fontWeight="bold" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
                                 {t('auth.welcomeBack')}
                             </Heading>
-                            <Text fontSize="sm" fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="widest">
+                            <Text fontSize="xs" fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="widest">
                                 {t('auth.loginSubtitle')}
                             </Text>
                         </Stack>

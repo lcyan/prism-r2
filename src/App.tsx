@@ -296,8 +296,8 @@ function App() {
               />
             </Container>
           ) : (
-            <Container maxW="container.xl" py={8}>
-              <Grid templateColumns={{ base: "1fr", lg: "repeat(4, 1fr)" }} gap={8} alignItems="start" w="full">
+            <Container maxW="container.xl" py={{ base: 4, md: 8 }} px={{ base: 3, md: 8 }}>
+              <Grid templateColumns={{ base: "1fr", lg: "repeat(4, 1fr)" }} gap={{ base: 4, lg: 8 }} alignItems="start" w="full">
                 <GridItem colSpan={{ base: 1, lg: 3 }}>
                   {activeConfigId ? (
                     <Dashboard
@@ -312,46 +312,49 @@ function App() {
                       isLoading={isLoading}
                     />
                   ) : (
-                    <VStack 
-                      bg={{ base: "whiteAlpha.800", _dark: "whiteAlpha.100" }} 
-                      backdropFilter="blur(20px)" 
-                      borderRadius="3rem" 
-                      p={16} 
-                      boxShadow="2xl" 
-                      border="1px solid" 
-                      borderColor={{ base: "whiteAlpha.200", _dark: "whiteAlpha.50" }} 
-                      gap={8} 
-                      textAlign="center"
+                    <Box
+                      bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
+                      backdropFilter="blur(20px)"
+                      borderRadius="3xl"
+                      p={{ base: 4, md: 8 }}
+                      shadow="xl"
+                      borderWidth="1px"
+                      borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
                     >
-                      <Center w={24} h={24} bg="blue.500/10" borderRadius="2.5rem" position="relative">
-                        <Box position="absolute" inset={0} bg="blue.500/20" borderRadius="2.5rem" animation="ping 2s infinite" />
-                        <BoxIcon size={48} color="#007AFF" />
-                      </Center>
-                      <VStack gap={4}>
-                        <Heading size="2xl" fontWeight="bold" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
-                          欢迎使用 R2 对象存储增强管理
-                        </Heading>
-                        <Text fontSize="lg" color={{ base: "gray.500", _dark: "gray.400" }} fontWeight="bold" maxW="md" lineHeight="relaxed">
-                          您尚未配置 R2 存储桶信息，请点击上方的存储图标完成配置，开始使用强大的对象存储功能！
-                        </Text>
-                      </VStack>
-                      <Button 
-                        onClick={() => setActiveTab('config')}
-                        bg="blue.500" 
-                        color="white" 
-                        px={12} 
-                        h="auto"
-                        py={5} 
-                        borderRadius="2xl" 
-                        fontWeight="bold" 
-                        fontSize="xl" 
-                        boxShadow="0 20px 40px rgba(0,122,255,0.3)"
-                        _hover={{ transform: "scale(1.05)" }}
-                        _active={{ transform: "scale(0.95)" }}
+                      <VStack 
+                        gap={8} 
+                        textAlign="center"
                       >
-                        立即配置
-                      </Button>
-                    </VStack>
+                        <Center w={24} h={24} bg="blue.500/10" borderRadius="2.5rem" position="relative">
+                          <Box position="absolute" inset={0} bg="blue.500/20" borderRadius="2.5rem" animation="ping 2s infinite" />
+                          <BoxIcon size={48} color="#007AFF" />
+                        </Center>
+                        <VStack gap={4}>
+                          <Heading size="2xl" fontWeight="bold" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
+                            欢迎使用 R2 对象存储增强管理
+                          </Heading>
+                          <Text fontSize="lg" color={{ base: "gray.500", _dark: "gray.400" }} fontWeight="bold" maxW="md" lineHeight="relaxed">
+                            您尚未配置 R2 存储桶信息，请点击上方的存储图标完成配置，开始使用强大的对象存储功能！
+                          </Text>
+                        </VStack>
+                        <Button 
+                          onClick={() => setActiveTab('config')}
+                          bg="blue.500" 
+                          color="white" 
+                          px={12} 
+                          h="auto"
+                          py={5} 
+                          borderRadius="2xl" 
+                          fontWeight="bold" 
+                          fontSize="xl" 
+                          boxShadow="0 20px 40px rgba(0,122,255,0.3)"
+                          _hover={{ transform: "scale(1.05)" }}
+                          _active={{ transform: "scale(0.95)" }}
+                        >
+                          立即配置
+                        </Button>
+                      </VStack>
+                    </Box>
                   )}
                 </GridItem>
                 <GridItem>
