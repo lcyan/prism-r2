@@ -34,7 +34,6 @@ import {
   Portal,
   Image,
   Separator,
-  Container,
   Skeleton,
   Table,
   Spinner,
@@ -517,7 +516,7 @@ export const Dashboard = React.memo(
     };
 
     return (
-      <Container maxW="container.xl" py={8}>
+      <Box w="full">
         <VStack gap={8} align="stretch">
           {/* Header Card */}
           <Box
@@ -1058,7 +1057,7 @@ export const Dashboard = React.memo(
             )}
           </AnimatePresence>
         </Portal>
-      </Container>
+      </Box>
     );
   }
 );
