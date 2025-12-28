@@ -10,10 +10,32 @@ interface LoginPageProps {
     onLogin: (userData: any) => void;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = () => {
+export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    // 检查 OAuth 回调后的认证状态
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                const response = await fetch('/api/auth/session', {
+                    credentials: 'include',
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.authenticated) {
+                        // 已经登录成功，直接跳转
+                        onLogin(data.user);
+                    }
+                }
+            } catch (error) {
+                console.error('Session check failed:', error);
+            }
+        };
+
+        checkSession();
+    }, [onLogin]);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
