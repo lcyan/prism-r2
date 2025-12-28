@@ -18,10 +18,14 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['vite.svg'],
+      workbox: {
+        // 排除 API 路径，防止 Service Worker 拦截 OAuth 重定向
+        navigateFallbackDenylist: [/^\/api/],
+      },
       manifest: {
         name: 'Prism R2 Manager',
         short_name: 'PrismR2',
-        description: 'Cloudflare R2 File Manager with iOS 25 Aesthetic',
+        description: 'Cloudflare R2 File Manager with iOS Aesthetic',
         theme_color: '#ffffff',
         icons: [
           {
@@ -54,8 +58,7 @@ export default defineConfig({
     'process.env': {},
   },
   esbuild: {
-    // @ts-ignore - drop is supported by esbuild but might be missing in some Vite type definitions
-    drop: ['console', 'debugger'],
+    // 调试期间保留 console
   },
   build: {
     target: 'esnext',
