@@ -204,7 +204,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 <HStack mt={8} justify="center" gap={6} fontSize="11px" fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="2px">
                     <HStack gap={2}>
                         <Globe size={14} />
-                        <Text>Powered by R2 Manager</Text>
+                        <Text>Powered by Prism R2</Text>
                     </HStack>
                     <Box w={1} h={1} borderRadius="full" bg="gray.300" />
                     <Text>v2.0.0</Text>
