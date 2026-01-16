@@ -25,7 +25,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                 if (response.ok) {
                     const data = await response.json();
                     if (data.authenticated) {
-                        // 已经登录成功，直接跳转
                         onLogin(data.user);
                     }
                 }
@@ -54,7 +53,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     return (
         <Box 
             minH="100vh" 
-            bg={{ base: "#F0F2F5", _dark: "black" }} 
             display="flex" 
             alignItems="center" 
             justifyContent="center" 
@@ -62,61 +60,35 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             position="relative" 
             overflow="hidden"
         >
-            {/* Background Decorative Elements */}
-            <Box 
-                position="absolute" 
-                top="-10%" 
-                left="-10%" 
-                w="40%" 
-                h="40%" 
-                bg="blue.500" 
-                opacity={0.1} 
-                borderRadius="full" 
-                filter="blur(120px)" 
-                pointerEvents="none" 
-            />
-            <Box 
-                position="absolute" 
-                bottom="-10%" 
-                right="-10%" 
-                w="40%" 
-                h="40%" 
-                bg="purple.500" 
-                opacity={0.1} 
-                borderRadius="full" 
-                filter="blur(120px)" 
-                pointerEvents="none" 
-            />
-
             <Container maxW="md" p={0}>
                 <MotionBox
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, type: "spring", bounce: 0.3 }}
                     bg={{ base: "white", _dark: "gray.900" }}
-                    borderRadius="3rem"
-                    p={{ base: 6, sm: 10 }}
+                    borderRadius="3.5rem"
+                    p={{ base: 8, sm: 12 }}
                     boxShadow="2xl"
                     border="1px solid"
-                    borderColor={{ base: "blackAlpha.50", _dark: "whiteAlpha.50" }}
+                    borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.50" }}
                     position="relative"
-                    overflow="hidden"
+                    textAlign="center"
                 >
-                    {/* GitHub Logo Header */}
-                    <VStack gap={6} mb={12} textAlign="center">
+                    {/* Logo & Header */}
+                    <VStack gap={8} mb={10}>
                         <Center 
-                            w={20} 
-                            h={20} 
-                            borderRadius="2rem" 
-                            bg={{ base: "black", _dark: "white" }} 
-                            boxShadow="2xl"
-                            transition="transform 0.5s"
-                            _hover={{ transform: "rotate(12deg)" }}
+                            w={24} 
+                            h={24} 
+                            borderRadius="2.5rem" 
+                            bg="black" 
+                            color="white"
+                            boxShadow="xl"
+                            mb={2}
                         >
-                            <Github size={44} color={window.matchMedia('(prefers-color-scheme: dark)').matches ? 'black' : 'white'} />
+                            <Github size={48} />
                         </Center>
-                        <Stack gap={2}>
-                            <Heading size={{ base: "lg", md: "xl" }} fontWeight="bold" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
+                        <Stack gap={3}>
+                            <Heading size="xl" fontWeight="black" letterSpacing="tight">
                                 {t('auth.welcomeBack')}
                             </Heading>
                             <Text fontSize="xs" fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="widest">
@@ -130,84 +102,106 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                         <HStack 
                             mb={8} 
                             p={4} 
-                            bg={{ base: "red.50", _dark: "red.900/20" }} 
-                            border="1px solid" 
-                            borderColor={{ base: "red.100", _dark: "red.900/30" }} 
-                            borderRadius="1.5rem" 
+                            bg="red.50" 
+                            color="red.600"
+                            borderRadius="2xl" 
                             gap={3}
+                            justify="center"
                         >
-                            <Center w={10} h={10} borderRadius="xl" bg={{ base: "red.100", _dark: "red.900/40" }} color={{ base: "red.600", _dark: "red.400" }} flexShrink={0}>
-                                <AlertCircle size={20} />
-                            </Center>
-                            <VStack align="start" gap={0}>
-                                <Text fontSize="13px" fontWeight="bold" color={{ base: "red.700", _dark: "red.300" }}>{t('auth.loginFailed')}</Text>
-                                <Text fontSize="11px" fontWeight="bold" color={{ base: "red.600/70", _dark: "red.400/70" }}>{error}</Text>
-                            </VStack>
+                            <AlertCircle size={18} />
+                            <Text fontSize="xs" fontWeight="bold">{error}</Text>
                         </HStack>
                     )}
 
-                    {/* Features Preview */}
-                    <Stack gap={4} mb={10}>
-                        <HStack p={4} bg={{ base: "gray.50", _dark: "whiteAlpha.50" }} borderRadius="1.5rem" border="1px solid" borderColor={{ base: "gray.100", _dark: "whiteAlpha.50" }} gap={4}>
-                            <Center w={10} h={10} borderRadius="xl" bg="blue.50" color="blue.500" flexShrink={0}>
-                                <Zap size={20} />
+                    {/* Feature Pills */}
+                    <VStack gap={4} mb={10}>
+                        <HStack 
+                            w="full" 
+                            p={5} 
+                            bg="gray.50" 
+                            _dark={{ bg: "whiteAlpha.50" }}
+                            borderRadius="2rem" 
+                            gap={5}
+                            transition="transform 0.2s"
+                            _hover={{ transform: "translateY(-2px)" }}
+                        >
+                            <Center w={10} h={10} flexShrink={0}>
+                                <Zap size={24} className="text-blue-500" fill="currentColor" fillOpacity={0.2} />
                             </Center>
-                            <VStack align="start" gap={0}>
-                                <Text fontSize="13px" fontWeight="bold" color={{ base: "gray.700", _dark: "gray.200" }}>{t('auth.feature1Title')}</Text>
-                                <Text fontSize="11px" fontWeight="bold" color="gray.400">{t('auth.feature1Desc')}</Text>
+                            <VStack align="start" gap={1}>
+                                <Text fontSize="sm" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>
+                                    {t('auth.feature1Title')}
+                                </Text>
+                                <Text fontSize="xs" fontWeight="bold" color="gray.400">
+                                    {t('auth.feature1Desc')}
+                                </Text>
                             </VStack>
                         </HStack>
-                        <HStack p={4} bg={{ base: "gray.50", _dark: "whiteAlpha.50" }} borderRadius="1.5rem" border="1px solid" borderColor={{ base: "gray.100", _dark: "whiteAlpha.50" }} gap={4}>
-                            <Center w={10} h={10} borderRadius="xl" bg="green.50" color="green.500" flexShrink={0}>
-                                <ShieldCheck size={20} />
-                            </Center>
-                            <VStack align="start" gap={0}>
-                                <Text fontSize="13px" fontWeight="bold" color={{ base: "gray.700", _dark: "gray.200" }}>{t('auth.feature2Title')}</Text>
-                                <Text fontSize="11px" fontWeight="bold" color="gray.400">{t('auth.feature2Desc')}</Text>
-                            </VStack>
-                        </HStack>
-                    </Stack>
 
-                    {/* Login Button */}
+                        <HStack 
+                            w="full" 
+                            p={5} 
+                            bg="gray.50" 
+                            _dark={{ bg: "whiteAlpha.50" }}
+                            borderRadius="2rem" 
+                            gap={5}
+                            transition="transform 0.2s"
+                            _hover={{ transform: "translateY(-2px)" }}
+                        >
+                            <Center w={10} h={10} flexShrink={0}>
+                                <ShieldCheck size={24} className="text-green-500" fill="currentColor" fillOpacity={0.2} />
+                            </Center>
+                            <VStack align="start" gap={1}>
+                                <Text fontSize="sm" fontWeight="bold" color="gray.900" _dark={{ color: "white" }}>
+                                    {t('auth.feature2Title')}
+                                </Text>
+                                <Text fontSize="xs" fontWeight="bold" color="gray.400">
+                                    {t('auth.feature2Desc')}
+                                </Text>
+                            </VStack>
+                        </HStack>
+                    </VStack>
+
+                    {/* Action Button */}
                     <Button
                         disabled={isLoading}
                         onClick={handleGithubLogin}
                         w="full"
                         h="auto"
-                        py={5}
-                        borderRadius="2rem"
-                        bg={{ base: "black", _dark: "white" }}
-                        color={{ base: "white", _dark: "black" }}
-                        _hover={{ boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}
-                        _active={{ transform: "scale(0.95)" }}
+                        py={6}
+                        borderRadius="full"
+                        bg="black"
+                        _dark={{ bg: "white", color: "black" }}
+                        color="white"
+                        _hover={{ transform: "scale(1.02)", shadow: "lg" }}
+                        _active={{ transform: "scale(0.98)" }}
                         transition="all 0.2s"
-                        display="flex"
-                        gap={3}
+                        fontSize="md"
+                        fontWeight="bold"
                     >
                         {isLoading ? (
-                            <Spinner size="sm" />
+                            <Spinner size="sm" color="white" _dark={{ color: "black" }} />
                         ) : (
-                            <>
-                                <Github size={22} />
-                                <Text fontSize="15px" fontWeight="bold">{t('auth.continueWithGithub')}</Text>
-                                <ArrowRight size={18} opacity={0.4} />
-                            </>
+                            <HStack gap={3}>
+                                <Github size={20} />
+                                <Text>{t('auth.continueWithGithub')}</Text>
+                                <ArrowRight size={18} opacity={0.5} />
+                            </HStack>
                         )}
                     </Button>
 
-                    <Text mt={8} textAlign="center" fontSize="11px" fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="widest" px={6} lineHeight="relaxed">
-                        {t('auth.agreementPrefix')} <Box as="span" color="blue.500" cursor="pointer" _hover={{ textDecoration: "underline" }}>{t('auth.terms')}</Box> {t('auth.agreementAnd')} <Box as="span" color="blue.500" cursor="pointer" _hover={{ textDecoration: "underline" }}>{t('auth.privacy')}</Box>
+                    {/* Legal Footer */}
+                    <Text mt={8} fontSize="10px" fontWeight="bold" color="gray.300" textAlign="center" lineHeight="tall">
+                         点击登录即表示您同意本系统的 <Box as="span" color="blue.400" cursor="pointer">使用协议</Box> 与 <Box as="span" color="blue.400" cursor="pointer">隐私政策</Box>
                     </Text>
                 </MotionBox>
 
-                {/* Footer Info */}
-                <HStack mt={8} justify="center" gap={6} fontSize="11px" fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="2px">
-                    <HStack gap={2}>
-                        <Globe size={14} />
-                        <Text>Powered by Prism R2</Text>
-                    </HStack>
-                    <Box w={1} h={1} borderRadius="full" bg="gray.300" />
-                    <Text>v2.0.0</Text>
+                {/* Bottom Branding */}
+                <HStack mt={10} justify="center" gap={6} opacity={0.3}>
+                     <Globe size={14} />
+                     <Text fontSize="xs" fontWeight="black" letterSpacing="widest">POWERED BY PRISM R2</Text>
+                     <Text fontSize="xs" fontWeight="black" letterSpacing="widest">•</Text>
+                     <Text fontSize="xs" fontWeight="black" letterSpacing="widest">V2.0.0</Text>
                 </HStack>
             </Container>
         </Box>

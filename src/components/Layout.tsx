@@ -1,14 +1,21 @@
 import React from 'react';
-import { Box, Flex, HStack, VStack, Text, IconButton, Container, Center, Heading } from '@chakra-ui/react';
-import { LogOut, Database, RefreshCw, User } from 'lucide-react';
+import { Box, Flex, VStack, Text, IconButton, Container, Heading, Separator, Badge, Button } from '@chakra-ui/react';
+import { LogOut, RefreshCw, User, HardDrive, Settings } from 'lucide-react';
+import { SidebarStats } from './SidebarStats';
 
 interface LayoutProps {
     children: React.ReactNode;
     activeTab: 'files' | 'config';
     onTabChange: (tab: 'files' | 'config') => void;
     onRefresh?: () => void;
+    onUpload?: (file: File) => void;
     onLogout?: () => void;
     connectionStatus: 'online' | 'offline' | 'checking';
+    stats?: {
+        fileCount: number;
+        totalSize: number;
+        bucketName: string;
+    };
 }
 
 export const Layout: React.FC<LayoutProps> = ({
@@ -16,138 +23,171 @@ export const Layout: React.FC<LayoutProps> = ({
     activeTab,
     onTabChange,
     onRefresh,
+    onUpload,
     onLogout,
-    connectionStatus: _connectionStatus
+    connectionStatus,
+    stats
 }) => {
+    const sidebarWidth = "280px";
     return (
-        <Box minH="100vh" bg={{ base: "#F0F2F5", _dark: "black" }} display="flex" flexDirection="column">
-            {/* Top Header */}
+        <Flex minH="100vh" bg="bg.DEFAULT">
+            {/* Sidebar */}
             <Box 
-                as="header" 
-                h={{ base: "14", md: "16" }} 
-                bg={{ base: "whiteAlpha.800", _dark: "blackAlpha.800" }} 
-                backdropFilter="blur(20px)"
-                borderBottom="1px solid" 
-                borderColor={{ base: "whiteAlpha.300", _dark: "whiteAlpha.100" }} 
-                position="sticky" 
-                top={0} 
+                w={{ base: 0, lg: sidebarWidth }} 
+                display={{ base: "none", lg: "block" }}
+                position="fixed" 
+                h="100vh" 
+                borderRightWidth="1px" 
+                borderColor="border.DEFAULT"
+                bg="bg.panel"
                 zIndex={50}
             >
-                <Container maxW="1700px" h="full" px={{ base: 3, md: 8 }}>
-                    <Flex h="full" align="center" justify="space-between">
-                        <HStack gap={3}>
-                            <HStack 
-                                gap={{ base: 2, md: 4 }} 
-                                cursor="pointer" 
-                                onClick={() => onTabChange('files')}
+                <Flex direction="column" h="full" p={6}>
+                    {/* Brand */}
+                    <Flex align="center" gap={3} mb={10}>
+                        <Box 
+                            w={10} h={10} 
+                            bgGradient="to-br" gradientFrom="brand.500" gradientTo="brand.700" 
+                            borderRadius="xl" 
+                            display="flex" alignItems="center" justifyContent="center"
+                            shadow="lg"
+                        >
+                            <img src="/logo.svg" alt="Logo" style={{ width: '60%', height: '60%', filter: 'brightness(0) invert(1)' }} />
+                        </Box>
+                        <Heading size="lg" fontWeight="bold" letterSpacing="tight">Prism R2</Heading>
+                    </Flex>
+                    <VStack align="stretch" gap={2} flex={1}>
+                        <NavButton 
+                            icon={HardDrive} 
+                            label="文件管理" 
+                            isActive={activeTab === 'files'} 
+                            onClick={() => onTabChange('files')} 
+                        />
+                        <NavButton 
+                            icon={Settings} 
+                            label="存储桶配置" 
+                            isActive={activeTab === 'config'} 
+                            onClick={() => onTabChange('config')} 
+                        />
+                    </VStack>
+                    {/* Footer / Status */}
+                    <VStack align="stretch" gap={4}>
+                         {stats && activeTab === 'files' && (
+                             <SidebarStats 
+                                 fileCount={stats.fileCount} 
+                                 totalSize={stats.totalSize} 
+                                 bucketName={stats.bucketName}
+                                 onRefresh={onRefresh}
+                                 onUpload={onUpload}
+                             />
+                         )}
+
+                         {/* Connection Status */}
+                         <Flex align="center" justify="space-between" bg="bg.subtle" p={3} borderRadius="lg">
+                            <Text fontSize="sm" fontWeight="medium" color="fg.muted">状态</Text>
+                            <Badge 
+                                colorPalette={connectionStatus === 'online' ? 'green' : connectionStatus === 'checking' ? 'yellow' : 'red'} 
+                                variant="surface"
                             >
-                                <Center 
-                                    w={{ base: 8, md: 10 }}
-                                    h={{ base: 8, md: 10 }}
-                                    borderRadius="xl" 
-                                    bg="bg.muted/30"
-                                    backdropFilter="blur(10px)"
-                                    shadow="sm" 
-                                    transition="all 0.3s"
-                                    _groupHover={{ transform: "scale(1.1)", bg: "blue.500/10" }}
-                                    position="relative"
-                                    overflow="hidden"
-                                >
-                                    <img src="/logo.svg" alt="Prism R2 Logo" style={{ width: '80%', height: '80%' }} />
-                                </Center>
-                                <Heading 
-                                    size={{ base: "md", md: "lg" }}
-                                    fontWeight="black" 
-                                    letterSpacing="tighter" 
-                                    bgGradient="to-br"
-                                    gradientFrom="blue.500"
-                                    gradientTo="purple.600"
-                                    bgClip="text"
-                                    transition="all 0.3s"
-                                    _hover={{ filter: "brightness(1.1)" }}
-                                    display={{ base: "none", sm: "block" }}
-                                >
-                                    Prism R2
-                                </Heading>
-                            </HStack>
-                        </HStack>
+                                {connectionStatus === 'online' ? '在线' : connectionStatus === 'checking' ? '连接中...' : '离线'}
+                            </Badge>
+                        </Flex>
 
-                        <HStack gap={{ base: 1, md: 4 }}>
-                            {onRefresh && activeTab === 'files' && (
-                                <IconButton
-                                    aria-label="刷新"
-                                    variant="ghost"
-                                    size={{ base: "sm", md: "md" }}
-                                    onClick={onRefresh}
-                                    color="gray.400"
-                                    _hover={{ color: "blue.500", bg: { base: "gray.100", _dark: "whiteAlpha.10" } }}
-                                    _active={{ transform: "scale(0.9)" }}
-                                >
-                                    <RefreshCw size={18} />
-                                </IconButton>
-                            )}
+                        <Separator borderColor="border.DEFAULT" />
 
-                            <Box h={6} w="1px" bg={{ base: "gray.200", _dark: "whiteAlpha.20" }} mx={{ base: 0.5, md: 1 }} />
-
-                            <HStack 
-                                display={{ base: "none", lg: "flex" }} 
-                                gap={3} 
-                                py={1} 
-                                pl={1} 
-                                pr={3} 
-                                borderRadius="full" 
-                                bg={{ base: "gray.100", _dark: "whiteAlpha.10" }} 
-                                border="1px solid" 
-                                borderColor={{ base: "gray.200", _dark: "whiteAlpha.10" }}
-                            >
-                                <Center w={8} h={8} borderRadius="full" bgGradient="to-tr" gradientFrom="blue.500" gradientTo="purple.600" color="white" fontSize="xs" fontWeight="bold" shadow="sm">
-                                    <User size={14} />
-                                </Center>
-                                <VStack align="start" gap={0} minW="80px">
-                                    <HStack gap={1.5}>
-                                        <Text fontSize="10px" fontWeight="semibold" color="gray.400">欢迎，</Text>
-                                        <Text fontSize="11px" fontWeight="semibold" color="blue.500">yanleichang</Text>
-                                    </HStack>
-                                </VStack>
-                            </HStack>
-
-                            <IconButton
-                                aria-label="存储桶配置"
-                                onClick={() => onTabChange('config')}
-                                w={{ base: 8, md: 9 }}
-                                h={{ base: 8, md: 9 }}
-                                size={{ base: "sm", md: "md" }}
-                                borderRadius="xl"
-                                bg={activeTab === 'config' ? "purple.600" : "purple.100"}
-                                color={activeTab === 'config' ? "white" : "purple.600"}
-                                shadow={activeTab === 'config' ? "lg" : "none"}
-                                _hover={{ bg: activeTab === 'config' ? "purple.700" : "purple.200" }}
-                            >
-                                <Database size={18} />
-                            </IconButton>
-
-                            <IconButton
-                                aria-label="退出登录"
+                        {/* User Profile */}
+                        <Flex align="center" gap={3} p={2}>
+                            <Box w={10} h={10} borderRadius="full" bg="brand.100" color="brand.600" display="flex" alignItems="center" justifyContent="center">
+                                <User size={20} />
+                            </Box>
+                            <Box flex={1}>
+                                <Text fontSize="sm" fontWeight="bold">Admin User</Text>
+                                <Text fontSize="xs" color="fg.muted">Logged in</Text>
+                            </Box>
+                            <IconButton 
+                                aria-label="Logout" 
+                                variant="ghost" 
+                                colorPalette="red" 
+                                size="sm" 
                                 onClick={onLogout}
-                                w={{ base: 8, md: 9 }}
-                                h={{ base: 8, md: 9 }}
-                                size={{ base: "sm", md: "md" }}
-                                borderRadius="xl"
-                                bg="red.100"
-                                color="red.600"
-                                _hover={{ bg: "red.200" }}
                             >
                                 <LogOut size={18} />
                             </IconButton>
-                        </HStack>
-                    </Flex>
-                </Container>
+                        </Flex>
+                    </VStack>
+                </Flex>
             </Box>
 
-            {/* Content Area */}
-            <Box as="main" flex={1} w="full" maxW="1700px" mx="auto" p={{ base: 3, md: 8 }}>
-                {children}
+            {/* Mobile Header (Visible only on small screens) */}
+            <Flex 
+                display={{ base: "flex", lg: "none" }} 
+                position="fixed" top={0} left={0} right={0} 
+                h="16" bg="bg.panel" borderBottomWidth="1px" borderColor="border.DEFAULT" 
+                zIndex={40} alignItems="center" justify="space-between" px={4}
+            >
+                <Flex align="center" gap={3}>
+                     <Box w={8} h={8} bgGradient="to-br" gradientFrom="brand.500" gradientTo="brand.700" borderRadius="lg" />
+                     <Heading size="md">Prism R2</Heading>
+                </Flex>
+                <IconButton aria-label="Menu" variant="ghost">
+                    <Settings size={20} />
+                </IconButton>
+            </Flex>
+
+            {/* Main Content */}
+            <Box 
+                ml={{ base: 0, lg: sidebarWidth }} 
+                flex={1} 
+                pt={{ base: 16, lg: 0 }}
+                w="full"
+            >
+                 {/* Top Bar in Main Content */}
+                <Flex 
+                    h="20" px={8} 
+                    align="center" justify="space-between" 
+                    borderBottomWidth="1px" borderColor="border.DEFAULT"
+                    bg="bg.DEFAULT/50" backdropFilter="blur(10px)"
+                    position="sticky" top={0} zIndex={40}
+                >
+                    <Heading size="xl" fontWeight="semibold">
+                        {activeTab === 'files' ? 'Dashboard' : 'Settings'}
+                    </Heading>
+                    
+                    <Flex gap={3}>
+                        {onRefresh && activeTab === 'files' && (
+                             <Button 
+                                variant="ghost" 
+                                onClick={onRefresh}
+                                disabled={connectionStatus === 'checking'}
+                             >
+                                <RefreshCw size={18} className={connectionStatus === 'checking' ? 'animate-spin' : ''} />
+                                <Text ml={2}>刷新</Text>
+                             </Button>
+                        )}
+                    </Flex>
+                </Flex>
+
+                <Container maxW="full" p={8}>
+                    {children}
+                </Container>
             </Box>
-        </Box>
+        </Flex>
     );
 };
+
+const NavButton = ({ icon: Icon, label, isActive, onClick }: { icon: any, label: string, isActive: boolean, onClick: () => void }) => (
+    <Button
+        variant="ghost"
+        justifyContent="flex-start"
+        h="12"
+        px={4}
+        bg={isActive ? "brand.500" : "transparent"}
+        color={isActive ? "white" : "fg.muted"}
+        _hover={{ bg: isActive ? "brand.600" : "bg.subtle", color: isActive ? "white" : "fg.DEFAULT" }}
+        onClick={onClick}
+        borderRadius="xl"
+    >
+        <Icon size={20} style={{ marginRight: '12px' }} />
+        <Text fontWeight={isActive ? "semibold" : "medium"}>{label}</Text>
+    </Button>
+);

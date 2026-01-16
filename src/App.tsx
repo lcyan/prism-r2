@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
-import { Box, Center, Spinner, Text, VStack, Portal, Container, Grid, GridItem, Button, HStack, Heading } from '@chakra-ui/react';
+import { Box, Center, Spinner, Text, VStack, Portal, Container, Button, HStack, Heading } from '@chakra-ui/react';
 import { Box as BoxIcon } from 'lucide-react';
 import { Layout } from './components/Layout';
 import { useR2 } from './hooks/useR2';
@@ -11,8 +11,8 @@ import { useTranslation } from 'react-i18next';
 // Lazy load features for better initial load speed
 const ConfigPage = lazy(() => import('./features/config/ConfigPage').then(m => ({ default: m.ConfigPage })));
 const Dashboard = lazy(() => import('./features/dashboard/Dashboard').then(m => ({ default: m.Dashboard })));
-const UploadCard = lazy(() => import('./features/upload/UploadCard').then(m => ({ default: m.UploadCard })));
-const BucketOverview = lazy(() => import('./features/dashboard/BucketOverview').then(m => ({ default: m.BucketOverview })));
+// const UploadCard = lazy(() => import('./features/upload/UploadCard').then(m => ({ default: m.UploadCard })));
+
 const LoginPage = lazy(() => import('./features/auth/LoginPage').then(m => ({ default: m.LoginPage })));
 const WelcomeGuide = lazy(() => import('./components/WelcomeGuide').then(m => ({ default: m.WelcomeGuide })));
 import { Toaster } from './components/ui/toaster';
@@ -218,6 +218,11 @@ function App() {
     setActiveTab('config');
   };
 
+  const handleQuickUpload = useCallback((file: File) => {
+    // Default to root directory for sidebar uploads
+    handleUpload(file, "", () => {});
+  }, [handleUpload]);
+
   if (isAuthenticated === null) return null; // Avoid flicker
   if (!isAuthenticated) {
     return (
@@ -241,8 +246,14 @@ function App() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onRefresh={() => refetch()}
+        onUpload={handleQuickUpload}
         onLogout={handleLogout}
         connectionStatus={connectionStatus}
+        stats={activeConfig ? {
+            fileCount: files.length,
+            totalSize: totalSize,
+            bucketName: activeConfig.name
+        } : undefined}
       >
         <Suspense fallback={<PageLoader />}>
           {isLoading && (
@@ -296,85 +307,66 @@ function App() {
               />
             </Container>
           ) : (
-            <Container maxW="container.xl" py={{ base: 4, md: 8 }} px={{ base: 3, md: 8 }}>
-              <Grid templateColumns={{ base: "1fr", lg: "repeat(4, 1fr)" }} gap={{ base: 4, lg: 8 }} alignItems="start" w="full">
-                <GridItem colSpan={{ base: 1, lg: 3 }}>
-                  {activeConfigId ? (
+            <Container maxW="full" py={{ base: 4, md: 8 }} px={{ base: 3, md: 8 }}>
+                {activeConfigId ? (
+                <>
                     <Dashboard
-                      files={files}
-                      directories={directories}
-                      onRefresh={refetch}
-                      onDelete={handleDelete}
-                      onDownload={handleDownload}
-                      onCopyLink={handleCopyLink}
-                      publicUrlGetter={publicUrlGetter}
-                      onBulkDelete={handleBulkDelete}
-                      isLoading={isLoading}
+                        files={files}
+                        directories={directories}
+                        onRefresh={refetch}
+                        onDelete={handleDelete}
+                        onDownload={handleDownload}
+                        onCopyLink={handleCopyLink}
+                        publicUrlGetter={publicUrlGetter}
+                        onBulkDelete={handleBulkDelete}
+                        isLoading={isLoading}
                     />
-                  ) : (
-                    <Box
-                      bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
-                      backdropFilter="blur(20px)"
-                      borderRadius="3xl"
-                      p={{ base: 4, md: 8 }}
-                      shadow="xl"
-                      borderWidth="1px"
-                      borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
+                </>
+                ) : (
+                <Box
+                    bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
+                    backdropFilter="blur(20px)"
+                    borderRadius="3xl"
+                    p={{ base: 4, md: 8 }}
+                    shadow="xl"
+                    borderWidth="1px"
+                    borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
+                >
+                    <VStack 
+                    gap={8} 
+                    textAlign="center"
                     >
-                      <VStack 
-                        gap={8} 
-                        textAlign="center"
-                      >
-                        <Center w={24} h={24} bg="blue.500/10" borderRadius="2.5rem" position="relative">
-                          <Box position="absolute" inset={0} bg="blue.500/20" borderRadius="2.5rem" animation="ping 2s infinite" />
-                          <BoxIcon size={48} color="#007AFF" />
-                        </Center>
-                        <VStack gap={4}>
-                          <Heading size="2xl" fontWeight="bold" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
-                            欢迎使用 R2 对象存储增强管理
-                          </Heading>
-                          <Text fontSize="lg" color={{ base: "gray.500", _dark: "gray.400" }} fontWeight="bold" maxW="md" lineHeight="relaxed">
-                            您尚未配置 R2 存储桶信息，请点击上方的存储图标完成配置，开始使用强大的对象存储功能！
-                          </Text>
-                        </VStack>
-                        <Button 
-                          onClick={() => setActiveTab('config')}
-                          bg="blue.500" 
-                          color="white" 
-                          px={12} 
-                          h="auto"
-                          py={5} 
-                          borderRadius="2xl" 
-                          fontWeight="bold" 
-                          fontSize="xl" 
-                          boxShadow="0 20px 40px rgba(0,122,255,0.3)"
-                          _hover={{ transform: "scale(1.05)" }}
-                          _active={{ transform: "scale(0.95)" }}
-                        >
-                          立即配置
-                        </Button>
-                      </VStack>
-                    </Box>
-                  )}
-                </GridItem>
-                <GridItem>
-                  <VStack gap={8} position="sticky" top="24" align="stretch">
-                    <UploadCard
-                      directories={directories}
-                      onUpload={handleUpload}
-                      onUploadComplete={() => refetch()}
-                    />
-                    <BucketOverview
-                      bucketName={activeConfig?.name || t('common.none')}
-                      customDomain={activeConfig?.customDomain}
-                      fileCount={files.length}
-                      totalSize={totalSize}
-                      onRefresh={() => refetch()}
-                      status={isLoading ? 'checking' : 'online'}
-                    />
-                  </VStack>
-                </GridItem>
-              </Grid>
+                    <Center w={24} h={24} bg="blue.500/10" borderRadius="2.5rem" position="relative">
+                        <Box position="absolute" inset={0} bg="blue.500/20" borderRadius="2.5rem" animation="ping 2s infinite" />
+                        <BoxIcon size={48} color="#007AFF" />
+                    </Center>
+                    <VStack gap={4}>
+                        <Heading size="2xl" fontWeight="bold" color={{ base: "gray.900", _dark: "white" }} letterSpacing="tight">
+                        欢迎使用 R2 对象存储增强管理
+                        </Heading>
+                        <Text fontSize="lg" color={{ base: "gray.500", _dark: "gray.400" }} fontWeight="bold" maxW="md" lineHeight="relaxed">
+                        您尚未配置 R2 存储桶信息，请点击上方的存储图标完成配置，开始使用强大的对象存储功能！
+                        </Text>
+                    </VStack>
+                    <Button 
+                        onClick={() => setActiveTab('config')}
+                        bg="blue.500" 
+                        color="white" 
+                        px={12} 
+                        h="auto"
+                        py={5} 
+                        borderRadius="2xl" 
+                        fontWeight="bold" 
+                        fontSize="xl" 
+                        boxShadow="0 20px 40px rgba(0,122,255,0.3)"
+                        _hover={{ transform: "scale(1.05)" }}
+                        _active={{ transform: "scale(0.95)" }}
+                    >
+                        立即配置
+                    </Button>
+                    </VStack>
+                </Box>
+                )}
             </Container>
           )}
         </Suspense>

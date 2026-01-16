@@ -14,8 +14,6 @@ import {
   Database,
   Link,
   Code,
-  FileText,
-  Type,
   ArrowUpDown,
 } from "lucide-react";
 import {
@@ -74,13 +72,6 @@ interface DashboardProps {
 
 type CopyFormat = "url" | "html" | "markdown" | "bbcode";
 
-const ACTIVE_COLORS: Record<CopyFormat, string> = {
-  url: "blue",
-  html: "yellow",
-  markdown: "green",
-  bbcode: "pink",
-};
-
 const isImage = (fileName: string) => {
   const ext = fileName.split(".").pop()?.toLowerCase();
   return ["jpg", "jpeg", "png", "gif", "webp", "svg", "avif"].includes(
@@ -134,13 +125,13 @@ const FileCard = React.memo(
         transition={{ duration: 0.2 }}
       >
         <Box
-          bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
+          bg="bg.panel"
+          borderColor="border.DEFAULT"
           backdropFilter="blur(20px)"
           borderRadius="3xl"
           p={{ base: 3, md: 5 }}
           shadow="sm"
           borderWidth="1px"
-          borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
           transition="all 0.3s"
           _hover={{ shadow: "xl", transform: "translateY(-4px)" }}
           position="relative"
@@ -320,29 +311,22 @@ const FileCard = React.memo(
             position="relative"
           >
             {/* 动画滑块背景 */}
-            <MotionBox
-              layoutId={`format-indicator-${file.key}`}
-              position="absolute"
-              h="8"
-              borderRadius="xl"
-              bg={`${ACTIVE_COLORS[activeFormat]}.500`}
-              shadow="md"
-              transition={{ type: "spring", stiffness: 500, damping: 35 }}
-              style={{
-                width: "calc(25% - 3px)",
-                left: `calc(${["url", "html", "markdown", "bbcode"].indexOf(
-                  activeFormat
-                )} * 25% + 4px)`,
-              }}
-            />
             {(["url", "html", "markdown", "bbcode"] as const).map((fmt) => {
-              const Icon = {
-                url: Link,
-                html: Code,
-                markdown: FileText,
-                bbcode: Type,
-              }[fmt];
               const isActive = activeFormat === fmt;
+              
+              const content = {
+                url: <Link size={16} />,
+                html: <Code size={16} />,
+                markdown: <Text fontSize="xs" fontWeight="bold">M+</Text>,
+                bbcode: <Text fontSize="xs" fontWeight="bold">[BB]</Text>,
+              }[fmt];
+
+              const colors = {
+                url: { bg: "#84cc16", hover: "#65a30d" },      // Lime
+                html: { bg: "#3b82f6", hover: "#2563eb" },     // Blue
+                markdown: { bg: "#a855f7", hover: "#9333ea" }, // Purple
+                bbcode: { bg: "#f97316", hover: "#ea580c" },   // Orange
+              }[fmt];
 
               return (
                 <Button
@@ -351,20 +335,17 @@ const FileCard = React.memo(
                   size="xs"
                   variant="ghost"
                   onClick={() => onFormatChange(fmt)}
-                  borderRadius="xl"
-                  h="8"
-                  title={fmt.toUpperCase()}
+                  borderRadius="full"
+                  h="7"
+                  bg={isActive ? colors.bg : "transparent"}
                   color={isActive ? "white" : "fg.muted"}
-                  bg="transparent"
-                  position="relative"
-                  zIndex={1}
                   _hover={{
-                    bg: isActive ? "transparent" : "whiteAlpha.300",
-                    color: isActive ? "white" : "fg",
+                    bg: isActive ? colors.hover : "bg.subtle",
+                    transform: "scale(1.05)"
                   }}
-                  transition="color 0.2s"
+                  transition="all 0.2s"
                 >
-                  <Icon size={14} />
+                  {content}
                 </Button>
               );
             })}
@@ -520,13 +501,13 @@ export const Dashboard = React.memo(
         <VStack gap={8} align="stretch">
           {/* Header Card */}
           <Box
-            bg={{ base: "whiteAlpha.700", _dark: "whiteAlpha.50" }}
+            bg="bg.panel"
+            borderColor="border.DEFAULT"
             backdropFilter="blur(20px)"
             borderRadius="3xl"
             p={{ base: 6, md: 8 }}
             shadow="sm"
             borderWidth="1px"
-            borderColor={{ base: "whiteAlpha.400", _dark: "whiteAlpha.100" }}
           >
             <Flex
               direction={{ base: "column", lg: "row" }}
@@ -540,8 +521,8 @@ export const Dashboard = React.memo(
                   h={{ base: 12, md: 14 }}
                   borderRadius="2xl"
                   bgGradient="to-br"
-                  gradientFrom="blue.500"
-                  gradientTo="blue.700"
+                  gradientFrom="brand.500"
+                  gradientTo="brand.700"
                   shadow="lg"
                   color="white"
                 >
@@ -553,8 +534,8 @@ export const Dashboard = React.memo(
                     fontWeight="black" 
                     letterSpacing="tighter"
                     bgGradient="to-br"
-                    gradientFrom="blue.500"
-                    gradientTo="purple.600"
+                    gradientFrom="brand.500"
+                    gradientTo="brand.600"
                     bgClip="text"
                   >
                     {t("dashboard.title")}
@@ -696,7 +677,7 @@ export const Dashboard = React.memo(
                   <Button
                     size="xs"
                     variant={activeDirectory === "ROOT" ? "solid" : "subtle"}
-                    colorPalette="blue"
+                    colorPalette="brand"
                     borderRadius="full"
                     px={4}
                     onClick={() => handleDirectoryChange("ROOT")}
@@ -793,7 +774,7 @@ export const Dashboard = React.memo(
                 exit={{ opacity: 0, y: 20 }}
               >
                 <HStack
-                  bg="blue.500"
+                  bg="brand.500"
                   color="white"
                   p={4}
                   borderRadius="2xl"
@@ -858,7 +839,7 @@ export const Dashboard = React.memo(
             </SimpleGrid>
           ) : paginatedFiles.length > 0 ? (
             viewMode === "grid" ? (
-              <SimpleGrid columns={{ base: 1, sm: 2, xl: 3 }} gap={{ base: 4, md: 8 }}>
+              <SimpleGrid columns={{ base: 1, sm: 2, lg: 3, xl: 4, "2xl": 5 }} gap={{ base: 4, md: 6 }}>
                 {paginatedFiles.map((file) => (
                   <FileCard
                     key={file.key}
