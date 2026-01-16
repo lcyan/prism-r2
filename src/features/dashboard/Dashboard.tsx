@@ -12,8 +12,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Database,
-  Link,
-  Code,
   ArrowUpDown,
 } from "lucide-react";
 import {
@@ -81,33 +79,30 @@ const isImage = (fileName: string) => {
 
 interface FileCardProps {
   file: R2File;
-  activeFormat: CopyFormat;
   currentUrl: string;
   isSelected: boolean;
   onToggleSelect: (key: string) => void;
   onDelete: (key: string) => void;
   onPreview: (file: R2File) => void;
   onCopy: (url: string, format: CopyFormat) => void;
-  onFormatChange: (format: CopyFormat) => void;
   getFormattedLink: (url: string, format: CopyFormat) => string;
 }
 
 const FileCard = React.memo(
   ({
     file,
-    activeFormat,
     currentUrl,
     isSelected,
     onToggleSelect,
     onDelete,
     onPreview,
     onCopy,
-    onFormatChange,
     getFormattedLink,
   }: FileCardProps) => {
     const [imageLoaded, setImageLoaded] = React.useState(false);
     const [imageError, setImageError] = React.useState(false);
     const [isCopied, setIsCopied] = React.useState(false);
+    const [activeFormat, setActiveFormat] = React.useState<CopyFormat>("url");
 
     const handleCopyClick = (e: React.MouseEvent) => {
         const input = e.target as HTMLInputElement;
@@ -118,22 +113,15 @@ const FileCard = React.memo(
     };
 
     return (
-      <MotionBox
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.2 }}
-      >
         <Box
           bg="bg.panel"
           borderColor="border.DEFAULT"
-          backdropFilter="blur(20px)"
           borderRadius="3xl"
           p={{ base: 3, md: 5 }}
           shadow="sm"
           borderWidth="1px"
-          transition="all 0.3s"
-          _hover={{ shadow: "xl", transform: "translateY(-4px)" }}
+          transition="box-shadow 0.2s"
+          _hover={{ shadow: "lg" }}
           position="relative"
           overflow="hidden"
         >
@@ -141,8 +129,7 @@ const FileCard = React.memo(
           <Box
             aspectRatio={16 / 9}
             borderRadius="2xl"
-            bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
-            backdropFilter="blur(10px)"
+            bg={{ base: "gray.100", _dark: "gray.800" }}
             display="flex"
             alignItems="center"
             justifyContent="center"
@@ -289,69 +276,58 @@ const FileCard = React.memo(
                         fontSize="2xs"
                         fontWeight="normal"
                         borderRadius="xl"
-                        bg={isCopied ? "green.500/10" : { base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
+                        bg={isCopied ? "green.100" : { base: "gray.100", _dark: "gray.700" }}
                         color={isCopied ? "green.600" : "inherit"}
-                        backdropFilter="blur(10px)"
                         border={isCopied ? "1px solid" : "none"}
                         borderColor="green.500/30"
-                        _hover={{ bg: isCopied ? "green.500/15" : { base: 'whiteAlpha.800', _dark: 'whiteAlpha.100' } }}
+                        _hover={{ bg: isCopied ? "green.200" : { base: 'gray.200', _dark: 'gray.600' } }}
                         cursor="pointer"
                         onClick={handleCopyClick}
-                        transition="all 0.2s"
                     />
 </Box>
 
           {/* Actions Row */}
-          <HStack
-            bg={{ base: "whiteAlpha.600", _dark: "whiteAlpha.50" }}
-            backdropFilter="blur(10px)"
-            p={1}
-            borderRadius="2xl"
-            gap={1}
-            position="relative"
-          >
-            {/* 动画滑块背景 */}
+          <div style={{ 
+            display: "flex", 
+            gap: 4, 
+            padding: 4, 
+            backgroundColor: "var(--chakra-colors-gray-100)", 
+            borderRadius: 16 
+          }}>
             {(["url", "html", "markdown", "bbcode"] as const).map((fmt) => {
               const isActive = activeFormat === fmt;
-              
-              const content = {
-                url: <Link size={16} />,
-                html: <Code size={16} />,
-                markdown: <Text fontSize="xs" fontWeight="bold">M+</Text>,
-                bbcode: <Text fontSize="xs" fontWeight="bold">[BB]</Text>,
-              }[fmt];
-
-              const colors = {
-                url: { bg: "#84cc16", hover: "#65a30d" },      // Lime
-                html: { bg: "#3b82f6", hover: "#2563eb" },     // Blue
-                markdown: { bg: "#a855f7", hover: "#9333ea" }, // Purple
-                bbcode: { bg: "#f97316", hover: "#ea580c" },   // Orange
+              const bgColor = {
+                url: "#84cc16",
+                html: "#3b82f6",
+                markdown: "#a855f7",
+                bbcode: "#f97316",
               }[fmt];
 
               return (
-                <Button
+                <button
                   key={fmt}
-                  flex={1}
-                  size="xs"
-                  variant="ghost"
-                  onClick={() => onFormatChange(fmt)}
-                  borderRadius="full"
-                  h="7"
-                  bg={isActive ? colors.bg : "transparent"}
-                  color={isActive ? "white" : "fg.muted"}
-                  _hover={{
-                    bg: isActive ? colors.hover : "bg.subtle",
-                    transform: "scale(1.05)"
+                  onClick={() => setActiveFormat(fmt)}
+                  style={{
+                    flex: 1,
+                    height: 28,
+                    border: "none",
+                    borderRadius: 14,
+                    cursor: "pointer",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    backgroundColor: isActive ? bgColor : "transparent",
+                    color: isActive ? "white" : "#64748b",
                   }}
-                  transition="all 0.2s"
                 >
-                  {content}
-                </Button>
+                  {fmt === "url" && "🔗"}
+                  {fmt === "html" && "</>"}
+                  {fmt === "markdown" && "M+"}
+                  {fmt === "bbcode" && "[BB]"}
+                </button>
               );
             })}
-          </HStack>
+          </div>
         </Box>
-      </MotionBox>
     );
   }
 );
@@ -378,7 +354,6 @@ export const Dashboard = React.memo(
     const [sorting, setSorting] = useState<SortingState>([{ id: "lastModified", desc: true }]);
     const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
     const [previewFile, setPreviewFile] = useState<R2File | null>(null);
-    const [globalFormat, setGlobalFormat] = useState<CopyFormat>("url");
     const [currentPage, setCurrentPage] = useState(1);
     const [isDirectorySwitching, setIsDirectorySwitching] = useState(false);
     const itemsPerPage = 20;
@@ -844,14 +819,12 @@ export const Dashboard = React.memo(
                   <FileCard
                     key={file.key}
                     file={file}
-                    activeFormat={globalFormat}
                     currentUrl={publicUrlGetter(file.key)}
                     isSelected={selectedKeys.includes(file.key)}
                     onToggleSelect={toggleSelect}
                     onDelete={onDelete}
                     onPreview={setPreviewFile}
                     onCopy={handleCopy}
-                    onFormatChange={setGlobalFormat}
                     getFormattedLink={getFormattedLink}
                   />
                 ))}
